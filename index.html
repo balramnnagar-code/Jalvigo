@@ -771,4 +771,435 @@ function selectType(type){
   shoppingType = type;
 
   document.getElementById("selectedType").innerText =
-   
+    "Selected: " + type;
+
+  document.getElementById("retailBtn")
+    .classList.remove("active");
+
+  document.getElementById("wholesaleBtn")
+    .classList.remove("active");
+
+
+  if(type === "Retail"){
+
+    document.getElementById("retailBtn")
+      .classList.add("active");
+
+  }else{
+
+    document.getElementById("wholesaleBtn")
+      .classList.add("active");
+
+  }
+
+}
+
+
+/* ADD PRODUCT */
+
+function addToCart(name,price){
+
+  let existing =
+    cart.find(item => item.name === name);
+
+
+  if(existing){
+
+    existing.qty++;
+
+  }else{
+
+    cart.push({
+
+      name:name,
+
+      price:price,
+
+      qty:1
+
+    });
+
+  }
+
+
+  updateCart();
+
+
+  alert(
+    name +
+    " Cart में add हो गया!"
+  );
+
+}
+
+
+/* UPDATE CART */
+
+function updateCart(){
+
+  let count = 0;
+
+  let total = 0;
+
+
+  cart.forEach(item => {
+
+    count += item.qty;
+
+    total +=
+      item.price *
+      item.qty;
+
+  });
+
+
+  document.getElementById(
+    "cartCount"
+  ).innerText = count;
+
+
+  document.getElementById(
+    "totalPrice"
+  ).innerText = total;
+
+
+  let html = "";
+
+
+  if(cart.length === 0){
+
+    html =
+      "<p>Cart खाली है</p>";
+
+  }
+
+
+  cart.forEach(
+    (item,index) => {
+
+      html += `
+
+      <div class="cart-item">
+
+        <div>
+
+          <b>${item.name}</b>
+
+          <br>
+
+          ₹${item.price}
+          ×
+          ${item.qty}
+
+        </div>
+
+
+        <div class="qty">
+
+          <button
+          onclick="changeQty(${index},-1)">
+          −
+          </button>
+
+
+          ${item.qty}
+
+
+          <button
+          onclick="changeQty(${index},1)">
+          +
+          </button>
+
+        </div>
+
+      </div>
+
+      `;
+
+    }
+  );
+
+
+  document.getElementById(
+    "cartItems"
+  ).innerHTML = html;
+
+}
+
+
+/* CHANGE QUANTITY */
+
+function changeQty(index,change){
+
+  if(!cart[index]){
+    return;
+  }
+
+
+  cart[index].qty += change;
+
+
+  if(cart[index].qty <= 0){
+
+    cart.splice(index,1);
+
+  }
+
+
+  updateCart();
+
+}
+
+
+/* OPEN CART */
+
+function openCart(){
+
+  updateCart();
+
+  document.getElementById(
+    "cartBox"
+  ).style.display = "block";
+
+}
+
+
+/* CLOSE CART */
+
+function closeCart(){
+
+  document.getElementById(
+    "cartBox"
+  ).style.display = "none";
+
+}
+
+
+/* OPEN ORDER FORM */
+
+function openOrderForm(){
+
+  if(cart.length === 0){
+
+    alert(
+      "पहले Cart में product add करें!"
+    );
+
+    return;
+
+  }
+
+
+  document.getElementById(
+    "orderForm"
+  ).style.display = "flex";
+
+}
+
+
+/* CLOSE ORDER FORM */
+
+function closeOrderForm(){
+
+  document.getElementById(
+    "orderForm"
+  ).style.display = "none";
+
+}
+
+
+/* SEND WHATSAPP ORDER */
+
+function sendOrder(){
+
+  let name =
+    document.getElementById(
+      "customerName"
+    ).value.trim();
+
+
+  let mobile =
+    document.getElementById(
+      "customerMobile"
+    ).value.trim();
+
+
+  let address =
+    document.getElementById(
+      "customerAddress"
+    ).value.trim();
+
+
+  if(
+    name === "" ||
+    mobile === "" ||
+    address === ""
+  ){
+
+    alert(
+      "कृपया Name, Mobile और Address भरें।"
+    );
+
+    return;
+
+  }
+
+
+  let total = 0;
+
+
+  let orderID =
+    "JAL" +
+    Date.now().toString().slice(-6);
+
+
+  let now =
+    new Date();
+
+
+  let date =
+    now.toLocaleDateString("en-IN");
+
+
+  let time =
+    now.toLocaleTimeString(
+      "en-IN",
+      {
+        hour:"2-digit",
+        minute:"2-digit"
+      }
+    );
+
+
+  let message =
+    "🛒 *नया Jalvigo Order*";
+
+
+  message +=
+    "\n\n🧾 Order ID: " +
+    orderID;
+
+
+  message +=
+    "\n📅 Date: " +
+    date;
+
+
+  message +=
+    "\n⏰ Time: " +
+    time;
+
+
+  message +=
+    "\n🏷️ Type: " +
+    shoppingType;
+
+
+  message +=
+    "\n\n👤 Name: " +
+    name;
+
+
+  message +=
+    "\n📱 Mobile: " +
+    mobile;
+
+
+  message +=
+    "\n📍 Address: " +
+    address;
+
+
+  message +=
+    "\n\n📦 *Products:*";
+
+
+  cart.forEach(item => {
+
+    let itemTotal =
+      item.price *
+      item.qty;
+
+
+    total +=
+      itemTotal;
+
+
+    message +=
+      "\n• " +
+      item.name +
+      " × " +
+      item.qty +
+      " = ₹" +
+      itemTotal;
+
+  });
+
+
+  message +=
+    "\n\n💰 *Total: ₹" +
+    total +
+    "*";
+
+
+  message +=
+    "\n\n🙏 Thank you for choosing Jalvigo!";
+
+
+  /*
+  ==================================
+  IMPORTANT
+  ==================================
+
+  यहाँ अपना WhatsApp नंबर डालें।
+
+  India के लिए:
+  91 + 10 digit mobile number
+
+  Example:
+  919876543210
+
+  +, space या - नहीं लगाना है.
+  */
+
+
+  let yourWhatsAppNumber =
+    "916260832599";
+
+
+  let whatsappURL =
+    "https://wa.me/" +
+    yourWhatsAppNumber +
+    "?text=" +
+    encodeURIComponent(message);
+
+
+  /*
+  WhatsApp खोलें
+  */
+
+  window.location.href =
+    whatsappURL;
+
+
+  /*
+  Order भेजने के बाद
+  cart खाली किया जाएगा।
+  */
+
+  cart = [];
+
+  updateCart();
+
+}
+
+
+/* INITIAL CART */
+
+updateCart();
+
+</script>
+
+
+</body>
+  </html>
