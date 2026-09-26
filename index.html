@@ -435,11 +435,25 @@ function closeCart(){
   document.getElementById("cartBox").style.display = "none";
 }
 
+function showOrderForm(){
+
+  if(cart.length === 0){
+    alert("पहले Cart में product add करें!");
+    return;
+  }
+
+  document.getElementById("orderForm").style.display = "flex";
+}
+
+function closeOrderForm(){
+  document.getElementById("orderForm").style.display = "none";
+}
+
 function placeOrder(){
 
-  let name = document.getElementById("name").value;
-  let mobile = document.getElementById("mobile").value;
-  let address = document.getElementById("address").value;
+  let name = document.getElementById("name").value.trim();
+  let mobile = document.getElementById("mobile").value.trim();
+  let address = document.getElementById("address").value.trim();
 
   if(name === "" || mobile === "" || address === ""){
     alert("कृपया Name, Mobile और Address भरें।");
@@ -457,7 +471,9 @@ function placeOrder(){
   let total = 0;
 
   cart.forEach(item => {
+
     let itemTotal = item.price * item.qty;
+
     total += itemTotal;
 
     message += "• " + item.name + " × " + item.qty +
@@ -466,40 +482,15 @@ function placeOrder(){
 
   message += "%0A💰 *Total: ₹" + total + "*";
 
-  /*
-   अपना WhatsApp नंबर नीचे डालें।
-   भारत के लिए 91 + मोबाइल नंबर लिखें।
-   उदाहरण: 919876543210
-   + या space न लगाएँ।
-  */
-
+  // यहाँ आपका WhatsApp नंबर पहले से मौजूद है
   let yourWhatsAppNumber = "916260832599";
 
   let whatsappURL =
     "https://wa.me/" + yourWhatsAppNumber +
     "?text=" + message;
 
-  window.open(whatsappURL, "_blank");
-
-  cart = [];
-  updateCart();
-  closeOrderForm();
-  closeCart();
+  window.location.href = whatsappURL;
 }
-
-  if(cart.length === 0){
-    alert("पहले Cart में product add करें!");
-    return;
-  }
-
-  document.getElementById("orderForm").style.display = "flex";
-}
-
-function closeOrderForm(){
-  document.getElementById("orderForm").style.display = "none";
-}
-
-function placeOrder(){
 
   let name = document.getElementById("name").value;
   let mobile = document.getElementById("mobile").value;
