@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Jalvigo - Water & Cold Drinks</title>
 
 <style>
+
 *{
     box-sizing:border-box;
     margin:0;
@@ -21,7 +23,7 @@ body{
 header{
     background:#0284c7;
     color:white;
-    padding:16px;
+    padding:15px;
     display:flex;
     justify-content:space-between;
     align-items:center;
@@ -35,19 +37,34 @@ header{
     font-weight:bold;
 }
 
+.header-buttons{
+    display:flex;
+    gap:7px;
+}
+
+.cart-btn,
+.admin-btn{
+    border:none;
+    padding:9px 12px;
+    border-radius:20px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
 .cart-btn{
     background:white;
     color:#0284c7;
-    border:none;
-    padding:10px 15px;
-    border-radius:20px;
-    font-weight:bold;
+}
+
+.admin-btn{
+    background:#082f49;
+    color:white;
 }
 
 .hero{
     text-align:center;
-    padding:35px 15px;
-    background:linear-gradient(135deg,#dff6ff,#ffffff);
+    padding:40px 15px;
+    background:linear-gradient(135deg,#dff6ff,#fff);
 }
 
 .hero h1{
@@ -65,7 +82,7 @@ header{
 }
 
 .type-box button{
-    padding:12px 20px;
+    padding:11px 20px;
     border:2px solid #0284c7;
     background:white;
     color:#0284c7;
@@ -121,12 +138,7 @@ header{
     cursor:pointer;
 }
 
-.section{
-    padding:30px 20px;
-    text-align:center;
-}
-
-.shopkeeper{
+.section-box{
     background:white;
     margin:20px;
     padding:25px;
@@ -134,7 +146,7 @@ header{
     box-shadow:0 3px 15px rgba(0,0,0,.1);
 }
 
-.shopkeeper h2{
+.section-box h2{
     color:#0369a1;
     margin-bottom:10px;
 }
@@ -168,7 +180,7 @@ header{
     display:none;
     position:fixed;
     inset:0;
-    background:rgba(0,0,0,.6);
+    background:rgba(0,0,0,.65);
     z-index:100;
     padding:15px;
     overflow:auto;
@@ -176,8 +188,8 @@ header{
 
 .modal-box{
     background:white;
-    max-width:500px;
-    margin:40px auto;
+    max-width:520px;
+    margin:35px auto;
     padding:22px;
     border-radius:15px;
 }
@@ -212,6 +224,31 @@ header{
     margin:15px 0;
 }
 
+.admin-dashboard{
+    display:none;
+}
+
+.dashboard-card{
+    background:#f0f9ff;
+    padding:18px;
+    border-radius:12px;
+    margin:10px 0;
+}
+
+.dashboard-card h3{
+    color:#0369a1;
+    margin-bottom:7px;
+}
+
+.logout-btn{
+    background:#dc2626;
+    color:white;
+    border:none;
+    padding:10px 16px;
+    border-radius:8px;
+    font-weight:bold;
+}
+
 footer{
     background:#075985;
     color:white;
@@ -219,208 +256,519 @@ footer{
     padding:20px;
     margin-top:30px;
 }
+
 </style>
 </head>
 
 <body>
 
 <header>
+
     <div class="logo">💧 Jalvigo</div>
-    <button class="cart-btn" onclick="openCart()">
-        🛒 Cart: <span id="cartCount">0</span>
-    </button>
+
+    <div class="header-buttons">
+
+        <button class="admin-btn" onclick="openAdminLogin()">
+            🔐 Admin
+        </button>
+
+        <button class="cart-btn" onclick="openCart()">
+            🛒 Cart: <span id="cartCount">0</span>
+        </button>
+
+    </div>
+
 </header>
 
+
 <section class="hero">
+
     <h1>Fresh Water, Fresh Life 💧</h1>
+
     <p>पानी और Cold Drinks अब आसानी से घर तक</p>
+
 </section>
 
+
 <div class="type-box">
-    <button id="retailBtn" class="active" onclick="selectType('Retail')">
+
+    <button id="retailBtn"
+            class="active"
+            onclick="selectType('Retail')">
+
         🛍️ Retail
+
     </button>
 
-    <button id="wholesaleBtn" onclick="selectType('Wholesale')">
+    <button id="wholesaleBtn"
+            onclick="selectType('Wholesale')">
+
         📦 Wholesale
+
     </button>
 
     <p style="margin-top:10px;">
         Selected: <b id="selectedType">Retail</b>
     </p>
+
 </div>
 
+
 <section>
-    <div class="products">
 
-        <div class="product">
-            <div class="emoji">💧</div>
-            <h3>Drinking Water</h3>
-            <div class="price">₹20</div>
-            <button onclick="addToCart('Drinking Water',20)">Add to Cart</button>
-        </div>
+<div class="products">
 
-        <div class="product">
-            <div class="emoji">🧴</div>
-            <h3>Water Bottle</h3>
-            <div class="price">₹30</div>
-            <button onclick="addToCart('Water Bottle',30)">Add to Cart</button>
-        </div>
 
-        <div class="product">
-            <div class="emoji">🥤</div>
-            <h3>Cold Drink</h3>
-            <div class="price">₹40</div>
-            <button onclick="addToCart('Cold Drink',40)">Add to Cart</button>
-        </div>
+<div class="product">
 
-        <div class="product">
-            <div class="emoji">📦</div>
-            <h3>Water Pack</h3>
-            <div class="price">₹120</div>
-            <button onclick="addToCart('Water Pack',120)">Add to Cart</button>
-        </div>
+    <div class="emoji">💧</div>
 
-        <div class="product">
-            <div class="emoji">💦</div>
-            <h3>Mineral Water</h3>
-            <div class="price">₹25</div>
-            <button onclick="addToCart('Mineral Water',25)">Add to Cart</button>
-        </div>
+    <h3>Drinking Water</h3>
 
-        <div class="product">
-            <div class="emoji">🥤</div>
-            <h3>Cold Drink Pack</h3>
-            <div class="price">₹200</div>
-            <button onclick="addToCart('Cold Drink Pack',200)">Add to Cart</button>
-        </div>
+    <div class="price">₹20</div>
 
-    </div>
-</section>
-
-<!-- SHOPKEEPER SECTION -->
-
-<section class="shopkeeper">
-    <h2>🏪 Jalvigo पर अपनी दुकान जोड़ें</h2>
-
-    <p style="margin-bottom:20px;">
-        दुकानदार अपनी दुकान की जानकारी देकर Jalvigo से जुड़ सकते हैं।
-    </p>
-
-    <div class="form-group">
-        <label>दुकानदार का नाम</label>
-        <input type="text" id="shopName" placeholder="अपना नाम लिखें">
-    </div>
-
-    <div class="form-group">
-        <label>दुकान का नाम</label>
-        <input type="text" id="storeName" placeholder="दुकान का नाम">
-    </div>
-
-    <div class="form-group">
-        <label>मोबाइल नंबर</label>
-        <input type="tel" id="shopMobile" placeholder="10 अंकों का मोबाइल नंबर">
-    </div>
-
-    <div class="form-group">
-        <label>दुकान का पता</label>
-        <textarea id="shopAddress" placeholder="दुकान का पूरा पता"></textarea>
-    </div>
-
-    <div class="form-group">
-        <label>आप क्या बेचते हैं?</label>
-
-        <select id="shopProducts">
-            <option value="">Select करें</option>
-            <option>Drinking Water</option>
-            <option>Water Bottle</option>
-            <option>Cold Drink</option>
-            <option>Water Pack</option>
-            <option>Mineral Water</option>
-            <option>Cold Drink Pack</option>
-            <option>Water & Cold Drinks सभी</option>
-        </select>
-    </div>
-
-    <button class="primary-btn" onclick="registerShopkeeper()">
-        🏪 दुकान Register करें
+    <button onclick="addToCart('Drinking Water',20)">
+        Add to Cart
     </button>
+
+</div>
+
+
+<div class="product">
+
+    <div class="emoji">🧴</div>
+
+    <h3>Water Bottle</h3>
+
+    <div class="price">₹30</div>
+
+    <button onclick="addToCart('Water Bottle',30)">
+        Add to Cart
+    </button>
+
+</div>
+
+
+<div class="product">
+
+    <div class="emoji">🥤</div>
+
+    <h3>Cold Drink</h3>
+
+    <div class="price">₹40</div>
+
+    <button onclick="addToCart('Cold Drink',40)">
+        Add to Cart
+    </button>
+
+</div>
+
+
+<div class="product">
+
+    <div class="emoji">📦</div>
+
+    <h3>Water Pack</h3>
+
+    <div class="price">₹120</div>
+
+    <button onclick="addToCart('Water Pack',120)">
+        Add to Cart
+    </button>
+
+</div>
+
+
+<div class="product">
+
+    <div class="emoji">💦</div>
+
+    <h3>Mineral Water</h3>
+
+    <div class="price">₹25</div>
+
+    <button onclick="addToCart('Mineral Water',25)">
+        Add to Cart
+    </button>
+
+</div>
+
+
+<div class="product">
+
+    <div class="emoji">🥤</div>
+
+    <h3>Cold Drink Pack</h3>
+
+    <div class="price">₹200</div>
+
+    <button onclick="addToCart('Cold Drink Pack',200)">
+        Add to Cart
+    </button>
+
+</div>
+
+
+</div>
+
 </section>
 
-<!-- CART MODAL -->
+
+<!-- SHOPKEEPER -->
+
+<section class="section-box">
+
+<h2>🏪 Jalvigo पर अपनी दुकान जोड़ें</h2>
+
+<p style="margin-bottom:20px;">
+दुकानदार अपनी दुकान की जानकारी देकर Jalvigo से जुड़ सकते हैं।
+</p>
+
+
+<div class="form-group">
+
+<label>दुकानदार का नाम</label>
+
+<input type="text"
+       id="shopName"
+       placeholder="अपना नाम लिखें">
+
+</div>
+
+
+<div class="form-group">
+
+<label>दुकान का नाम</label>
+
+<input type="text"
+       id="storeName"
+       placeholder="दुकान का नाम">
+
+</div>
+
+
+<div class="form-group">
+
+<label>मोबाइल नंबर</label>
+
+<input type="tel"
+       id="shopMobile"
+       placeholder="10 अंकों का मोबाइल नंबर">
+
+</div>
+
+
+<div class="form-group">
+
+<label>दुकान का पता</label>
+
+<textarea id="shopAddress"
+          placeholder="दुकान का पूरा पता"></textarea>
+
+</div>
+
+
+<div class="form-group">
+
+<label>आप क्या बेचते हैं?</label>
+
+<select id="shopProducts">
+
+<option value="">Select करें</option>
+
+<option>Drinking Water</option>
+
+<option>Water Bottle</option>
+
+<option>Cold Drink</option>
+
+<option>Water Pack</option>
+
+<option>Mineral Water</option>
+
+<option>Cold Drink Pack</option>
+
+<option>Water & Cold Drinks सभी</option>
+
+</select>
+
+</div>
+
+
+<button class="primary-btn"
+        onclick="registerShopkeeper()">
+
+🏪 दुकान Register करें
+
+</button>
+
+</section>
+
+
+<!-- CART -->
 
 <div class="modal" id="cartModal">
 
-    <div class="modal-box">
+<div class="modal-box">
 
-        <span class="close" onclick="closeCart()">×</span>
+<span class="close"
+      onclick="closeCart()">×</span>
 
-        <h2>🛒 आपका Cart</h2>
+<h2>🛒 आपका Cart</h2>
 
-        <div id="cartItems"></div>
+<div id="cartItems"></div>
 
-        <div class="total">
-            Total: ₹<span id="cartTotal">0</span>
-        </div>
+<div class="total">
 
-        <button class="primary-btn" onclick="openOrderForm()">
-            Order Now
-        </button>
+Total: ₹<span id="cartTotal">0</span>
 
-    </div>
 </div>
 
-<!-- ORDER FORM -->
+<button class="primary-btn"
+        onclick="openOrderForm()">
+
+Order Now
+
+</button>
+
+</div>
+
+</div>
+
+
+<!-- ORDER -->
 
 <div class="modal" id="orderModal">
 
-    <div class="modal-box">
+<div class="modal-box">
 
-        <span class="close" onclick="closeOrderForm()">×</span>
+<span class="close"
+      onclick="closeOrderForm()">×</span>
 
-        <h2>📦 Delivery Details</h2>
+<h2>📦 Delivery Details</h2>
 
-        <div class="form-group">
-            <label>Name</label>
-            <input type="text" id="customerName" placeholder="आपका नाम">
-        </div>
 
-        <div class="form-group">
-            <label>Mobile</label>
-            <input type="tel" id="customerMobile" placeholder="मोबाइल नंबर">
-        </div>
+<div class="form-group">
 
-        <div class="form-group">
-            <label>Delivery Address</label>
-            <textarea id="customerAddress" placeholder="पूरा पता"></textarea>
-        </div>
+<label>Name</label>
 
-        <button class="primary-btn" onclick="sendOrder()">
-            📲 WhatsApp पर Order भेजें
-        </button>
+<input type="text"
+       id="customerName"
+       placeholder="आपका नाम">
 
-    </div>
 </div>
 
+
+<div class="form-group">
+
+<label>Mobile</label>
+
+<input type="tel"
+       id="customerMobile"
+       placeholder="मोबाइल नंबर">
+
+</div>
+
+
+<div class="form-group">
+
+<label>Delivery Address</label>
+
+<textarea id="customerAddress"
+          placeholder="पूरा पता"></textarea>
+
+</div>
+
+
+<button class="primary-btn"
+        onclick="sendOrder()">
+
+📲 WhatsApp पर Order भेजें
+
+</button>
+
+</div>
+
+</div>
+
+
+<!-- ADMIN LOGIN -->
+
+<div class="modal" id="adminLoginModal">
+
+<div class="modal-box">
+
+<span class="close"
+      onclick="closeAdminLogin()">×</span>
+
+<h2>🔐 Jalvigo Admin Login</h2>
+
+<p style="margin:10px 0 20px;">
+केवल Admin के लिए
+</p>
+
+
+<div class="form-group">
+
+<label>Admin Username</label>
+
+<input type="text"
+       id="adminUsernameInput"
+       placeholder="Username">
+
+</div>
+
+
+<div class="form-group">
+
+<label>Password</label>
+
+<input type="password"
+       id="adminPasswordInput"
+       placeholder="Password">
+
+</div>
+
+
+<button class="primary-btn"
+        onclick="adminLogin()">
+
+🔐 Login
+
+</button>
+
+</div>
+
+</div>
+
+
+<!-- ADMIN DASHBOARD -->
+
+<div class="modal"
+     id="adminDashboardModal">
+
+<div class="modal-box">
+
+<span class="close"
+      onclick="closeAdminDashboard()">×</span>
+
+
+<div class="admin-dashboard"
+     id="adminDashboard">
+
+<h2>🛠️ Jalvigo Admin Panel</h2>
+
+<p style="margin:10px 0 20px;">
+Welcome, Admin 👋
+</p>
+
+
+<div class="dashboard-card">
+
+<h3>📦 Orders</h3>
+
+<p>
+WhatsApp Orders अभी WhatsApp के माध्यम से प्राप्त होंगे।
+</p>
+
+</div>
+
+
+<div class="dashboard-card">
+
+<h3>🏪 Shopkeepers</h3>
+
+<p>
+Shopkeeper Registration अभी WhatsApp के माध्यम से प्राप्त होगा।
+</p>
+
+</div>
+
+
+<div class="dashboard-card">
+
+<h3>🌐 Website Status</h3>
+
+<p>
+✅ Jalvigo Website Online
+</p>
+
+</div>
+
+
+<div class="dashboard-card">
+
+<h3>🛒 Products</h3>
+
+<p>
+6 Products Active
+</p>
+
+</div>
+
+
+<br>
+
+<button class="logout-btn"
+        onclick="adminLogout()">
+
+Logout
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
 <footer>
-    <p>💧 Jalvigo</p>
-    <p>Water & Cold Drinks Marketplace</p>
+
+<p>💧 Jalvigo</p>
+
+<p>Water & Cold Drinks Marketplace</p>
+
 </footer>
 
+
 <script>
+
+
+/* =========================
+   ADMIN LOGIN SETTINGS
+   =========================
+
+   यहां अपना Username और Password डालें।
+*/
+
+let adminUsername = "JalvigoAdmin";
+
+let adminPassword = "YOUR_PASSWORD";
+
+
+/* =========================
+   WHATSAPP NUMBER
+   =========================
+
+   यहां अपना WhatsApp number रखें।
+   Example:
+   919876543210
+
+   + या space नहीं लगाना है.
+*/
+
+let yourWhatsAppNumber = "916260832599";
+
+
+/* CART */
 
 let cart = [];
 
 let shoppingType = "Retail";
 
-/* अपना WhatsApp नंबर यहां रखें
-   Country code के साथ
-   Example: 919876543210
-   + या space नहीं लगाना है
-*/
 
-let yourWhatsAppNumber = "916260832599";
-
+/* TYPE */
 
 function selectType(type){
 
@@ -428,182 +776,320 @@ function selectType(type){
 
     document.getElementById("selectedType").innerText = type;
 
-    document.getElementById("retailBtn").classList.remove("active");
+    document.getElementById("retailBtn")
+        .classList.remove("active");
 
-    document.getElementById("wholesaleBtn").classList.remove("active");
+    document.getElementById("wholesaleBtn")
+        .classList.remove("active");
+
 
     if(type === "Retail"){
-        document.getElementById("retailBtn").classList.add("active");
+
+        document.getElementById("retailBtn")
+            .classList.add("active");
+
     }
     else{
-        document.getElementById("wholesaleBtn").classList.add("active");
+
+        document.getElementById("wholesaleBtn")
+            .classList.add("active");
+
     }
+
 }
 
+
+/* ADD CART */
 
 function addToCart(name,price){
 
     let item = cart.find(p => p.name === name);
 
+
     if(item){
+
         item.qty++;
+
     }
     else{
+
         cart.push({
             name:name,
             price:price,
             qty:1
         });
+
     }
+
 
     updateCart();
 
     alert(name + " Cart में add हो गया!");
+
 }
 
+
+/* UPDATE CART */
 
 function updateCart(){
 
     let count = 0;
+
     let total = 0;
 
+
     cart.forEach(item => {
+
         count += item.qty;
+
         total += item.price * item.qty;
+
     });
+
 
     document.getElementById("cartCount").innerText = count;
 
     document.getElementById("cartTotal").innerText = total;
 
+
     let html = "";
 
+
     if(cart.length === 0){
-        html = "<p style='padding:20px 0'>Cart खाली है।</p>";
+
+        html =
+        "<p style='padding:20px 0'>Cart खाली है।</p>";
+
     }
+
 
     cart.forEach((item,index) => {
 
         html += `
+
         <div class="cart-item">
 
             <div>
-                <b>${item.name}</b><br>
+
+                <b>${item.name}</b>
+
+                <br>
+
                 ₹${item.price} × ${item.qty}
+
             </div>
 
             <div class="qty">
 
-                <button onclick="changeQty(${index},-1)">−</button>
+                <button onclick="changeQty(${index},-1)">
+                    −
+                </button>
 
                 ${item.qty}
 
-                <button onclick="changeQty(${index},1)">+</button>
+                <button onclick="changeQty(${index},1)">
+                    +
+                </button>
 
             </div>
 
         </div>
+
         `;
+
     });
 
+
     document.getElementById("cartItems").innerHTML = html;
+
 }
 
+
+/* CHANGE QUANTITY */
 
 function changeQty(index,value){
 
     cart[index].qty += value;
 
+
     if(cart[index].qty <= 0){
+
         cart.splice(index,1);
+
     }
 
+
     updateCart();
+
 }
 
+
+/* CART OPEN */
 
 function openCart(){
 
     updateCart();
 
-    document.getElementById("cartModal").style.display = "block";
+    document.getElementById("cartModal")
+        .style.display = "block";
+
 }
 
+
+/* CART CLOSE */
 
 function closeCart(){
 
-    document.getElementById("cartModal").style.display = "none";
+    document.getElementById("cartModal")
+        .style.display = "none";
+
 }
 
+
+/* ORDER FORM */
 
 function openOrderForm(){
 
     if(cart.length === 0){
+
         alert("पहले Cart में product add करें।");
+
         return;
+
     }
+
 
     closeCart();
 
-    document.getElementById("orderModal").style.display = "block";
+    document.getElementById("orderModal")
+        .style.display = "block";
+
 }
 
 
 function closeOrderForm(){
 
-    document.getElementById("orderModal").style.display = "none";
+    document.getElementById("orderModal")
+        .style.display = "none";
+
 }
 
 
+/* SEND ORDER */
+
 function sendOrder(){
 
-    let name = document.getElementById("customerName").value.trim();
+    let name =
+        document.getElementById("customerName")
+        .value.trim();
 
-    let mobile = document.getElementById("customerMobile").value.trim();
 
-    let address = document.getElementById("customerAddress").value.trim();
+    let mobile =
+        document.getElementById("customerMobile")
+        .value.trim();
 
-    if(name === "" || mobile === "" || address === ""){
 
-        alert("कृपया Name, Mobile और Address भरें।");
+    let address =
+        document.getElementById("customerAddress")
+        .value.trim();
+
+
+    if(
+        name === "" ||
+        mobile === "" ||
+        address === ""
+    ){
+
+        alert(
+        "कृपया Name, Mobile और Address भरें।"
+        );
 
         return;
+
     }
 
-    let orderId = "JAL" + Date.now();
 
-    let date = new Date().toLocaleString("en-IN");
+    let orderId =
+        "JAL" + Date.now();
 
-    let message = "💧 *Jalvigo New Order*%0A%0A";
 
-    message += "🆔 Order ID: " + orderId + "%0A";
+    let date =
+        new Date().toLocaleString("en-IN");
 
-    message += "📅 Date: " + date + "%0A";
 
-    message += "🛍️ Type: " + shoppingType + "%0A%0A";
+    let message =
+        "💧 *Jalvigo New Order*%0A%0A";
 
-    message += "👤 Name: " + name + "%0A";
 
-    message += "📱 Mobile: " + mobile + "%0A";
+    message +=
+        "🆔 Order ID: " +
+        orderId +
+        "%0A";
 
-    message += "📍 Address: " + address + "%0A%0A";
 
-    message += "🛒 *Products:*%0A";
+    message +=
+        "📅 Date: " +
+        date +
+        "%0A";
+
+
+    message +=
+        "🛍️ Type: " +
+        shoppingType +
+        "%0A%0A";
+
+
+    message +=
+        "👤 Name: " +
+        name +
+        "%0A";
+
+
+    message +=
+        "📱 Mobile: " +
+        mobile +
+        "%0A";
+
+
+    message +=
+        "📍 Address: " +
+        address +
+        "%0A%0A";
+
+
+    message +=
+        "🛒 *Products:*%0A";
+
 
     let total = 0;
 
+
     cart.forEach(item => {
 
-        let itemTotal = item.price * item.qty;
+        let itemTotal =
+            item.price * item.qty;
+
 
         total += itemTotal;
 
-        message += "• " + item.name +
-                   " × " + item.qty +
-                   " = ₹" + itemTotal + "%0A";
+
+        message +=
+            "• " +
+            item.name +
+            " × " +
+            item.qty +
+            " = ₹" +
+            itemTotal +
+            "%0A";
+
     });
 
-    message += "%0A💰 *Total: ₹" + total + "*";
+
+    message +=
+        "%0A💰 *Total: ₹" +
+        total +
+        "*";
+
 
     let whatsappURL =
         "https://wa.me/" +
@@ -611,32 +1097,45 @@ function sendOrder(){
         "?text=" +
         message;
 
-    window.location.href = whatsappURL;
+
+    window.location.href =
+        whatsappURL;
+
 
     cart = [];
 
     updateCart();
+
 }
 
 
-/* SHOPKEEPER REGISTRATION */
+/* SHOPKEEPER */
 
 function registerShopkeeper(){
 
     let name =
-        document.getElementById("shopName").value.trim();
+        document.getElementById("shopName")
+        .value.trim();
+
 
     let store =
-        document.getElementById("storeName").value.trim();
+        document.getElementById("storeName")
+        .value.trim();
+
 
     let mobile =
-        document.getElementById("shopMobile").value.trim();
+        document.getElementById("shopMobile")
+        .value.trim();
+
 
     let address =
-        document.getElementById("shopAddress").value.trim();
+        document.getElementById("shopAddress")
+        .value.trim();
+
 
     let products =
-        document.getElementById("shopProducts").value;
+        document.getElementById("shopProducts")
+        .value;
 
 
     if(
@@ -647,28 +1146,46 @@ function registerShopkeeper(){
         products === ""
     ){
 
-        alert("कृपया सभी जानकारी भरें।");
+        alert(
+        "कृपया सभी जानकारी भरें।"
+        );
 
         return;
+
     }
 
-
-    /*
-      Shopkeeper की जानकारी WhatsApp पर भेजने के लिए
-    */
 
     let message =
         "🏪 *Jalvigo Shopkeeper Registration*%0A%0A";
 
-    message += "👤 दुकानदार: " + name + "%0A";
 
-    message += "🏪 दुकान: " + store + "%0A";
+    message +=
+        "👤 दुकानदार: " +
+        name +
+        "%0A";
 
-    message += "📱 मोबाइल: " + mobile + "%0A";
 
-    message += "📍 पता: " + address + "%0A";
+    message +=
+        "🏪 दुकान: " +
+        store +
+        "%0A";
 
-    message += "🥤 Products: " + products;
+
+    message +=
+        "📱 मोबाइल: " +
+        mobile +
+        "%0A";
+
+
+    message +=
+        "📍 पता: " +
+        address +
+        "%0A";
+
+
+    message +=
+        "🥤 Products: " +
+        products;
 
 
     let whatsappURL =
@@ -678,8 +1195,95 @@ function registerShopkeeper(){
         message;
 
 
-    window.location.href = whatsappURL;
+    window.location.href =
+        whatsappURL;
+
 }
+
+
+/* =========================
+   ADMIN LOGIN
+   ========================= */
+
+function openAdminLogin(){
+
+    document.getElementById("adminLoginModal")
+        .style.display = "block";
+
+}
+
+
+function closeAdminLogin(){
+
+    document.getElementById("adminLoginModal")
+        .style.display = "none";
+
+}
+
+
+function adminLogin(){
+
+    let username =
+        document.getElementById("adminUsernameInput")
+        .value;
+
+
+    let password =
+        document.getElementById("adminPasswordInput")
+        .value;
+
+
+    if(
+        username === JalvigoAdmin &&
+        password === Jalvigo@1997
+    ){
+
+        closeAdminLogin();
+
+        document.getElementById("adminDashboardModal")
+            .style.display = "block";
+
+
+        document.getElementById("adminDashboard")
+            .style.display = "block";
+
+    }
+
+    else{
+
+        alert(
+        "❌ Username या Password गलत है।"
+        );
+
+    }
+
+}
+
+
+/* ADMIN DASHBOARD */
+
+function closeAdminDashboard(){
+
+    document.getElementById("adminDashboardModal")
+        .style.display = "none";
+
+}
+
+
+function adminLogout(){
+
+    closeAdminDashboard();
+
+    document.getElementById("adminUsernameInput")
+        .value = "";
+
+    document.getElementById("adminPasswordInput")
+        .value = "";
+
+    alert("Admin Logout हो गया।");
+
+}
+
 
 updateCart();
 
