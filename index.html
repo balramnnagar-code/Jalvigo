@@ -3,250 +3,262 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jalvigo - Fresh Water & Beverages</title>
+<title>Jalvigo - Water & Cold Drinks</title>
 
 <style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-  font-family:Arial,sans-serif;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
 }
 
-body{
-  background:#f5f9fc;
-  color:#17324d;
+body {
+  background: #f4fbff;
+  color: #17324d;
 }
 
-header{
-  background:linear-gradient(135deg,#087fbd,#00a6d6);
-  color:white;
-  padding:16px 6%;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  position:sticky;
-  top:0;
-  z-index:10;
+header {
+  background: linear-gradient(135deg, #087fbd, #00a6d6);
+  color: white;
+  padding: 15px 6%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 50;
 }
 
-.logo{
-  font-size:26px;
-  font-weight:bold;
+.logo {
+  font-size: 25px;
+  font-weight: bold;
 }
 
-.cart{
-  background:white;
-  color:#087fbd;
-  padding:10px 15px;
-  border-radius:20px;
-  font-weight:bold;
-  cursor:pointer;
+.cart-button {
+  background: white;
+  color: #087fbd;
+  padding: 10px 15px;
+  border-radius: 25px;
+  font-weight: bold;
+  cursor: pointer;
 }
 
-.hero{
-  padding:55px 7%;
-  background:linear-gradient(135deg,#dff6ff,#ffffff);
-  text-align:center;
+.hero {
+  text-align: center;
+  padding: 55px 20px;
+  background: linear-gradient(135deg, #dff6ff, white);
 }
 
-.hero h1{
-  font-size:38px;
-  color:#087fbd;
-  margin-bottom:12px;
+.hero h1 {
+  color: #087fbd;
+  font-size: 38px;
+  margin-bottom: 12px;
 }
 
-.hero p{
-  font-size:18px;
-  margin-bottom:25px;
+.hero p {
+  font-size: 18px;
+  margin-bottom: 25px;
 }
 
-.shop-btn{
-  display:inline-block;
-  background:#087fbd;
-  color:white;
-  padding:13px 28px;
-  border-radius:28px;
-  text-decoration:none;
-  font-weight:bold;
+.shop-btn {
+  display: inline-block;
+  background: #087fbd;
+  color: white;
+  padding: 13px 28px;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: bold;
 }
 
-.section{
-  padding:40px 6%;
+.section {
+  padding: 40px 6%;
 }
 
-.section h2{
-  text-align:center;
-  margin-bottom:28px;
-  color:#087fbd;
+.section h2 {
+  text-align: center;
+  color: #087fbd;
+  margin-bottom: 25px;
 }
 
-.products{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
-  gap:20px;
+.products {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 20px;
 }
 
-.product{
-  background:white;
-  padding:22px;
-  border-radius:15px;
-  text-align:center;
-  box-shadow:0 3px 12px #0001;
+.product {
+  background: white;
+  padding: 22px;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 3px 12px #0002;
 }
 
-.product .emoji{
-  font-size:55px;
-  margin-bottom:10px;
+.emoji {
+  font-size: 55px;
 }
 
-.product h3{
-  margin-bottom:8px;
+.product h3 {
+  margin: 10px 0;
 }
 
-.price{
-  color:#087fbd;
-  font-size:22px;
-  font-weight:bold;
-  margin:12px;
+.price {
+  font-size: 22px;
+  font-weight: bold;
+  color: #087fbd;
+  margin: 12px;
 }
 
-.add-btn{
-  background:#087fbd;
-  color:white;
-  border:0;
-  padding:11px 20px;
-  border-radius:22px;
-  cursor:pointer;
-  font-weight:bold;
+.add-btn {
+  border: 0;
+  background: #087fbd;
+  color: white;
+  padding: 11px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: bold;
 }
 
-.features{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:15px;
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
 }
 
-.feature{
-  background:white;
-  padding:20px;
-  text-align:center;
-  border-radius:15px;
-  box-shadow:0 2px 8px #0001;
+.feature {
+  background: white;
+  padding: 20px;
+  text-align: center;
+  border-radius: 15px;
+  box-shadow: 0 2px 8px #0002;
 }
 
-footer{
-  background:#073b5c;
-  color:white;
-  text-align:center;
-  padding:25px;
-  margin-top:20px;
+footer {
+  background: #073b5c;
+  color: white;
+  text-align: center;
+  padding: 25px;
 }
 
 /* CART */
-#cartBox{
-  display:none;
-  position:fixed;
-  top:70px;
-  right:15px;
-  width:330px;
-  max-width:90%;
-  background:white;
-  padding:20px;
-  border-radius:15px;
-  box-shadow:0 5px 25px #0004;
-  z-index:100;
+#cartBox {
+  display: none;
+  position: fixed;
+  top: 75px;
+  right: 15px;
+  width: 340px;
+  max-width: 92%;
+  max-height: 80vh;
+  overflow-y: auto;
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 5px 25px #0005;
+  z-index: 100;
 }
 
-#cartBox h2{
-  color:#087fbd;
-  margin-bottom:15px;
+#cartBox h2 {
+  color: #087fbd;
+  margin-bottom: 15px;
 }
 
-.cart-item{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  border-bottom:1px solid #ddd;
-  padding:10px 0;
+.close {
+  float: right;
+  border: 0;
+  background: #eee;
+  padding: 6px 10px;
+  border-radius: 8px;
 }
 
-.qty button{
-  border:0;
-  background:#087fbd;
-  color:white;
-  width:28px;
-  height:28px;
-  border-radius:50%;
+.cart-item {
+  border-bottom: 1px solid #ddd;
+  padding: 12px 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
 }
 
-.total{
-  font-size:20px;
-  font-weight:bold;
-  margin:15px 0;
+.qty button {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 50%;
+  background: #087fbd;
+  color: white;
+  font-weight: bold;
 }
 
-.close-btn{
-  float:right;
-  border:0;
-  background:#eee;
-  padding:5px 10px;
-  border-radius:10px;
+.total {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 18px 0;
 }
 
-.order-btn{
-  width:100%;
-  padding:13px;
-  background:#18a558;
-  color:white;
-  border:0;
-  border-radius:25px;
-  font-weight:bold;
-  font-size:16px;
+.order-btn {
+  width: 100%;
+  padding: 14px;
+  border: 0;
+  border-radius: 25px;
+  background: #18a558;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
 }
 
 /* ORDER FORM */
-#orderForm{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:#0007;
-  z-index:200;
-  align-items:center;
-  justify-content:center;
+#orderForm {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: #0008;
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
 }
 
-.form-box{
-  background:white;
-  width:90%;
-  max-width:400px;
-  padding:25px;
-  border-radius:18px;
+.form-box {
+  background: white;
+  width: 92%;
+  max-width: 400px;
+  padding: 25px;
+  border-radius: 18px;
 }
 
-.form-box h2{
-  color:#087fbd;
-  margin-bottom:15px;
+.form-box h2 {
+  color: #087fbd;
+  margin-bottom: 15px;
 }
 
 .form-box input,
-.form-box textarea{
-  width:100%;
-  padding:12px;
-  margin:7px 0;
-  border:1px solid #ccc;
-  border-radius:8px;
+.form-box textarea {
+  width: 100%;
+  padding: 12px;
+  margin: 7px 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
 }
 
-.submit-order{
-  width:100%;
-  padding:13px;
-  background:#087fbd;
-  color:white;
-  border:0;
-  border-radius:25px;
-  margin-top:10px;
-  font-weight:bold;
+.submit-btn {
+  width: 100%;
+  padding: 13px;
+  margin-top: 10px;
+  border: 0;
+  border-radius: 25px;
+  background: #087fbd;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.cancel-btn {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  border: 0;
+  background: #eee;
+  border-radius: 20px;
 }
 </style>
 </head>
@@ -255,7 +267,10 @@ footer{
 
 <header>
   <div class="logo">💧 Jalvigo</div>
-  <div class="cart" onclick="openCart()">🛒 Cart: <span id="cartCount">0</span></div>
+
+  <div class="cart-button" onclick="openCart()">
+    🛒 Cart: <span id="cartCount">0</span>
+  </div>
 </header>
 
 <section class="hero">
@@ -265,134 +280,196 @@ footer{
 </section>
 
 <section class="section" id="products">
-  <h2>हमारे Products</h2>
 
-  <div class="products">
+<h2>हमारे Products</h2>
 
-    <div class="product">
-      <div class="emoji">💧</div>
-      <h3>Drinking Water</h3>
-      <div class="price">₹20</div>
-      <button class="add-btn" onclick="addToCart('Drinking Water',20)">Add to Cart</button>
-    </div>
+<div class="products">
 
-    <div class="product">
-      <div class="emoji">🧴</div>
-      <h3>Water Bottle</h3>
-      <div class="price">₹30</div>
-      <button class="add-btn" onclick="addToCart('Water Bottle',30)">Add to Cart</button>
-    </div>
-
-    <div class="product">
-      <div class="emoji">🥤</div>
-      <h3>Cold Drink</h3>
-      <div class="price">₹40</div>
-      <button class="add-btn" onclick="addToCart('Cold Drink',40)">Add to Cart</button>
-    </div>
-
-    <div class="product">
-      <div class="emoji">📦</div>
-      <h3>Water Pack</h3>
-      <div class="price">₹120</div>
-      <button class="add-btn" onclick="addToCart('Water Pack',120)">Add to Cart</button>
-    </div>
-
-  </div>
-</section>
-
-<section class="section">
-  <h2>Jalvigo क्यों?</h2>
-
-  <div class="features">
-    <div class="feature">🚚<br><b>Fast Delivery</b><br>तेज़ डिलीवरी</div>
-    <div class="feature">💧<br><b>Quality Water</b><br>बेहतर गुणवत्ता</div>
-    <div class="feature">💰<br><b>Best Prices</b><br>किफायती कीमत</div>
-    <div class="feature">📞<br><b>Easy Support</b><br>आसान सहायता</div>
-  </div>
-</section>
-
-<footer>
-  © 2026 Jalvigo | Fresh Water & Beverages
-</footer>
-
-<!-- CART BOX -->
-<div id="cartBox">
-  <button class="close-btn" onclick="closeCart()">✕</button>
-  <h2>🛒 आपका Cart</h2>
-
-  <div id="cartItems"></div>
-
-  <div class="total">
-    Total: ₹<span id="totalPrice">0</span>
-  </div>
-
-  <button class="order-btn" onclick="showOrderForm()">
-    📦 Order Now
+<div class="product">
+  <div class="emoji">💧</div>
+  <h3>Drinking Water</h3>
+  <div class="price">₹20</div>
+  <button class="add-btn"
+  onclick="addToCart('Drinking Water',20)">
+  Add to Cart
   </button>
 </div>
 
-<!-- ORDER FORM -->
-<div id="orderForm">
-  <div class="form-box">
-    <h2>📦 Delivery Details</h2>
-
-    <input id="name" type="text" placeholder="आपका नाम">
-    <input id="mobile" type="tel" placeholder="मोबाइल नंबर">
-    <textarea id="address" rows="4" placeholder="पूरा Delivery Address"></textarea>
-
-    <button class="submit-order" onclick="placeOrder()">
-      Order Submit करें
-    </button>
-
-    <button onclick="closeOrderForm()" style="margin-top:10px;width:100%;padding:10px;border:0;">
-      Cancel
-    </button>
-  </div>
+<div class="product">
+  <div class="emoji">🧴</div>
+  <h3>Water Bottle</h3>
+  <div class="price">₹30</div>
+  <button class="add-btn"
+  onclick="addToCart('Water Bottle',30)">
+  Add to Cart
+  </button>
 </div>
+
+<div class="product">
+  <div class="emoji">🥤</div>
+  <h3>Cold Drink</h3>
+  <div class="price">₹40</div>
+  <button class="add-btn"
+  onclick="addToCart('Cold Drink',40)">
+  Add to Cart
+  </button>
+</div>
+
+<div class="product">
+  <div class="emoji">📦</div>
+  <h3>Water Pack</h3>
+  <div class="price">₹120</div>
+  <button class="add-btn"
+  onclick="addToCart('Water Pack',120)">
+  Add to Cart
+  </button>
+</div>
+
+</div>
+</section>
+
+<section class="section">
+
+<h2>Jalvigo क्यों?</h2>
+
+<div class="features">
+
+<div class="feature">
+🚚<br><b>Fast Delivery</b><br>
+तेज़ डिलीवरी
+</div>
+
+<div class="feature">
+💧<br><b>Quality Water</b><br>
+बेहतर गुणवत्ता
+</div>
+
+<div class="feature">
+💰<br><b>Best Prices</b><br>
+किफायती कीमत
+</div>
+
+<div class="feature">
+📞<br><b>Easy Support</b><br>
+आसान सहायता
+</div>
+
+</div>
+</section>
+
+<footer>
+© 2026 Jalvigo | Fresh Water & Beverages
+</footer>
+
+
+<!-- CART -->
+
+<div id="cartBox">
+
+<button class="close" onclick="closeCart()">✕</button>
+
+<h2>🛒 आपका Cart</h2>
+
+<div id="cartItems"></div>
+
+<div class="total">
+Total: ₹<span id="totalPrice">0</span>
+</div>
+
+<button class="order-btn" onclick="openOrderForm()">
+📦 Order Now
+</button>
+
+</div>
+
+
+<!-- ORDER FORM -->
+
+<div id="orderForm">
+
+<div class="form-box">
+
+<h2>📦 Delivery Details</h2>
+
+<input
+id="customerName"
+type="text"
+placeholder="आपका नाम">
+
+<input
+id="customerMobile"
+type="tel"
+placeholder="मोबाइल नंबर">
+
+<textarea
+id="customerAddress"
+rows="4"
+placeholder="पूरा Delivery Address"></textarea>
+
+<button class="submit-btn" onclick="sendOrder()">
+📲 WhatsApp पर Order भेजें
+</button>
+
+<button class="cancel-btn" onclick="closeOrderForm()">
+Cancel
+</button>
+
+</div>
+</div>
+
 
 <script>
 
 let cart = [];
 
-function addToCart(name,price){
 
-  let item = cart.find(p => p.name === name);
+/* ADD TO CART */
 
-  if(item){
-    item.qty++;
-  }else{
+function addToCart(name, price) {
+
+  let existing = cart.find(item => item.name === name);
+
+  if (existing) {
+    existing.qty++;
+  } else {
     cart.push({
-      name:name,
-      price:price,
-      qty:1
+      name: name,
+      price: price,
+      qty: 1
     });
   }
 
   updateCart();
 
-  alert(name + " cart में add हो गया!");
+  alert(name + " Cart में add हो गया!");
 }
 
-function updateCart(){
+
+/* UPDATE CART */
+
+function updateCart() {
 
   let count = 0;
   let total = 0;
 
-  cart.forEach(item=>{
+  cart.forEach(item => {
     count += item.qty;
     total += item.price * item.qty;
   });
 
   document.getElementById("cartCount").innerText = count;
+
   document.getElementById("totalPrice").innerText = total;
+
 
   let html = "";
 
-  if(cart.length === 0){
+  if (cart.length === 0) {
     html = "<p>Cart खाली है</p>";
   }
 
-  cart.forEach((item,index)=>{
+
+  cart.forEach((item, index) => {
 
     html += `
       <div class="cart-item">
@@ -403,111 +480,181 @@ function updateCart(){
         </div>
 
         <div class="qty">
-          <button onclick="changeQty(${index},-1)">−</button>
+
+          <button onclick="changeQty(${index}, -1)">
+          −
+          </button>
+
           ${item.qty}
-          <button onclick="changeQty(${index},1)">+</button>
+
+          <button onclick="changeQty(${index}, 1)">
+          +
+          </button>
+
         </div>
 
       </div>
     `;
+
   });
+
 
   document.getElementById("cartItems").innerHTML = html;
 }
 
-function changeQty(index,value){
 
-  cart[index].qty += value;
+/* CHANGE QUANTITY */
 
-  if(cart[index].qty <= 0){
-    cart.splice(index,1);
+function changeQty(index, change) {
+
+  cart[index].qty += change;
+
+  if (cart[index].qty <= 0) {
+    cart.splice(index, 1);
   }
 
   updateCart();
 }
 
-function openCart(){
+
+/* OPEN CART */
+
+function openCart() {
+
   updateCart();
+
   document.getElementById("cartBox").style.display = "block";
 }
 
-function closeCart(){
+
+/* CLOSE CART */
+
+function closeCart() {
+
   document.getElementById("cartBox").style.display = "none";
 }
 
-function showOrderForm(){
 
-  if(cart.length === 0){
+/* OPEN ORDER FORM */
+
+function openOrderForm() {
+
+  if (cart.length === 0) {
+
     alert("पहले Cart में product add करें!");
+
     return;
   }
 
   document.getElementById("orderForm").style.display = "flex";
 }
 
-function closeOrderForm(){
+
+/* CLOSE ORDER FORM */
+
+function closeOrderForm() {
+
   document.getElementById("orderForm").style.display = "none";
 }
 
-function placeOrder(){
 
-  let name = document.getElementById("name").value.trim();
-  let mobile = document.getElementById("mobile").value.trim();
-  let address = document.getElementById("address").value.trim();
+/* SEND ORDER TO WHATSAPP */
 
-  if(name === "" || mobile === "" || address === ""){
+function sendOrder() {
+
+  let name =
+    document.getElementById("customerName").value.trim();
+
+  let mobile =
+    document.getElementById("customerMobile").value.trim();
+
+  let address =
+    document.getElementById("customerAddress").value.trim();
+
+
+  if (name === "" || mobile === "" || address === "") {
+
     alert("कृपया Name, Mobile और Address भरें।");
+
     return;
   }
 
-  let message = "🛒 *नया Jalvigo Order*%0A%0A";
-
-  message += "👤 नाम: " + name + "%0A";
-  message += "📱 मोबाइल: " + mobile + "%0A";
-  message += "📍 पता: " + address + "%0A%0A";
-
-  message += "📦 *Order Details:*%0A";
 
   let total = 0;
 
+  let message =
+    "🛒 नया Jalvigo Order\n\n";
+
+
+  message +=
+    "👤 नाम: " + name + "\n";
+
+  message +=
+    "📱 मोबाइल: " + mobile + "\n";
+
+  message +=
+    "📍 पता: " + address + "\n\n";
+
+
+  message +=
+    "📦 Order Details:\n";
+
+
   cart.forEach(item => {
 
-    let itemTotal = item.price * item.qty;
+    let itemTotal =
+      item.price * item.qty;
 
     total += itemTotal;
 
-    message += "• " + item.name + " × " + item.qty +
-               " = ₹" + itemTotal + "%0A";
+    message +=
+      "• " +
+      item.name +
+      " × " +
+      item.qty +
+      " = ₹" +
+      itemTotal +
+      "\n";
+
   });
 
-  message += "%0A💰 *Total: ₹" + total + "*";
 
-  // यहाँ आपका WhatsApp नंबर पहले से मौजूद है
-  let yourWhatsAppNumber = "916260832599";
+  message +=
+    "\n💰 Total: ₹" +
+    total;
+
+
+  /*
+  ======================================
+  अपना WhatsApp नंबर यहाँ डालें
+  ======================================
+
+  भारत के लिए:
+  91 + आपका 10 digit mobile number
+
+  उदाहरण:
+  919876543210
+
+  + या space या - नहीं लगाना है.
+  */
+
+  let yourWhatsAppNumber =
+    "916260832599";
+
 
   let whatsappURL =
-    "https://wa.me/" + yourWhatsAppNumber +
-    "?text=" + message;
+    "https://wa.me/" +
+    yourWhatsAppNumber +
+    "?text=" +
+    encodeURIComponent(message);
+
 
   window.location.href = whatsappURL;
+
 }
 
-  let name = document.getElementById("name").value;
-  let mobile = document.getElementById("mobile").value;
-  let address = document.getElementById("address").value;
 
-  if(name === "" || mobile === "" || address === ""){
-    alert("कृपया Name, Mobile और Address भरें।");
-    return;
-  }
-
-  alert("धन्यवाद " + name + "! आपका Order request प्राप्त हो गया है।");
-
-  cart = [];
-  updateCart();
-  closeOrderForm();
-  closeCart();
-}
+/* START */
 
 updateCart();
 
