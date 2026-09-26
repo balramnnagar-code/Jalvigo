@@ -435,7 +435,57 @@ function closeCart(){
   document.getElementById("cartBox").style.display = "none";
 }
 
-function showOrderForm(){
+function placeOrder(){
+
+  let name = document.getElementById("name").value;
+  let mobile = document.getElementById("mobile").value;
+  let address = document.getElementById("address").value;
+
+  if(name === "" || mobile === "" || address === ""){
+    alert("कृपया Name, Mobile और Address भरें।");
+    return;
+  }
+
+  let message = "🛒 *नया Jalvigo Order*%0A%0A";
+
+  message += "👤 नाम: " + name + "%0A";
+  message += "📱 मोबाइल: " + mobile + "%0A";
+  message += "📍 पता: " + address + "%0A%0A";
+
+  message += "📦 *Order Details:*%0A";
+
+  let total = 0;
+
+  cart.forEach(item => {
+    let itemTotal = item.price * item.qty;
+    total += itemTotal;
+
+    message += "• " + item.name + " × " + item.qty +
+               " = ₹" + itemTotal + "%0A";
+  });
+
+  message += "%0A💰 *Total: ₹" + total + "*";
+
+  /*
+   अपना WhatsApp नंबर नीचे डालें।
+   भारत के लिए 91 + मोबाइल नंबर लिखें।
+   उदाहरण: 919876543210
+   + या space न लगाएँ।
+  */
+
+  let yourWhatsAppNumber = "91XXXXXXXXXX";
+
+  let whatsappURL =
+    "https://wa.me/" + yourWhatsAppNumber +
+    "?text=" + message;
+
+  window.open(whatsappURL, "_blank");
+
+  cart = [];
+  updateCart();
+  closeOrderForm();
+  closeCart();
+}
 
   if(cart.length === 0){
     alert("पहले Cart में product add करें!");
