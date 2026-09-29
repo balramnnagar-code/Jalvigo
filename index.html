@@ -4,8 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Jalvigo - Water & Cold Drinks</title>    
+<title>Jalvigo - Fresh Water & Beverages</title>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 
 *{
@@ -272,6 +274,10 @@ footer{
             🔐 Admin
         </button>
 
+<button class="admin-btn" onclick="openCustomerAuth()">
+👤 Customer Login
+</button>
+        
         <button class="cart-btn" onclick="openCart()">
             🛒 Cart: <span id="cartCount">0</span>
         </button>
@@ -504,7 +510,50 @@ footer{
 
 </section>
 
+<!-- CUSTOMER AUTH -->
+<div class="modal" id="customerAuthModal">
 
+  <div class="modal-box">
+
+    <span class="close" onclick="closeCustomerAuth()">×</span>
+
+    <h2>👤 Customer Login / Signup</h2>
+
+    <div class="form-group">
+      <label>Email</label>
+      <input
+        type="email"
+        id="customerEmail"
+        placeholder="अपना Email डालें"
+      >
+    </div>
+
+    <div class="form-group">
+      <label>Password</label>
+      <input
+        type="password"
+        id="customerPassword"
+        placeholder="Password डालें"
+      >
+    </div>
+
+    <button class="primary-btn" onclick="customerSignup()">
+      📝 Signup
+    </button>
+
+    <button class="primary-btn" onclick="customerLogin()">
+      🔐 Login
+    </button>
+
+    <button class="primary-btn" onclick="customerLogout()">
+      🚪 Logout
+    </button>
+
+    <p id="customerAuthStatus"></p>
+
+  </div>
+
+</div>
 <!-- CART -->
 
 <div class="modal" id="cartModal">
@@ -734,7 +783,111 @@ Logout
 
 <script>
 
+/* =========================
+SUPABASE CONNECTION
+========================
+*/
 
+const SUPABASE_URL = "https://zqirmlnbqftzurjzbluv.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+"sb_publishable_QesFfLaf4IlgNcEJbm3WEw_tq5ISxz1";
+
+const supabaseClient = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
+    /* =========================
+CUSTOMER AUTH FUNCTIONS
+========================= */
+
+function openCustomerAuth(){
+  document.getElementById("customerAuthModal").style.display = "block";
+}
+
+function closeCustomerAuth(){
+  document.getElementById("customerAuthModal").style.display = "none";
+}
+
+
+/* CUSTOMER SIGNUP */
+
+async function customerSignup(){
+
+  const email =
+    document.getElementById("customerEmail").value.trim();
+
+  const password =
+    document.getElementById("customerPassword").value;
+
+  if(!email || !password){
+    alert("Email और Password भरें।");
+    return;
+  }
+
+  const { data, error } =
+    await supabaseClient.auth.signUp({
+      email: email,
+      password: password
+    });
+
+  if(error){
+    alert("Signup Error: " + error.message);
+    return;
+  }
+
+  alert(
+    "Signup successful! अगर Email Confirmation ON है तो अपना email verify करें।"
+  );
+}
+
+
+/* CUSTOMER LOGIN */
+
+async function customerLogin(){
+
+  const email =
+    document.getElementById("customerEmail").value.trim();
+
+  const password =
+    document.getElementById("customerPassword").value;
+
+  if(!email || !password){
+    alert("Email और Password भरें।");
+    return;
+  }
+
+  const { data, error } =
+    await supabaseClient.auth.signInWithPassword({
+      email: email,
+      password: password
+    });
+
+  if(error){
+    alert("Login Error: " + error.message);
+    return;
+  }
+
+  alert("Customer Login Successful! ✅");
+
+  closeCustomerAuth();
+}
+
+
+/* CUSTOMER LOGOUT */
+
+async function customerLogout(){
+
+  const { error } =
+    await supabaseClient.auth.signOut();
+
+  if(error){
+    alert("Logout Error: " + error.message);
+    return;
+  }
+
+  alert("Customer Logout Successful.");
+}
 /* =========================
    ADMIN LOGIN SETTINGS
    =========================
