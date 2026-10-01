@@ -714,11 +714,18 @@ Welcome, Admin 👋
 
 <div class="dashboard-card">
 
-<h3>📦 Orders</h3>
+  <h3>📦 Customer Orders</h3>
 
-<p>
-WhatsApp Orders अभी WhatsApp के माध्यम से प्राप्त होंगे।
-</p>
+  <p>यहाँ सभी Customer Orders दिखाई देंगे।</p>
+
+  <button class="primary-btn"
+    onclick="loadOrders()">
+    🔄 Refresh Orders
+  </button>
+
+  <div id="adminOrdersList">
+    <p>Orders Load हो रहे हैं...</p>
+  </div>
 
 </div>
 
