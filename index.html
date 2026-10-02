@@ -1394,7 +1394,54 @@ function adminLogout(){
 
 
 updateCart();
+async function loadOrders(){
 
+  const list = document.getElementById("adminOrdersList");
+
+  list.innerHTML = "<p>Orders load हो रहे हैं...</p>";
+
+  const { data, error } = await supabaseClient
+    .from("orders")
+    .select("*")
+    .order("order_date", { ascending: false });
+
+  if(error){
+    console.error("Load Orders Error:", error);
+    list.innerHTML =
+      "<p style='color:red;'>Orders load नहीं हुए: " +
+      error.message + "</p>";
+    return;
+  }
+
+  if(!data || data.length === 0){
+    list.innerHTML = "<p>अभी कोई Order नहीं है।</p>";
+    return;
+  }
+
+  list.innerHTML = data.map(order => `
+    <div style="
+      border:1px solid #ddd;
+      padding:15px;
+      margin:10px 0;
+      border-radius:10px;
+      background:#fff;
+    ">
+
+      <h3>📦 Order ID: ${order.order_id}</h3>
+
+      <p><b>Customer:</b> ${order.customer_name}</p>
+
+      <p><b>Mobile:</b> ${order.mobile}</p>
+
+      <p><b>Address:</b> ${order.address}</p>
+
+      <p><b>Total:</b> ₹${order.total}</p>
+
+      <p><b>Status:</b> ${order.status || "Pending"}</p>
+
+    </div>
+  `).join("");
+}
 </script>
 
 </body>
