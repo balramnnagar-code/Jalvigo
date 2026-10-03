@@ -1329,42 +1329,48 @@ function closeAdminLogin(){
 }
 
 
-function adminLogin(){
+async function adminLogin(){
 
-    let username =
-        document.getElementById("adminUsernameInput")
-        .value;
+    const email =
+        document.getElementById("adminUsernameInput").value.trim();
 
+    const password =
+        document.getElementById("adminPasswordInput").value;
 
-    let password =
-        document.getElementById("adminPasswordInput")
-        .value;
-
-
-    if(
-        username === "JalvigoAdmin" &&
-        password === "Jalvigo@1997"
-    ){
-
-        closeAdminLogin();
-
-        document.getElementById("adminDashboardModal")
-            .style.display = "block";
-
-
-        document.getElementById("adminDashboard")
-            .style.display = "block";
-
+    if(!email || !password){
+        alert("Email और Password डालिए");
+        return;
     }
 
-    else{
+    const { data, error } =
+        await supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: password 
+        });
 
-        alert(
-        "❌ Username या Password गलत है।"
-        );
-
+    if(error){
+        alert("❌ Admin Login failed: " + error.message);
+        return;
     }
 
+    if(!data.user ||
+       data.user.id !== "e8075a8a-1760-459b-9d33-b640b04b2d14"){
+
+        await supabaseClient.auth.signOut();
+
+        alert("❌ यह Admin account नहीं है");
+        return;
+    }
+
+    closeAdminLogin();
+
+    document.getElementById("adminDashboardModal")
+        .style.display = "block";
+
+    document.getElementById("adminDashboard")
+        .style.display = "block";
+
+    loadOrders();
 }
 
 
