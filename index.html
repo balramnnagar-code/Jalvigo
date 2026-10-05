@@ -908,6 +908,86 @@ async function customerLogin(){
 /* CUSTOMER LOGOUT */
 
 async function customerLogout(){
+    /* CUSTOMER ORDERS */
+
+function openCustomerOrders(){
+  document.getElementById("customerOrdersModal").style.display = "block";
+  loadCustomerOrders();
+}
+
+function closeCustomerOrders(){
+  document.getElementById("customerOrdersModal").style.display = "none";
+}
+
+async function loadCustomerOrders(){
+
+  const list = document.getElementById("customerOrdersList");
+
+  list.innerHTML = "<p>Orders load हो रहे हैं...</p>";
+
+  const { data: { user } } =
+    await supabaseClient.auth.getUser();
+
+  if(!user){
+    list.innerHTML =
+      "<p>❌ पहले Customer Login करें।</p>";
+    return;
+  }
+
+  const { data, error } = await supabaseClient
+    .from("orders")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("order_date", { ascending: false });
+
+  if(error){
+    console.error("Customer Orders Error:", error);
+    list.innerHTML =
+      "<p>❌ Orders load नहीं हुए: " +
+      error.message + "</p>";
+    return;
+  }
+
+  if(!data || data.length === 0){
+    list.innerHTML =
+      "<p>📦 अभी आपका कोई Order नहीं है।</p>";
+    return;
+  }
+
+  list.innerHTML = data.map(order => `
+    <div style="
+      border:1px solid #ddd;
+      padding:15px;
+      margin:10px 0;
+      border-radius:10px;
+      background:#fff;
+    ">
+
+      <h3>📦 Order ID: ${order.order_id}</h3>
+
+      <p>
+        <b>Order Date:</b>
+        ${order.order_date || ""}
+      </p>
+
+      <p>
+        <b>Total:</b>
+        ₹${order.total || 0}
+      </p>
+
+      <p>
+        <b>Status:</b>
+        ${order.status || "Pending"}
+      </p>
+
+      <p>
+        <b>Delivery Address:</b>
+        ${order.address || ""}
+      </p>
+
+    </div>
+  `).join("");
+}
 
   const { error } =
     await supabaseClient.auth.signOut();
