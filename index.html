@@ -1448,6 +1448,123 @@ async function loadOrders(){
     </div>
   `).join("");
 }
+    async function loadOrderStatuses(){
+
+    const list = document.getElementById("adminOrderStatusList");
+
+    list.innerHTML = "<p>Orders load हो रहे हैं...</p>";
+
+    const { data, error } = await supabaseClient
+        .from("orders")
+        .select("order_id, customer_name, total, status")
+        .order("order_date", { ascending: false });
+
+    if(error){
+        console.error("Status Load Error:", error);
+        list.innerHTML =
+            "<p style='color:red;'>Orders load नहीं हुए: " +
+            error.message + "</p>";
+        return;
+    }
+
+    if(!data || data.length === 0){
+        list.innerHTML = "<p>अभी कोई Order नहीं है।</p>";
+        return;
+    }
+
+    list.innerHTML = data.map(order => `
+
+        <div style="
+            border:1px solid #ddd;
+            padding:15px;
+            margin:10px 0;
+            border-radius:10px;
+            background:#fff;
+        ">
+
+            <h3>📦 Order ID: ${order.order_id}</h3>
+
+            <p>
+                <b>Customer:</b> ${order.customer_name}
+            </p>
+
+            <p>
+                <b>Total:</b> ₹${order.total}
+            </p>
+
+            <p>
+                <b>Current Status:</b>
+                ${order.status || "Pending"}
+            </p>
+
+            <select
+                onchange="updateOrderStatus('${order.order_id}', this.value)"
+                style="
+                    padding:10px;
+                    border-radius:6px;
+                    margin-top:5px;
+                "
+            >
+
+                <option value="Pending"
+                    ${order.status === "Pending" ? "selected" : ""}>
+                    Pending
+                </option>
+
+                <option value="Confirmed"
+                    ${order.status === "Confirmed" ? "selected" : ""}>
+                    Confirmed
+                </option>
+
+                <option value="Out for Delivery"
+                    ${order.status === "Out for Delivery" ? "selected" : ""}>
+                    Out for Delivery
+                </option>
+
+                <option value="Delivered"
+                    ${order.status === "Delivered" ? "selected" : ""}>
+                    Delivered
+                </option>
+
+                <option value="Cancelled"
+                    ${order.status === "Cancelled" ? "selected" : ""}>
+                    Cancelled
+                </option>
+
+            </select>
+
+        </div>
+
+    `).join("");
+}
+
+
+async function updateOrderStatus(orderId, newStatus){
+
+    const { error } = await supabaseClient
+        .from("orders")
+        .update({
+            status: newStatus
+        })
+        .eq("order_id", orderId);
+
+    if(error){
+
+        console.error("Status Update Error:", error);
+
+        alert(
+            "❌ Status update नहीं हुआ: " +
+            error.message
+        );
+
+        return;
+    }
+
+    alert("✅ Order Status Updated");
+
+    loadOrders();
+    loadOrderStatuses();
+    }
 </script>
 
 </body>
