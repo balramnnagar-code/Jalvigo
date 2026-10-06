@@ -1689,7 +1689,87 @@ async function loadOrders(){
     `).join("");
 }
 
+async function loadOrders() {
 
+    const { data: { user } } = await supabaseClient.auth.getUser();
+
+    if (!user) {
+        console.log("User not logged in");
+        return;
+    }
+
+    // Orders table se data
+    const { data: orders, error } = await supabaseClient
+        .from("orders")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+    if (error) {
+        console.error("Orders Load Error:", error);
+        return;
+    }
+
+    const ordersContainer = document.getElementById("ordersList");
+
+    if (!ordersContainer) {
+        console.error("ordersList element nahi mila");
+        return;
+    }
+
+    if (!orders || orders.length === 0) {
+        ordersContainer.innerHTML = `
+            <p style="text-align:center;">
+                No Orders Found
+            </p>
+        `;
+        return;
+    }
+
+    ordersContainer.innerHTML = orders.map(order => {
+
+        return `
+            <div style="
+                border:1px solid #ddd;
+                border-radius:10px;
+                padding:15px;
+                margin-bottom:12px;
+                background:#fff;
+                box-shadow:0 2px 6px rgba(0,0,0,0.08);
+            ">
+
+                <div>
+                    <strong>Order ID:</strong>
+                    ${order.order_id || order.id || "N/A"}
+                </div>
+
+                <div style="margin-top:6px;">
+                    <strong>Status:</strong>
+                    <span style="
+                        padding:4px 8px;
+                        border-radius:5px;
+                        background:#f1f1f1;
+                    ">
+                        ${order.status || "Pending"}
+                    </span>
+                </div>
+
+                ${
+                    order.created_at
+                    ? `
+                    <div style="margin-top:6px;">
+                        <strong>Date:</strong>
+                        ${new Date(order.created_at).toLocaleString()}
+                    </div>
+                    `
+                    : ""
+                }
+
+            </div>
+        `;
+
+    }).join("");
+}
+    
 async function updateOrderStatus(orderId, newStatus){
 
     const { error } = await supabaseClient
