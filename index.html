@@ -277,7 +277,12 @@ footer{
 <button class="admin-btn" onclick="openCustomerAuth()">
 👤 Customer Login
 </button>
-        
+        <button class="admin-btn"
+        id="myOrdersBtn"
+        onclick="openMyOrders()"
+        style="display:none;">
+    📦 My Orders
+        </button>
         <button class="cart-btn" onclick="openCart()">
             🛒 Cart: <span id="cartCount">0</span>
         </button>
@@ -835,7 +840,32 @@ CUSTOMER AUTH FUNCTIONS
 function openCustomerAuth(){
   document.getElementById("customerAuthModal").style.display = "block";
 }
+async function openMyOrders() {
 
+    const { data: { user }, error } =
+        await supabaseClient.auth.getUser();
+
+    if (error || !user) {
+        alert("कृपया पहले Customer Login करें।");
+        openCustomerAuth();
+        return;
+    }
+
+    openCustomerOrders();
+}
+
+
+async function updateMyOrdersButton() {
+
+    const { data: { user } } =
+        await supabaseClient.auth.getUser();
+
+    const btn = document.getElementById("myOrdersBtn");
+
+    if (btn) {
+        btn.style.display = user ? "inline-block" : "none";
+    }
+}
 function closeCustomerAuth(){
   document.getElementById("customerAuthModal").style.display = "none";
 }
@@ -902,7 +932,7 @@ async function customerLogin(){
   alert("Customer Login Successful! ✅");
 
 closeCustomerAuth();
-
+await updateMyOrdersButton();
 openCustomerOrders();
 }
 
@@ -1037,7 +1067,8 @@ async function customerLogout(){
   const { error } =
     await supabaseClient.auth.signOut();
 
-
+await updateMyOrdersButton();
+closeCustomerOrders();
   if(error){
 
     alert(
@@ -1720,3 +1751,4 @@ async function updateOrderStatus(orderId, newStatus){
 
 </body>
 </html>
+updateMyOrdersButton();
