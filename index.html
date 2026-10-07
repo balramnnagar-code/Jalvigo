@@ -837,20 +837,7 @@ const supabaseClient = supabase.createClient(
 CUSTOMER AUTH FUNCTIONS
 ========================= */
 
-async function openCustomerAuth(){
-
-    const { data: { user } } =
-        await supabaseClient.auth.getUser();
-
-    if(user){
-
-        // पहले से login है
-        closeCustomerAuth();
-
-        alert("आप पहले से Login हैं।");
-
-        return;
-    }
+function openCustomerAuth(){
 
     document.getElementById("customerAuthModal")
         .style.display = "block";
