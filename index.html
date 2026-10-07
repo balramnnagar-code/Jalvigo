@@ -837,8 +837,23 @@ const supabaseClient = supabase.createClient(
 CUSTOMER AUTH FUNCTIONS
 ========================= */
 
-function openCustomerAuth(){
-  document.getElementById("customerAuthModal").style.display = "block";
+async function openCustomerAuth(){
+
+    const { data: { user } } =
+        await supabaseClient.auth.getUser();
+
+    if(user){
+
+        // पहले से login है
+        closeCustomerAuth();
+
+        alert("आप पहले से Login हैं।");
+
+        return;
+    }
+
+    document.getElementById("customerAuthModal")
+        .style.display = "block";
 }
 
 async function openMyOrders() {
@@ -953,12 +968,15 @@ function openCustomerOrders(){
 }
 
 
-function closeCustomerOrders(){
+function closeCustomerAuth(){
 
-  document.getElementById("customerOrdersModal")
-    .style.display = "none";
+    const modal =
+        document.getElementById("customerAuthModal");
+
+    if(modal){
+        modal.style.display = "none";
+    }
 }
-
 
 async function loadCustomerOrders(){
 
