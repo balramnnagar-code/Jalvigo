@@ -840,20 +840,21 @@ CUSTOMER AUTH FUNCTIONS
 function openCustomerAuth(){
   document.getElementById("customerAuthModal").style.display = "block";
 }
+
 async function openMyOrders() {
 
     const { data: { user }, error } =
         await supabaseClient.auth.getUser();
 
     if (error || !user) {
-        alert("कृपया पहले Customer Login करें।");
+        alert("कृपया पहले Login करें।");
         openCustomerAuth();
         return;
     }
 
+    // Customer और Admin दोनों के लिए वही My Orders window खुलेगी
     openCustomerOrders();
 }
-
 
 async function updateMyOrdersButton() {
 
@@ -862,12 +863,14 @@ async function updateMyOrdersButton() {
 
     const btn = document.getElementById("myOrdersBtn");
 
-    if (btn) {
-        btn.style.display = user ? "inline-block" : "none";
+    if (!btn) return;
+
+    // Customer या Admin — दोनों login होने पर My Orders दिखे
+    if (user) {
+        btn.style.display = "inline-block";
+    } else {
+        btn.style.display = "none";
     }
-}
-function closeCustomerAuth(){
-  document.getElementById("customerAuthModal").style.display = "none";
 }
 
 
