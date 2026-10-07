@@ -962,102 +962,171 @@ function closeCustomerOrders(){
 
 async function loadCustomerOrders(){
 
-  const list =
-    document.getElementById("customerOrdersList");
-
-  list.innerHTML =
-    "<p>Orders load हो रहे हैं...</p>";
-
-
-  const { data: { user }, error: userError } =
-    await supabaseClient.auth.getUser();
-
-
-  if(userError || !user){
+    const list =
+        document.getElementById("customerOrdersList");
 
     list.innerHTML =
-      "<p>❌ पहले Customer Login करें।</p>";
+        "<p>Orders load हो रहे हैं...</p>";
 
-    return;
-  }
+    const { data: { user }, error: userError } =
+        await supabaseClient.auth.getUser();
 
+    if(userError || !user){
 
-  const { data, error } =
-    await supabaseClient
-      .from("orders")
-      .select("*")
-      .eq("user_id", user.id)
-      .order("order_date", {
-        ascending: false
-      });
+        list.innerHTML =
+            "<p>❌ पहले Login करें।</p>";
 
+        return;
+    }
 
-  if(error){
+    // आपका Admin User ID
+    const ADMIN_USER_ID =
+        "e8075a8a-1760-459b-9d33-b640b04b2d14";
 
-    console.error(
-      "Customer Orders Error:",
-      error
-    );
+    let query =
+        supabaseClient
+            .from("orders")
+            .select("*")
+            .order("order_date", {
+                ascending: false
+            });
 
-    list.innerHTML =
-      "<p>❌ Orders load नहीं हुए:<br>" +
-      error.message +
-      "</p>";
+    // अगर Customer है → सिर्फ उसके Orders
+    if(user.id !== ADMIN_USER_ID){
 
-    return;
-  }
+        query = query.eq("user_id", user.id);
+    }
 
+    // अगर Admin है → सभी Orders
+    const { data, error } = await query;
 
-  if(!data || data.length === 0){
+    if(error){
 
-    list.innerHTML =
-      "<p>📦 अभी आपका कोई Order नहीं है।</p>";
+        console.error(
+            "Orders Error:",
+            error
+        );
 
-    return;
-  }
+        list.innerHTML =
+            "<p>❌ Orders load नहीं हुए:<br>" +
+            error.message +
+            "</p>";
 
+        return;
+    }
 
-  list.innerHTML = data.map(order => `
+    if(!data || data.length === 0){
 
-    <div style="
-      border:1px solid #ddd;
-      padding:15px;
-      margin:10px 0;
-      border-radius:10px;
-      background:#fff;
-    ">
+        list.innerHTML =
+            "<p>📦 अभी कोई Order नहीं है।</p>";
 
-      <h3>
-        📦 Order ID: ${order.order_id}
-      </h3>
+        return;
+    }
 
-      <p>
-        <b>Date:</b>
-        ${order.order_date
-          ? new Date(order.order_date).toLocaleString("en-IN")
-          : ""}
-      </p>
+    const isAdmin =
+        user.id === ADMIN_USER_ID;
 
-      <p>
-        <b>Total:</b>
-        ₹${order.total || 0}
-      </p>
+    list.innerHTML = data.map(order => `
 
-      <p>
-        <b>Status:</b>
-        <strong>
-          ${order.status || "Pending"}
-        </strong>
-      </p>
+        <div style="
+            border:1px solid #ddd;
+            padding:15px;
+            margin:10px 0;
+            border-radius:10px;
+            background:#fff;
+        ">
 
-      <p>
-        <b>Delivery Address:</b>
-        ${order.address || ""}
-      </p>
+            <h3>
+                📦 Order ID: ${order.order_id}
+            </h3>
 
-    </div>
+            <p>
+                <b>Customer:</b>
+                ${order.customer_name || ""}
+            </p>
 
-  `).join("");
+            ${isAdmin ? `
+            <p>
+                <b>Mobile:</b>
+                ${order.mobile || ""}
+            </p>
+
+            <p>
+                <b>Address:</b>
+                ${order.address || ""}
+            </p>
+            ` : ""}
+
+            <p>
+                <b>Date:</b>
+                ${order.order_date
+                    ? new Date(order.order_date)
+                        .toLocaleString("en-IN")
+                    : ""}
+            </p>
+
+            <p>
+                <b>Total:</b>
+                ₹${order.total || 0}
+            </p>
+
+            <p>
+                <b>Status:</b>
+                ${order.status || "Pending"}
+            </p>
+
+            ${isAdmin ? `
+
+                <select
+                    onchange="updateOrderStatus(
+                        '${order.order_id}',
+                        this.value
+                    )"
+                    style="
+                        padding:10px;
+                        border-radius:6px;
+                        margin-top:8px;
+                        width:100%;
+                    "
+                >
+
+                    <option value="Pending"
+                        ${order.status === "Pending"
+                            ? "selected" : ""}>
+                        Pending
+                    </option>
+
+                    <option value="Confirmed"
+                        ${order.status === "Confirmed"
+                            ? "selected" : ""}>
+                        Confirmed
+                    </option>
+
+                    <option value="Out for Delivery"
+                        ${order.status === "Out for Delivery"
+                            ? "selected" : ""}>
+                        Out for Delivery
+                    </option>
+
+                    <option value="Delivered"
+                        ${order.status === "Delivered"
+                            ? "selected" : ""}>
+                        Delivered
+                    </option>
+
+                    <option value="Cancelled"
+                        ${order.status === "Cancelled"
+                            ? "selected" : ""}>
+                        Cancelled
+                    </option>
+
+                </select>
+
+            ` : ""}
+
+        </div>
+
+    `).join("");
 }
 
 
