@@ -286,6 +286,12 @@ footer{
     📦 My Orders
         </button>
         <button class="admin-btn"
+        id="customerLogoutBtn"
+        onclick="customerLogout()"
+        style="display:none; background:#dc2626; color:white;">
+    🚪 Customer Logout
+        </button>
+        <button class="admin-btn"
             id="adminOrdersBtn"
             onclick="openAdminOrders()"
             style="display:none;">
@@ -912,6 +918,9 @@ async function updateAuthUI() {
     document.getElementById("myOrdersBtn").style.display =
         isCustomer ? "inline-block" : "none";
 
+    document.getElementById("customerLogoutBtn").style.display =
+    isCustomer ? "inline-block" : "none";
+    
     document.getElementById("adminOrdersBtn").style.display =
         isAdmin ? "inline-block" : "none";
    
