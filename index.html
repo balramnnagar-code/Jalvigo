@@ -274,8 +274,10 @@ footer{
             🔐 Admin
         </button>
 
-<button class="admin-btn" onclick="openCustomerAuth()">
-👤 Customer Login
+<button class="admin-btn"
+        id="customerLoginBtn"
+        onclick="openCustomerAuth()">
+    👤 Customer Login
 </button>
         <button class="admin-btn"
         id="myOrdersBtn"
@@ -878,21 +880,43 @@ async function openMyOrders() {
     openCustomerOrders();
 }
 
-async function updateMyOrdersButton() {
 
-    const { data: { user } } =
-        await supabaseClient.auth.getUser();
+async function updateAuthUI() {
+    const { data, error } = await supabaseClient.auth.getSession();
 
-    const btn = document.getElementById("myOrdersBtn");
-
-    if (!btn) return;
-
-    // Customer या Admin — दोनों login होने पर My Orders दिखे
-    if (user) {
-        btn.style.display = "inline-block";
-    } else {
-        btn.style.display = "none";
+    if (error) {
+        console.error("Session Error:", error.message);
+        return;
     }
+
+    const session = data.session;
+    const user = session?.user;
+
+    const ADMIN_USER_ID =
+        "e8075a8a-1760-459b-9d33-b640b04b2d14";
+
+    const isAdmin = !!user && user.id === ADMIN_USER_ID;
+    const isCustomer = !!user && !isAdmin;
+
+    document.getElementById("customerLoginBtn").style.display =
+        isCustomer ? "none" : (isAdmin ? "none" : "inline-block");
+
+    document.getElementById("myOrdersBtn").style.display =
+        isCustomer ? "inline-block" : "none";
+
+    document.getElementById("adminOrdersBtn").style.display =
+        isAdmin ? "inline-block" : "none";
+
+    document.querySelector(
+        'button[onclick="openAdminLogin()"]'
+    ).style.display = user ? "none" : "inline-block";
+
+    document.querySelector(
+        'button[onclick="openCart()"]'
+    ).style.display = isAdmin ? "none" : "inline-block";
+
+    document.getElementById("adminDashboard").style.display =
+        isAdmin ? "block" : "none";
 }
 
 
@@ -1159,26 +1183,21 @@ async function loadCustomerOrders(){
 CUSTOMER LOGOUT
 ========================= */
 
-async function customerLogout(){
+async function customerLogout() {
+    const { error } = await supabaseClient.auth.signOut();
 
-  const { error } =
-    await supabaseClient.auth.signOut();
+    if (error) {
+        alert("Logout Error: " + error.message);
+        return;
+    }
 
-await updateMyOrdersButton();
-closeCustomerOrders();
-  if(error){
+    document.getElementById("customerOrdersModal").style.display = "none";
+    document.getElementById("customerAuthModal").style.display = "none";
 
-    alert(
-      "Logout Error: " +
-      error.message
-    );
+    await updateAuthUI();
 
-    return;
-  }
-
-
-  alert("Customer Logout Successful.");
-     }
+    alert("Customer Logout Successful.");
+}
     
 /* =========================
    ADMIN LOGIN SETTINGS
@@ -1697,21 +1716,24 @@ await loadOrderStatuses();
 
 }
 
-function adminLogout(){
+async function adminLogout() {
+    const { error } = await supabaseClient.auth.signOut();
+
+    if (error) {
+        alert("Logout Error: " + error.message);
+        return;
+    }
 
     closeAdminDashboard();
 
-    document.getElementById("adminUsernameInput")
-        .value = "";
+    document.getElementById("adminUsernameInput").value = "";
+    document.getElementById("adminPasswordInput").value = "";
 
-    document.getElementById("adminPasswordInput")
-        .value = "";
+    await updateAuthUI();
 
-    alert("Admin Logout हो गया।");
-
+    alert("Admin Logout Successful.");
 }
-
-
+    
 updateCart();
 async function loadOrders(){
 
@@ -1879,7 +1901,14 @@ async function updateOrderStatus(orderId, newStatus){
     loadOrderStatuses();
     }
     
+// Refresh होने पर मौजूदा Login Session जाँचें
+updateAuthUI();
 
+// Login या Logout होने पर बटन अपडेट करें
+supabaseClient.auth.onAuthStateChange(() => {
+    updateAuthUI();
+});
+    
 </script>
 
 </body>
