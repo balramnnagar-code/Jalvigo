@@ -283,6 +283,12 @@ footer{
         style="display:none;">
     📦 My Orders
         </button>
+        <button class="admin-btn"
+            id="adminOrdersBtn"
+            onclick="openAdminOrders()"
+            style="display:none;">
+        📦 Customer Orders
+        </button>
         <button class="cart-btn" onclick="openCart()">
             🛒 Cart: <span id="cartCount">0</span>
         </button>
@@ -1594,7 +1600,7 @@ function openAdminLogin(){
 
 
 function closeAdminLogin(){
-
+    
     document.getElementById("adminLoginModal")
         .style.display = "none";
 
@@ -1635,6 +1641,23 @@ async function adminLogin(){
     }
 
     closeAdminLogin();
+    document.getElementById("adminOrdersBtn")
+.style.display = "inline-block";
+
+document.getElementById("myOrdersBtn")
+.style.display = "none";
+
+document.querySelector(
+'button[onclick="openCustomerAuth()"]'
+).style.display = "none";
+
+document.querySelector(
+'button[onclick="openAdminLogin()"]'
+).style.display = "none";
+
+document.querySelector(
+'button[onclick="openCart()"]'
+).style.display = "none";
 
     document.getElementById("adminDashboardModal")
         .style.display = "block";
@@ -1655,7 +1678,24 @@ function closeAdminDashboard(){
         .style.display = "none";
 
 }
+function openAdminOrders(){
 
+document.getElementById("adminDashboardModal")
+    .style.display = "none";
+
+document.getElementById("customerOrdersModal")
+    .style.display = "block";
+
+loadAdminCustomerOrders();
+
+}
+
+async function loadAdminCustomerOrders(){
+
+await loadOrders();
+await loadOrderStatuses();
+
+}
 
 function adminLogout(){
 
@@ -1838,8 +1878,20 @@ async function updateOrderStatus(orderId, newStatus){
     loadOrders();
     loadOrderStatuses();
     }
+    
+function updateMyOrdersButton() {
+    const myOrdersBtn = document.getElementById("myOrdersBtn");
+
+    if (!myOrdersBtn) return;
+
+    supabaseClient.auth.getSession().then(({ data }) => {
+        myOrdersBtn.style.display =
+            data.session ? "inline-block" : "none";
+    });
+}
+
 </script>
 
 </body>
 </html>
-updateMyOrdersButton();
+
