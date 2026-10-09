@@ -914,10 +914,15 @@ async function updateAuthUI() {
 
     document.getElementById("adminOrdersBtn").style.display =
         isAdmin ? "inline-block" : "none";
+   
+const adminLoginBtn = document.querySelector(
+    'button[onclick="openAdminLogin()"]'
+);
 
-    document.querySelector(
-        'button[onclick="openAdminLogin()"]'
-    ).style.display = user ? "none" : "inline-block";
+if (adminLoginBtn) {
+    adminLoginBtn.style.display =
+        user ? "none" : "inline-block";
+}
 
     document.querySelector(
         'button[onclick="openCart()"]'
