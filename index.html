@@ -1879,16 +1879,6 @@ async function updateOrderStatus(orderId, newStatus){
     loadOrderStatuses();
     }
     
-function updateMyOrdersButton() {
-    const myOrdersBtn = document.getElementById("myOrdersBtn");
-
-    if (!myOrdersBtn) return;
-
-    supabaseClient.auth.getSession().then(({ data }) => {
-        myOrdersBtn.style.display =
-            data.session ? "inline-block" : "none";
-    });
-}
 
 </script>
 
