@@ -291,6 +291,14 @@ footer{
             style="display:none;">
         📦 Customer Orders
         </button>
+
+<button class="admin-btn"
+        id="adminLogoutBtn"
+        onclick="adminLogout()"
+        style="display:none; background:#dc2626; color:white;">
+    🚪 Admin Logout
+</button>
+      
         <button class="cart-btn" onclick="openCart()">
             🛒 Cart: <span id="cartCount">0</span>
         </button>
@@ -1662,7 +1670,10 @@ async function adminLogin(){
     closeAdminLogin();
     document.getElementById("adminOrdersBtn")
 .style.display = "inline-block";
-
+    
+document.getElementById("adminLogoutBtn")
+.style.display = "inline-block";
+    
 document.getElementById("myOrdersBtn")
 .style.display = "none";
 
@@ -1730,6 +1741,9 @@ async function adminLogout() {
     document.getElementById("adminPasswordInput").value = "";
 
     await updateAuthUI();
+
+    document.getElementById("adminLogoutBtn")
+.style.display = "none";
 
     alert("Admin Logout Successful.");
 }
