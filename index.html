@@ -925,6 +925,10 @@ async function updateAuthUI() {
 
     document.getElementById("adminDashboard").style.display =
         isAdmin ? "block" : "none";
+   
+document.getElementById("adminLogoutBtn").style.display =
+    isAdmin ? "inline-block" : "none";
+
 }
 
 
