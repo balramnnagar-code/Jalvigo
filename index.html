@@ -1291,31 +1291,30 @@ function selectType(type){
 
 /* ADD CART */
 
-function addToCart(name,price){
+
+function addToCart(name, price) {
+
+    if (!currentUser) {
+        alert("पहले Customer Login कीजिए।");
+
+        openCustomerAuth();
+        return;
+    }
 
     let item = cart.find(p => p.name === name);
 
-
-    if(item){
-
+    if (item) {
         item.qty++;
-
-    }
-    else{
-
+    } else {
         cart.push({
-            name:name,
-            price:price,
-            qty:1
+            name: name,
+            price: price,
+            qty: 1
         });
-
     }
-
 
     updateCart();
-
-    alert(name + " Cart में add हो गया!");
-
+    alert(name + " Cart में Add हो गया!");
 }
 
 
