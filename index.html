@@ -1737,17 +1737,34 @@ function closeAdminDashboard(){
         .style.display = "none";
 
 }
-function openAdminOrders(){
 
-document.getElementById("adminDashboardModal")
-    .style.display = "none";
 
-document.getElementById("customerOrdersModal")
-    .style.display = "block";
+async function openAdminOrders() {
 
-loadAdminCustomerOrders();
+    const { data: { user }, error } =
+        await supabaseClient.auth.getUser();
 
+    const ADMIN_USER_ID =
+        "e8075a8a-1760-459b-9d33-b640b04b2d14";
+
+    if (error || !user || user.id !== ADMIN_USER_ID) {
+        alert("केवल Admin ही सभी Orders देख सकता है।");
+        return;
+    }
+
+    document.getElementById("customerOrdersModal")
+        .style.display = "none";
+
+    document.getElementById("adminDashboardModal")
+        .style.display = "block";
+
+    document.getElementById("adminDashboard")
+        .style.display = "block";
+
+    await loadOrders();
+    await loadOrderStatuses();
 }
+
 
 async function loadAdminCustomerOrders(){
 
