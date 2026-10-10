@@ -355,104 +355,12 @@ footer{
 </div>
 
 <section>
-
-<div class="products">
-
-
-<div class="product">
-
-    <div class="emoji">💧</div>
-
-    <h3>Drinking Water</h3>
-
-    <div class="price">₹20</div>
-
-    <button onclick="addToCart('Drinking Water',20)">
-        Add to Cart
-    </button>
-
-</div>
-
-
-<div class="product">
-
-    <div class="emoji">🧴</div>
-
-    <h3>Water Bottle</h3>
-
-    <div class="price">₹30</div>
-
-    <button onclick="addToCart('Water Bottle',30)">
-        Add to Cart
-    </button>
-
-</div>
-
-
-<div class="product">
-
-    <div class="emoji">🥤</div>
-
-    <h3>Cold Drink</h3>
-
-    <div class="price">₹40</div>
-
-    <button onclick="addToCart('Cold Drink',40)">
-        Add to Cart
-    </button>
-
-</div>
-
-
-<div class="product">
-
-    <div class="emoji">📦</div>
-
-    <h3>Water Pack</h3>
-
-    <div class="price">₹120</div>
-
-    <button onclick="addToCart('Water Pack',120)">
-        Add to Cart
-    </button>
-
-</div>
-
-
-<div class="product">
-
-    <div class="emoji">💦</div>
-
-    <h3>Mineral Water</h3>
-
-    <div class="price">₹25</div>
-
-    <button onclick="addToCart('Mineral Water',25)">
-        Add to Cart
-    </button>
-
-</div>
-
-
-<div class="product">
-
-    <div class="emoji">🥤</div>
-
-    <h3>Cold Drink Pack</h3>
-
-    <div class="price">₹200</div>
-
-    <button onclick="addToCart('Cold Drink Pack',200)">
-        Add to Cart
-    </button>
-
-</div>
-
-
-</div>
-
+    <div class="products" id="dynamicProductsList">
+        <p style="text-align:center; width:100%; grid-column: 1 / -1;">
+            💧 Products Load हो रहे हैं...
+        </p>
+    </div>
 </section>
-
 
 <!-- SHOPKEEPER -->
 
@@ -836,15 +744,35 @@ Shopkeeper Registration अभी WhatsApp के माध्यम से प�
 
 
 <div class="dashboard-card">
+    <h3>🛒 Manage Products (Dynamic)</h3>
+    <p style="margin-bottom:10px;">यहाँ से नए Products जोड़ें या पुराने Remove करें:</p>
 
-<h3>🛒 Products</h3>
+    <div class="form-group">
+        <label>Product Name</label>
+        <input type="text" id="newProdName" placeholder="जैसे: Lemon Soda">
+    </div>
 
-<p>
-6 Products Active
-</p>
+    <div class="form-group">
+        <label>Price (₹)</label>
+        <input type="number" id="newProdPrice" placeholder="जैसे: 35">
+    </div>
 
+    <div class="form-group">
+        <label>Emoji Icon</label>
+        <input type="text" id="newProdEmoji" placeholder="जैसे: 🥤 (Default 💧)">
+    </div>
+
+    <button class="primary-btn" onclick="addNewProduct()" style="width:100%; margin-top:10px;">
+        ➕ Add New Product
+    </button>
+
+    <hr style="margin:20px 0;">
+
+    <h4>📦 Current Live Products List</h4>
+    <div id="adminProductManageList" style="margin-top:10px;">
+        <p>Products load हो रहे हैं...</p>
+    </div>
 </div>
-
 
 <br>
 
@@ -2017,6 +1945,145 @@ function toggleCustomerLanguage() {
         }
     });
 }
+
+/* =========================================
+   DYNAMIC PRODUCTS SYSTEM (SUPABASE)
+========================================= */
+
+// 1. Database se Products Load karke Website par Dikhana
+async function loadDynamicProducts() {
+    const container = document.getElementById("dynamicProductsList");
+    if (!container) return;
+
+    const { data: products, error } = await supabaseClient
+        .from("products")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+    if (error) {
+        console.error("Error loading products:", error);
+        container.innerHTML = "<p>❌ Products load करने में समस्या हुई।</p>";
+        return;
+    }
+
+    if (!products || products.length === 0) {
+        container.innerHTML = "<p style='text-align:center; grid-column:1/-1;'>अभी कोई Product उपलब्ध नहीं है। Admin Panel से Add करें।</p>";
+        return;
+    }
+
+    // Dynamic Products HTML Generate karein
+    container.innerHTML = products.map(prod => `
+        <div class="product">
+            <div class="emoji">${prod.emoji || '💧'}</div>
+            <h3 data-hi="${prod.name}" data-en="${prod.name}">${prod.name}</h3>
+            <div class="price">₹${prod.price}</div>
+            <button onclick="addToCart('${prod.name}', ${prod.price})">
+                Add to Cart
+            </button>
+        </div>
+    `).join('');
+}
+
+// 2. Admin Panel se Naya Product Add karna
+async function addNewProduct() {
+    const nameInput = document.getElementById("newProdName");
+    const priceInput = document.getElementById("newProdPrice");
+    const emojiInput = document.getElementById("newProdEmoji");
+
+    const name = nameInput.value.trim();
+    const price = priceInput.value.trim();
+    const emoji = emojiInput.value.trim() || "💧";
+
+    if (!name || !price) {
+        alert("कृपया Product Name और Price भरें!");
+        return;
+    }
+
+    const { data, error } = await supabaseClient
+        .from("products")
+        .insert([{
+            name: name,
+            price: Number(price),
+            emoji: emoji
+        }]);
+
+    if (error) {
+        alert("❌ Product Save नहीं हुआ: " + error.message);
+        return;
+    }
+
+    alert("✅ Product सफलतापूर्वक Add हो गया!");
+
+    // Inputs Clear karein
+    nameInput.value = "";
+    priceInput.value = "";
+    emojiInput.value = "";
+
+    // Lists Refresh karein
+    loadDynamicProducts();
+    loadAdminProductsList();
+}
+
+// 3. Admin Panel me Manage Products List Dikhana
+async function loadAdminProductsList() {
+    const list = document.getElementById("adminProductManageList");
+    if (!list) return;
+
+    const { data: products, error } = await supabaseClient
+        .from("products")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+    if (error || !products) {
+        list.innerHTML = "<p>Error loading products list.</p>";
+        return;
+    }
+
+    if (products.length === 0) {
+        list.innerHTML = "<p>कोई Product नहीं है।</p>";
+        return;
+    }
+
+    list.innerHTML = products.map(prod => `
+        <div style="display:flex; justify-content:space-between; align-items:center; border:1px solid #ddd; padding:10px; border-radius:8px; margin-bottom:8px; background:#fff;">
+            <div>
+                <b>${prod.emoji || '💧'} ${prod.name}</b> - ₹${prod.price}
+            </div>
+            <button onclick="deleteProduct(${prod.id})" style="background:#dc2626; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer;">
+                🗑️ Delete
+            </button>
+        </div>
+    `).join('');
+}
+
+// 4. Admin Panel se Product Delete karna
+async function deleteProduct(productId) {
+    if (!confirm("क्या आप वाकई इस Product को हटाना चाहते हैं?")) return;
+
+    const { error } = await supabaseClient
+        .from("products")
+        .delete()
+        .eq("id", productId);
+
+    if (error) {
+        alert("❌ Delete नहीं हो पाया: " + error.message);
+        return;
+    }
+
+    alert("✅ Product Delete कर दिया गया!");
+    loadDynamicProducts();
+    loadAdminProductsList();
+}
+
+// 5. Admin Panel Khulne Par Admin Products Load Karein
+const originalAdminLogin = adminLogin;
+adminLogin = async function() {
+    await originalAdminLogin();
+    loadAdminProductsList();
+};
+
+// 6. Page Load hote hi Dynamic Products Load karein
+loadDynamicProducts();
     
 </script>
 
