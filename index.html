@@ -308,7 +308,13 @@ footer{
         <button class="cart-btn" onclick="openCart()">
             🛒 Cart: <span id="cartCount">0</span>
         </button>
+<button class="admin-btn"
+            id="customerLanguageBtn"
+            onclick="toggleCustomerLanguage()">
+        🌐 हिंदी / English
+</button>
 
+        
     </div>
 
 </header>
@@ -1968,6 +1974,27 @@ updateAuthUI();
 supabaseClient.auth.onAuthStateChange(() => {
     updateAuthUI();
 });
+
+let customerLanguage = "hi";
+
+function toggleCustomerLanguage() {
+customerLanguage =
+customerLanguage === "hi" ? "en" : "hi";
+
+const btn = document.getElementById("customerLanguageBtn");
+
+btn.innerText =
+    customerLanguage === "hi"
+    ? "🌐 हिंदी / English"
+    : "🌐 English / हिंदी";
+
+alert(
+    customerLanguage === "hi"
+    ? "भाषा हिंदी चुनी गई है।"
+    : "English language selected."
+);
+
+    }
     
 </script>
 
