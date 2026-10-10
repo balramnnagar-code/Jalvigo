@@ -319,28 +319,30 @@ footer{
 
 </header>
 
-
 <section class="hero">
 
-    <h1>Fresh Water, Fresh Life 💧</h1>
+    <h1 data-hi="Fresh Water, Fresh Life 💧" data-en="Fresh Water, Fresh Life 💧">Fresh Water, Fresh Life 💧</h1>
 
-    <p>पानी और Cold Drinks अब आसानी से घर तक</p>
+    <p data-hi="पानी और Cold Drinks अब आसानी से घर तक" data-en="Water and Cold Drinks delivered easily to your doorstep">पानी और Cold Drinks अब आसानी से घर तक</p>
 
 </section>
-
 
 <div class="type-box">
 
     <button id="retailBtn"
             class="active"
-            onclick="selectType('Retail')">
+            onclick="selectType('Retail')"
+            data-hi="🛍️ Retail"
+            data-en="🛍️ Retail">
 
         🛍️ Retail
 
     </button>
 
     <button id="wholesaleBtn"
-            onclick="selectType('Wholesale')">
+            onclick="selectType('Wholesale')"
+            data-hi="📦 Wholesale"
+            data-en="📦 Wholesale">
 
         📦 Wholesale
 
@@ -351,7 +353,6 @@ footer{
     </p>
 
 </div>
-
 
 <section>
 
@@ -457,59 +458,67 @@ footer{
 
 <section class="section-box">
 
-<h2>🏪 Jalvigo पर अपनी दुकान जोड़ें</h2>
+<h2 data-hi="🏪 Jalvigo पर अपनी दुकान जोड़ें" data-en="🏪 Register Your Shop on Jalvigo">🏪 Jalvigo पर अपनी दुकान जोड़ें</h2>
 
-<p style="margin-bottom:20px;">
+<p style="margin-bottom:20px;" data-hi="दुकानदार अपनी दुकान की जानकारी देकर Jalvigo से जुड़ सकते हैं।" data-en="Shopkeepers can join Jalvigo by providing their shop details.">
 दुकानदार अपनी दुकान की जानकारी देकर Jalvigo से जुड़ सकते हैं।
 </p>
 
 
 <div class="form-group">
 
-<label>दुकानदार का नाम</label>
+<label data-hi="दुकानदार का नाम" data-en="Shopkeeper Name">दुकानदार का नाम</label>
 
 <input type="text"
        id="shopName"
-       placeholder="अपना नाम लिखें">
+       placeholder="अपना नाम लिखें"
+       data-hi-placeholder="अपना नाम लिखें"
+       data-en-placeholder="Enter your name">
 
 </div>
 
 
 <div class="form-group">
 
-<label>दुकान का नाम</label>
+<label data-hi="दुकान का नाम" data-en="Store Name">दुकान का नाम</label>
 
 <input type="text"
        id="storeName"
-       placeholder="दुकान का नाम">
+       placeholder="दुकान का नाम"
+       data-hi-placeholder="दुकान का नाम"
+       data-en-placeholder="Enter store name">
 
 </div>
 
 
 <div class="form-group">
 
-<label>मोबाइल नंबर</label>
+<label data-hi="मोबाइल नंबर" data-en="Mobile Number">मोबाइल नंबर</label>
 
 <input type="tel"
        id="shopMobile"
-       placeholder="10 अंकों का मोबाइल नंबर">
+       placeholder="10 अंकों का मोबाइल नंबर"
+       data-hi-placeholder="10 अंकों का मोबाइल नंबर"
+       data-en-placeholder="10-digit mobile number">
 
 </div>
 
 
 <div class="form-group">
 
-<label>दुकान का पता</label>
+<label data-hi="दुकान का पता" data-en="Store Address">दुकान का पता</label>
 
 <textarea id="shopAddress"
-          placeholder="दुकान का पूरा पता"></textarea>
+          placeholder="दुकान का पूरा पता"
+          data-hi-placeholder="दुकान का पूरा पता"
+          data-en-placeholder="Full store address"></textarea>
 
 </div>
 
 
 <div class="form-group">
 
-<label>आप क्या बेचते हैं?</label>
+<label data-hi="आप क्या बेचते हैं?" data-en="What do you sell?">आप क्या बेचते हैं?</label>
 
 <select id="shopProducts">
 
@@ -535,13 +544,16 @@ footer{
 
 
 <button class="primary-btn"
-        onclick="registerShopkeeper()">
+        onclick="registerShopkeeper()"
+        data-hi="🏪 दुकान Register करें"
+        data-en="🏪 Register Shop">
 
 🏪 दुकान Register करें
 
 </button>
 
 </section>
+
 
 <!-- CUSTOMER AUTH -->
 <div class="modal" id="customerAuthModal">
@@ -1975,26 +1987,36 @@ supabaseClient.auth.onAuthStateChange(() => {
     updateAuthUI();
 });
 
-let customerLanguage = "hi";
+let customerLanguage = "hi"; // Default Hindi
 
 function toggleCustomerLanguage() {
-customerLanguage =
-customerLanguage === "hi" ? "en" : "hi";
+    // Language Toggle
+    customerLanguage = (customerLanguage === "hi") ? "en" : "hi";
 
-const btn = document.getElementById("customerLanguageBtn");
-
-btn.innerText =
-    customerLanguage === "hi"
-    ? "🌐 हिंदी / English"
-    : "🌐 English / हिंदी";
-
-alert(
-    customerLanguage === "hi"
-    ? "भाषा हिंदी चुनी गई है।"
-    : "English language selected."
-);
-
+    // Header Button Text Update
+    const btn = document.getElementById("customerLanguageBtn");
+    if (btn) {
+        btn.innerText = (customerLanguage === "hi") ? "🌐 English" : "🌐 हिंदी";
     }
+
+    // All Text Translate
+    const elements = document.querySelectorAll("[data-hi]");
+    elements.forEach(el => {
+        const newText = el.getAttribute(`data-${customerLanguage}`);
+        if (newText) {
+            el.innerText = newText;
+        }
+    });
+
+    // All Placeholders Translate
+    const inputElements = document.querySelectorAll("[data-hi-placeholder]");
+    inputElements.forEach(el => {
+        const newPlaceholder = el.getAttribute(`data-${customerLanguage}-placeholder`);
+        if (newPlaceholder) {
+            el.placeholder = newPlaceholder;
+        }
+    });
+}
     
 </script>
 
