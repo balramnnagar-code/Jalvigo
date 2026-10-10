@@ -1292,12 +1292,25 @@ function selectType(type){
 /* ADD CART */
 
 
-function addToCart(name, price) {
 
-    if (!currentUser) {
+/* ADD CART - LOGIN REQUIRED */
+
+async function addToCart(name, price) {
+
+    const { data: { user }, error } =
+        await supabaseClient.auth.getUser();
+
+    if (error || !user) {
         alert("पहले Customer Login कीजिए।");
-
         openCustomerAuth();
+        return;
+    }
+
+    const ADMIN_USER_ID =
+        "e8075a8a-1760-459b-9d33-b640b04b2d14";
+
+    if (user.id === ADMIN_USER_ID) {
+        alert("Admin account से Shopping नहीं कर सकते।");
         return;
     }
 
@@ -1316,7 +1329,6 @@ function addToCart(name, price) {
     updateCart();
     alert(name + " Cart में Add हो गया!");
 }
-
 
 /* UPDATE CART */
 
