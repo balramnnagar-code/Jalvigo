@@ -233,7 +233,6 @@ footer{
         <button class="admin-btn" id="customerLogoutBtn" onclick="customerLogout()" style="display:none; background:#dc2626; color:white;">🚪 Customer Logout</button>
         <button class="admin-btn" id="adminOrdersBtn" onclick="openAdminOrders()" style="display:none;">📦 Customer Orders</button>
         
-        <!-- ADMIN PRODUCT MANAGER BUTTON -->
         <button class="admin-btn" id="adminProductsBtn" onclick="openAdminProductsModal()" style="display:none; background:#0284c7;">📦 Manage Products</button>
 
         <button class="admin-btn" id="adminLogoutBtn" onclick="adminLogout()" style="display:none; background:#dc2626; color:white;">🚪 Admin Logout</button>
@@ -314,11 +313,12 @@ footer{
   </div>
 </div>
 
-<!-- CUSTOMER ORDERS -->
+<!-- CUSTOMER ORDERS MODAL (WITH CANCEL BUTTON) -->
 <div class="modal" id="customerOrdersModal">
   <div class="modal-box">
     <span class="close" onclick="document.getElementById('customerOrdersModal').style.display='none'">×</span>
     <h2>📦 मेरे Orders</h2>
+    <button class="primary-btn" onclick="loadCustomerOrders()" style="margin-bottom:10px; background:#0284c7;">🔄 Refresh Orders</button>
     <div id="customerOrdersList"><p>Orders load हो रहे हैं...</p></div>
   </div>
 </div>
@@ -584,6 +584,7 @@ async function openMyOrders() {
     loadCustomerOrders();
 }
 
+// CUSTOMER ORDERS WITH CANCEL FEATURE
 async function loadCustomerOrders(){
     const list = document.getElementById("customerOrdersList");
     list.innerHTML = "<p>Orders load हो रहे हैं...</p>";
@@ -594,14 +595,33 @@ async function loadCustomerOrders(){
     if(error){ list.innerHTML = "<p>❌ Error loading orders</p>"; return; }
     if(!data || data.length === 0){ list.innerHTML = "<p>📦 अभी कोई Order नहीं है।</p>"; return; }
 
-    list.innerHTML = data.map(order => `
-        <div style="border:1px solid #ddd; padding:15px; margin:10px 0; border-radius:10px; background:#fff;">
-            <h3>📦 Order ID: ${order.order_id}</h3>
-            <p><b>Date:</b> ${new Date(order.order_date).toLocaleString("en-IN")}</p>
-            <p><b>Total:</b> ₹${order.total}</p>
-            <p><b>Status:</b> ${order.status || "Pending"}</p>
-        </div>
-    `).join("");
+    list.innerHTML = data.map(order => {
+        const canCancel = order.status === "Pending";
+        return `
+            <div style="border:1px solid #ddd; padding:15px; margin:10px 0; border-radius:10px; background:#fff;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h3 style="font-size:16px;">📦 Order ID: ${order.order_id}</h3>
+                    ${canCancel ? `<button onclick="cancelCustomerOrder('${order.order_id}')" style="background:#dc2626; color:white; border:none; padding:6px 10px; border-radius:6px; cursor:pointer;">❌ Cancel Order</button>` : ''}
+                </div>
+                <p style="margin-top:5px;"><b>Date:</b> ${new Date(order.order_date).toLocaleString("en-IN")}</p>
+                <p><b>Total:</b> ₹${order.total}</p>
+                <p><b>Status:</b> <span style="font-weight:bold; color:${order.status === 'Cancelled' ? '#dc2626' : '#0284c7'}">${order.status || "Pending"}</span></p>
+            </div>
+        `;
+    }).join("");
+}
+
+async function cancelCustomerOrder(orderId) {
+    if(!confirm("क्या आप वाकई अपना यह Order Cancel करना चाहते हैं?")) return;
+
+    const { error } = await supabaseClient.from("orders").update({ status: "Cancelled" }).eq("order_id", orderId);
+    if(error){
+        alert("❌ Order cancel नहीं हो सका: " + error.message);
+        return;
+    }
+
+    alert("✅ आपका Order Cancel कर दिया गया है!");
+    loadCustomerOrders();
 }
 
 // DYNAMIC PRODUCTS (WEBSITE)
