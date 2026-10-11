@@ -9,19 +9,16 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-
 *{
     box-sizing:border-box;
     margin:0;
     padding:0;
     font-family:Arial,sans-serif;
 }
-
 body{
     background:#f0f9ff;
     color:#123;
 }
-
 header{
     background:#0284c7;
     color:white;
@@ -33,17 +30,14 @@ header{
     top:0;
     z-index:10;
 }
-
 .logo{
     font-size:24px;
     font-weight:bold;
 }
-
 .header-buttons{
     display:flex;
     gap:7px;
 }
-
 .cart-btn,
 .admin-btn{
     border:none;
@@ -52,37 +46,30 @@ header{
     font-weight:bold;
     cursor:pointer;
 }
-
 .cart-btn{
     background:white;
     color:#0284c7;
 }
-
 .admin-btn{
     background:#082f49;
     color:white;
 }
-
 .hero{
     text-align:center;
     padding:40px 15px;
     background:linear-gradient(135deg,#dff6ff,#fff);
 }
-
 .hero h1{
     color:#0369a1;
     margin-bottom:10px;
 }
-
 .hero p{
     color:#555;
 }
-
 .type-box{
     text-align:center;
     padding:20px;
 }
-
 .type-box button{
     padding:11px 20px;
     border:2px solid #0284c7;
@@ -92,19 +79,16 @@ header{
     margin:5px;
     font-weight:bold;
 }
-
 .type-box button.active{
     background:#0284c7;
     color:white;
 }
-
 .products{
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
     gap:15px;
     padding:20px;
 }
-
 .product{
     background:white;
     padding:18px;
@@ -112,23 +96,19 @@ header{
     box-shadow:0 3px 12px rgba(0,0,0,.1);
     text-align:center;
 }
-
 .product .emoji{
     font-size:45px;
     margin-bottom:10px;
 }
-
 .product h3{
     margin-bottom:8px;
 }
-
 .price{
     color:#0284c7;
     font-size:20px;
     font-weight:bold;
     margin:8px;
 }
-
 .product button,
 .primary-btn{
     background:#0284c7;
@@ -139,7 +119,6 @@ header{
     font-weight:bold;
     cursor:pointer;
 }
-
 .section-box{
     background:white;
     margin:20px;
@@ -147,23 +126,19 @@ header{
     border-radius:18px;
     box-shadow:0 3px 15px rgba(0,0,0,.1);
 }
-
 .section-box h2{
     color:#0369a1;
     margin-bottom:10px;
 }
-
 .form-group{
     margin:12px 0;
     text-align:left;
 }
-
 .form-group label{
     display:block;
     margin-bottom:5px;
     font-weight:bold;
 }
-
 .form-group input,
 .form-group textarea,
 .form-group select{
@@ -173,11 +148,9 @@ header{
     border-radius:8px;
     font-size:16px;
 }
-
 .form-group textarea{
     min-height:90px;
 }
-
 .modal{
     display:none;
     position:fixed;
@@ -187,7 +160,6 @@ header{
     padding:15px;
     overflow:auto;
 }
-
 .modal-box{
     background:white;
     max-width:520px;
@@ -195,13 +167,11 @@ header{
     padding:22px;
     border-radius:15px;
 }
-
 .close{
     float:right;
     font-size:28px;
     cursor:pointer;
 }
-
 .cart-item{
     display:flex;
     justify-content:space-between;
@@ -209,7 +179,6 @@ header{
     border-bottom:1px solid #ddd;
     padding:12px 0;
 }
-
 .qty button{
     padding:5px 10px;
     margin:3px;
@@ -218,30 +187,22 @@ header{
     color:white;
     border-radius:5px;
 }
-
 .total{
     font-size:20px;
     font-weight:bold;
     text-align:right;
     margin:15px 0;
 }
-
-.admin-dashboard{
-    display:none;
-}
-
 .dashboard-card{
     background:#f0f9ff;
     padding:18px;
     border-radius:12px;
     margin:10px 0;
 }
-
 .dashboard-card h3{
     color:#0369a1;
     margin-bottom:7px;
 }
-
 .logout-btn{
     background:#dc2626;
     color:white;
@@ -250,7 +211,6 @@ header{
     border-radius:8px;
     font-weight:bold;
 }
-
 footer{
     background:#075985;
     color:white;
@@ -258,1852 +218,379 @@ footer{
     padding:20px;
     margin-top:30px;
 }
-
 </style>
 </head>
 
 <body>
 
 <header>
-
     <div class="logo">💧 Jalvigo</div>
-
     <div class="header-buttons">
-
-        <button class="admin-btn" onclick="openAdminLogin()">
-            🔐 Admin
-        </button>
-
-<button class="admin-btn"
-        id="customerLoginBtn"
-        onclick="openCustomerAuth()">
-    👤 Customer Login
-</button>
-        <button class="admin-btn"
-        id="myOrdersBtn"
-        onclick="openMyOrders()"
-        style="display:none;">
-    📦 My Orders
-        </button>
-        <button class="admin-btn"
-        id="customerLogoutBtn"
-        onclick="customerLogout()"
-        style="display:none; background:#dc2626; color:white;">
-    🚪 Customer Logout
-        </button>
-        <button class="admin-btn"
-            id="adminOrdersBtn"
-            onclick="openAdminOrders()"
-            style="display:none;">
-        📦 Customer Orders
-        </button>
-
-<button class="admin-btn"
-        id="adminLogoutBtn"
-        onclick="adminLogout()"
-        style="display:none; background:#dc2626; color:white;">
-    🚪 Admin Logout
-</button>
-      
-        <button class="cart-btn" onclick="openCart()">
-            🛒 Cart: <span id="cartCount">0</span>
-        </button>
-<button class="admin-btn"
-            id="customerLanguageBtn"
-            onclick="toggleCustomerLanguage()">
-        🌐 हिंदी / English
-</button>
-
-        
+        <button class="admin-btn" onclick="openAdminLogin()">🔐 Admin</button>
+        <button class="admin-btn" id="customerLoginBtn" onclick="openCustomerAuth()">👤 Customer Login</button>
+        <button class="admin-btn" id="myOrdersBtn" onclick="openMyOrders()" style="display:none;">📦 My Orders</button>
+        <button class="admin-btn" id="customerLogoutBtn" onclick="customerLogout()" style="display:none; background:#dc2626; color:white;">🚪 Customer Logout</button>
+        <button class="admin-btn" id="adminOrdersBtn" onclick="openAdminOrders()" style="display:none;">📦 Customer Orders</button>
+        <button class="admin-btn" id="adminLogoutBtn" onclick="adminLogout()" style="display:none; background:#dc2626; color:white;">🚪 Admin Logout</button>
+        <button class="cart-btn" onclick="openCart()">🛒 Cart: <span id="cartCount">0</span></button>
+        <button class="admin-btn" id="customerLanguageBtn" onclick="toggleCustomerLanguage()">🌐 हिंदी / English</button>
     </div>
-
 </header>
 
 <section class="hero">
-
     <h1 data-hi="Fresh Water, Fresh Life 💧" data-en="Fresh Water, Fresh Life 💧">Fresh Water, Fresh Life 💧</h1>
-
     <p data-hi="पानी और Cold Drinks अब आसानी से घर तक" data-en="Water and Cold Drinks delivered easily to your doorstep">पानी और Cold Drinks अब आसानी से घर तक</p>
-
 </section>
 
 <div class="type-box">
-
-    <button id="retailBtn"
-            class="active"
-            onclick="selectType('Retail')"
-            data-hi="🛍️ Retail"
-            data-en="🛍️ Retail">
-
-        🛍️ Retail
-
-    </button>
-
-    <button id="wholesaleBtn"
-            onclick="selectType('Wholesale')"
-            data-hi="📦 Wholesale"
-            data-en="📦 Wholesale">
-
-        📦 Wholesale
-
-    </button>
-
-    <p style="margin-top:10px;">
-        Selected: <b id="selectedType">Retail</b>
-    </p>
-
+    <button id="retailBtn" class="active" onclick="selectType('Retail')" data-hi="🛍️ Retail" data-en="🛍️ Retail">🛍️ Retail</button>
+    <button id="wholesaleBtn" onclick="selectType('Wholesale')" data-hi="📦 Wholesale" data-en="📦 Wholesale">📦 Wholesale</button>
+    <p style="margin-top:10px;">Selected: <b id="selectedType">Retail</b></p>
 </div>
 
 <section>
     <div class="products" id="dynamicProductsList">
-        <p style="text-align:center; width:100%; grid-column: 1 / -1;">
-            💧 Products Load हो रहे हैं...
-        </p>
+        <p style="text-align:center; width:100%; grid-column: 1 / -1;">💧 Products Load हो रहे हैं...</p>
     </div>
 </section>
 
 <!-- SHOPKEEPER -->
-
 <section class="section-box">
+    <h2 data-hi="🏪 Jalvigo पर अपनी दुकान जोड़ें" data-en="🏪 Register Your Shop on Jalvigo">🏪 Jalvigo पर अपनी दुकान जोड़ें</h2>
+    <p style="margin-bottom:20px;" data-hi="दुकानदार अपनी दुकान की जानकारी देकर Jalvigo से जुड़ सकते हैं।" data-en="Shopkeepers can join Jalvigo by providing their shop details.">दुकानदार अपनी दुकान की जानकारी देकर Jalvigo से जुड़ सकते हैं।</p>
 
-<h2 data-hi="🏪 Jalvigo पर अपनी दुकान जोड़ें" data-en="🏪 Register Your Shop on Jalvigo">🏪 Jalvigo पर अपनी दुकान जोड़ें</h2>
-
-<p style="margin-bottom:20px;" data-hi="दुकानदार अपनी दुकान की जानकारी देकर Jalvigo से जुड़ सकते हैं।" data-en="Shopkeepers can join Jalvigo by providing their shop details.">
-दुकानदार अपनी दुकान की जानकारी देकर Jalvigo से जुड़ सकते हैं।
-</p>
-
-
-<div class="form-group">
-
-<label data-hi="दुकानदार का नाम" data-en="Shopkeeper Name">दुकानदार का नाम</label>
-
-<input type="text"
-       id="shopName"
-       placeholder="अपना नाम लिखें"
-       data-hi-placeholder="अपना नाम लिखें"
-       data-en-placeholder="Enter your name">
-
-</div>
-
-
-<div class="form-group">
-
-<label data-hi="दुकान का नाम" data-en="Store Name">दुकान का नाम</label>
-
-<input type="text"
-       id="storeName"
-       placeholder="दुकान का नाम"
-       data-hi-placeholder="दुकान का नाम"
-       data-en-placeholder="Enter store name">
-
-</div>
-
-
-<div class="form-group">
-
-<label data-hi="मोबाइल नंबर" data-en="Mobile Number">मोबाइल नंबर</label>
-
-<input type="tel"
-       id="shopMobile"
-       placeholder="10 अंकों का मोबाइल नंबर"
-       data-hi-placeholder="10 अंकों का मोबाइल नंबर"
-       data-en-placeholder="10-digit mobile number">
-
-</div>
-
-
-<div class="form-group">
-
-<label data-hi="दुकान का पता" data-en="Store Address">दुकान का पता</label>
-
-<textarea id="shopAddress"
-          placeholder="दुकान का पूरा पता"
-          data-hi-placeholder="दुकान का पूरा पता"
-          data-en-placeholder="Full store address"></textarea>
-
-</div>
-
-
-<div class="form-group">
-
-<label data-hi="आप क्या बेचते हैं?" data-en="What do you sell?">आप क्या बेचते हैं?</label>
-
-<select id="shopProducts">
-
-<option value="">Select करें</option>
-
-<option>Drinking Water</option>
-
-<option>Water Bottle</option>
-
-<option>Cold Drink</option>
-
-<option>Water Pack</option>
-
-<option>Mineral Water</option>
-
-<option>Cold Drink Pack</option>
-
-<option>Water & Cold Drinks सभी</option>
-
-</select>
-
-</div>
-
-
-<button class="primary-btn"
-        onclick="registerShopkeeper()"
-        data-hi="🏪 दुकान Register करें"
-        data-en="🏪 Register Shop">
-
-🏪 दुकान Register करें
-
-</button>
-
+    <div class="form-group">
+        <label data-hi="दुकानदार का नाम" data-en="Shopkeeper Name">दुकानदार का नाम</label>
+        <input type="text" id="shopName" placeholder="अपना नाम लिखें">
+    </div>
+    <div class="form-group">
+        <label data-hi="दुकान का नाम" data-en="Store Name">दुकान का नाम</label>
+        <input type="text" id="storeName" placeholder="दुकान का नाम">
+    </div>
+    <div class="form-group">
+        <label data-hi="मोबाइल नंबर" data-en="Mobile Number">मोबाइल नंबर</label>
+        <input type="tel" id="shopMobile" placeholder="10 अंकों का मोबाइल नंबर">
+    </div>
+    <div class="form-group">
+        <label data-hi="दुकान का पता" data-en="Store Address">दुकान का पता</label>
+        <textarea id="shopAddress" placeholder="दुकान का पूरा पता"></textarea>
+    </div>
+    <div class="form-group">
+        <label data-hi="आप क्या बेचते हैं?" data-en="What do you sell?">आप क्या बेचते हैं?</label>
+        <select id="shopProducts">
+            <option value="">Select करें</option>
+            <option>Drinking Water</option>
+            <option>Water Bottle</option>
+            <option>Cold Drink</option>
+            <option>Water Pack</option>
+            <option>Mineral Water</option>
+            <option>Cold Drink Pack</option>
+            <option>Water & Cold Drinks सभी</option>
+        </select>
+    </div>
+    <button class="primary-btn" onclick="registerShopkeeper()">🏪 दुकान Register करें</button>
 </section>
-
 
 <!-- CUSTOMER AUTH -->
 <div class="modal" id="customerAuthModal">
-
   <div class="modal-box">
-
     <span class="close" onclick="closeCustomerAuth()">×</span>
-
     <h2>👤 Customer Login / Signup</h2>
-
     <div class="form-group">
       <label>Email</label>
-      <input
-        type="email"
-        id="customerEmail"
-        placeholder="अपना Email डालें"
-      >
+      <input type="email" id="customerEmail" placeholder="अपना Email डालें">
     </div>
-
     <div class="form-group">
       <label>Password</label>
-      <input
-        type="password"
-        id="customerPassword"
-        placeholder="Password डालें"
-      >
+      <input type="password" id="customerPassword" placeholder="Password डालें">
     </div>
-
-    <button class="primary-btn" onclick="customerSignup()">
-      📝 Signup
-    </button>
-
-    <button class="primary-btn" onclick="customerLogin()">
-      🔐 Login
-    </button>
-
-    <button class="primary-btn" onclick="customerLogout()">
-      🚪 Logout
-    </button>
-
-    <p id="customerAuthStatus"></p>
-
+    <button class="primary-btn" onclick="customerSignup()">📝 Signup</button>
+    <button class="primary-btn" onclick="customerLogin()">🔐 Login</button>
   </div>
-
 </div>
-    <!-- CUSTOMER ORDERS -->
+
+<!-- CUSTOMER ORDERS -->
 <div class="modal" id="customerOrdersModal">
-
   <div class="modal-box">
-
-    <button
-        
-    onclick="document.getElementById('customerOrdersModal').style.display='none'"
-    style="
-        float:right;
-        border:none;
-        background:none;
-        font-size:32px;
-        font-weight:bold;
-        cursor:pointer;
-        color:#123;
-        line-height:1;
-    "
->
-    ×
-    </button>
-
+    <span class="close" onclick="document.getElementById('customerOrdersModal').style.display='none'">×</span>
     <h2>📦 मेरे Orders</h2>
-
-    <div id="customerOrdersList">
-      <p>Orders load हो रहे हैं...</p>
-    </div>
-
+    <div id="customerOrdersList"><p>Orders load हो रहे हैं...</p></div>
   </div>
-
 </div>
+
 <!-- CART -->
-
 <div class="modal" id="cartModal">
-
 <div class="modal-box">
-
-<span class="close"
-      onclick="closeCart()">×</span>
-
+<span class="close" onclick="closeCart()">×</span>
 <h2>🛒 आपका Cart</h2>
-
 <div id="cartItems"></div>
-
-<div class="total">
-
-Total: ₹<span id="cartTotal">0</span>
-
+<div class="total">Total: ₹<span id="cartTotal">0</span></div>
+<button class="primary-btn" onclick="openOrderForm()">Order Now</button>
 </div>
-
-<button class="primary-btn"
-        onclick="openOrderForm()">
-
-Order Now
-
-</button>
-
 </div>
-
-</div>
-
 
 <!-- ORDER -->
-
 <div class="modal" id="orderModal">
-
 <div class="modal-box">
-
-<span class="close"
-      onclick="closeOrderForm()">×</span>
-
+<span class="close" onclick="closeOrderForm()">×</span>
 <h2>📦 Delivery Details</h2>
-
-
-<div class="form-group">
-
-<label>Name</label>
-
-<input type="text"
-       id="customerName"
-       placeholder="आपका नाम">
-
+<div class="form-group"><label>Name</label><input type="text" id="customerName" placeholder="आपका नाम"></div>
+<div class="form-group"><label>Mobile</label><input type="tel" id="customerMobile" placeholder="मोबाइल नंबर"></div>
+<div class="form-group"><label>Delivery Address</label><textarea id="customerAddress" placeholder="पूरा पता"></textarea></div>
+<button class="primary-btn" onclick="sendOrder()">📦 Place Order</button>
 </div>
-
-
-<div class="form-group">
-
-<label>Mobile</label>
-
-<input type="tel"
-       id="customerMobile"
-       placeholder="मोबाइल नंबर">
-
 </div>
-
-
-<div class="form-group">
-
-<label>Delivery Address</label>
-
-<textarea id="customerAddress"
-          placeholder="पूरा पता"></textarea>
-
-</div>
-
-
-<button class="primary-btn"
-        onclick="sendOrder()">
-
-📦 Place Order
-
-</button>
-
-</div>
-
-</div>
-
 
 <!-- ADMIN LOGIN -->
-
 <div class="modal" id="adminLoginModal">
-
 <div class="modal-box">
-
-<span class="close"
-      onclick="closeAdminLogin()">×</span>
-
+<span class="close" onclick="closeAdminLogin()">×</span>
 <h2>🔐 Jalvigo Admin Login</h2>
-
-<p style="margin:10px 0 20px;">
-केवल Admin के लिए
-</p>
-
-
-<div class="form-group">
-
-<label>Admin Username</label>
-
-<input type="text"
-       id="adminUsernameInput"
-       placeholder="Username">
-
+<div class="form-group"><label>Admin Email</label><input type="text" id="adminUsernameInput" placeholder="Email"></div>
+<div class="form-group"><label>Password</label><input type="password" id="adminPasswordInput" placeholder="Password"></div>
+<button class="primary-btn" onclick="adminLogin()">🔐 Login</button>
 </div>
-
-
-<div class="form-group">
-
-<label>Password</label>
-
-<input type="password"
-       id="adminPasswordInput"
-       placeholder="Password">
-
 </div>
-
-
-<button class="primary-btn"
-        onclick="adminLogin()">
-
-🔐 Login
-
-</button>
-
-</div>
-
-</div>
-
 
 <!-- ADMIN DASHBOARD -->
+<div class="modal" id="adminDashboardModal">
+<div class="modal-box" style="max-width:650px;">
+<span class="close" onclick="closeAdminDashboard()">×</span>
 
-<div class="modal"
-     id="adminDashboardModal">
+<div id="adminDashboard" style="display:none;">
+    <h2>🛠️ Jalvigo Admin Panel</h2>
+    <p style="margin:10px 0 20px;">Welcome, Admin 👋</p>
 
-<div class="modal-box">
-
-<span class="close"
-      onclick="closeAdminDashboard()">×</span>
-
-
-<div class="admin-dashboard"
-     id="adminDashboard">
-
-<h2>🛠️ Jalvigo Admin Panel</h2>
-
-<p style="margin:10px 0 20px;">
-Welcome, Admin 👋
-</p>
-
-
-<div class="dashboard-card">
-
-  <h3>📦 Customer Orders</h3>
-
-  <p>यहाँ सभी Customer Orders दिखाई देंगे।</p>
-
-  <button class="primary-btn"
-    onclick="loadOrders()">
-    🔄 Refresh Orders
-  </button>
-
-  <div id="adminOrdersList">
-    <p>Orders Load हो रहे हैं...</p>
-  </div>
-    <hr style="margin:20px 0;">
-
-<h3>📦 Order Status Management</h3>
-
-<div id="adminOrderStatusList">
-  <p>Orders यहाँ दिखाई देंगे...</p>
-</div>
-
-</div>
-
-<!-- CARD 1: Registered Shopkeepers -->
-<div class="dashboard-card">
-    <h3>🏪 Registered Shopkeepers</h3>
-    <p style="margin-bottom:10px;">Jalvigo par judi hui sabhi dukanein:</p>
-    
-    <button class="primary-btn" onclick="loadShopkeepersList()" style="margin-bottom:12px;">
-        🔄 Refresh Shopkeepers
-    </button>
-
-    <div id="adminShopkeeperList">
-        <p>Shopkeepers load ho rahe hain...</p>
-    </div>
-</div>
-
-<!-- CARD 2: Add New Product -->
-<div class="dashboard-card">
-    <h3>➕ Add New Product</h3>
-    <p style="margin-bottom:10px;">Yahan se naya Product add karein:</p>
-
-    <div class="form-group">
-        <label>Product Name</label>
-        <input type="text" id="newProdName" placeholder="Jaise: Lemon Soda">
+    <!-- CARD 1: Customer Orders -->
+    <div class="dashboard-card">
+        <h3>📦 Customer Orders</h3>
+        <button class="primary-btn" onclick="loadOrders()" style="margin-bottom:10px;">🔄 Refresh Orders</button>
+        <div id="adminOrdersList"><p>Orders Load हो रहे हैं...</p></div>
+        <hr style="margin:15px 0;">
+        <h3>📦 Order Status Management</h3>
+        <div id="adminOrderStatusList"><p>Orders यहाँ दिखाई देंगे...</p></div>
     </div>
 
-    <div class="form-group">
-        <label>Price (₹)</label>
-        <input type="number" id="newProdPrice" placeholder="Jaise: 35">
+    <!-- CARD 2: Registered Shopkeepers -->
+    <div class="dashboard-card">
+        <h3>🏪 Registered Shopkeepers</h3>
+        <button class="primary-btn" onclick="loadShopkeepersList()" style="margin-bottom:10px;">🔄 Refresh Shopkeepers</button>
+        <div id="adminShopkeeperList"><p>Shopkeepers load ho rahe hain...</p></div>
     </div>
 
-    <div class="form-group">
-        <label>Emoji Icon</label>
-        <input type="text" id="newProdEmoji" placeholder="Jaise: 🥤 (Default 💧)">
+    <!-- CARD 3: Add New Product -->
+    <div class="dashboard-card">
+        <h3>➕ Add New Product</h3>
+        <div class="form-group"><label>Product Name</label><input type="text" id="newProdName" placeholder="जैसे: Lemon Soda"></div>
+        <div class="form-group"><label>Price (₹)</label><input type="number" id="newProdPrice" placeholder="जैसे: 35"></div>
+        <div class="form-group"><label>Emoji Icon</label><input type="text" id="newProdEmoji" placeholder="जैसे: 🥤 (Default 💧)"></div>
+        <button class="primary-btn" onclick="addNewProduct()" style="width:100%; margin-top:10px;">➕ Add Product</button>
     </div>
 
-    <button class="primary-btn" onclick="addNewProduct()" style="width:100%; margin-top:10px;">
-        ➕ Add Product
-    </button>
-</div>
-
-<!-- CARD 3: Remove & Update Price -->
-<div class="dashboard-card">
-    <h3>🗑️ Remove Products & Update Price</h3>
-    <p style="margin-bottom:10px;">Yahan se live products ki price badlein ya remove karein:</p>
-    
-    <button class="primary-btn" onclick="loadAdminProductsList()" style="margin-bottom:12px; background:#0284c7;">
-        🔄 Refresh Products List
-    </button>
-
-    <div id="adminProductManageList" style="margin-top:10px;">
-        <p>Products load ho rahe hain...</p>
+    <!-- CARD 4: Remove Products & Update Price -->
+    <div class="dashboard-card">
+        <h3>🗑️ Remove Products & Update Price</h3>
+        <button class="primary-btn" onclick="loadAdminProductsList()" style="margin-bottom:10px; background:#0284c7;">🔄 Refresh Products List</button>
+        <div id="adminProductManageList" style="margin-top:10px;"><p>Products load ho रहे हैं...</p></div>
     </div>
+
+    <br>
+    <button class="logout-btn" onclick="adminLogout()">Logout</button>
 </div>
-
-<br>
-
-<button class="logout-btn"
-        onclick="adminLogout()">
-
-Logout
-
-</button>
-
 </div>
-
 </div>
-
-</div>
-
 
 <footer>
-
 <p>💧 Jalvigo</p>
-
 <p>Water & Cold Drinks Marketplace</p>
-
 </footer>
 
 <script>
-</script>
-<script>
-
-/* =========================
-SUPABASE CONNECTION
-========================
-*/
-
 const SUPABASE_URL = "https://zqirmlnbqftzurjzbluv.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_QesFfLaf4IlgNcEJbm3WEw_tq5ISxz1"; 
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
-const SUPABASE_PUBLISHABLE_KEY =
-"sb_publishable_QesFfLaf4IlgNcEJbm3WEw_tq5ISxz1"; 
-const supabaseClient = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_PUBLISHABLE_KEY
-);
-    /* =========================
-CUSTOMER AUTH FUNCTIONS
-========================= */
+let yourWhatsAppNumber = "916260832599";
+let cart = [];
+let shoppingType = "Retail";
+let customerLanguage = "hi";
+const ADMIN_USER_ID = "e8075a8a-1760-459b-9d33-b640b04b2d14";
 
-function openCustomerAuth(){
-
-    document.getElementById("customerAuthModal")
-        .style.display = "block";
-}
-
-async function openMyOrders() {
-
-    const { data: { user }, error } =
-        await supabaseClient.auth.getUser();
-
-    if (error || !user) {
-        alert("कृपया पहले Login करें।");
-        openCustomerAuth();
-        return;
+// TYPE SELECT
+function selectType(type){
+    shoppingType = type;
+    document.getElementById("selectedType").innerText = type;
+    document.getElementById("retailBtn").classList.remove("active");
+    document.getElementById("wholesaleBtn").classList.remove("active");
+    if(type === "Retail"){
+        document.getElementById("retailBtn").classList.add("active");
+    } else {
+        document.getElementById("wholesaleBtn").classList.add("active");
     }
-
-    // Customer और Admin दोनों के लिए वही My Orders window खुलेगी
-    openCustomerOrders();
 }
 
+// AUTH & UI
+function openCustomerAuth(){ document.getElementById("customerAuthModal").style.display = "block"; }
+function closeCustomerAuth(){ document.getElementById("customerAuthModal").style.display = "none"; }
+function openCart(){ updateCart(); document.getElementById("cartModal").style.display = "block"; }
+function closeCart(){ document.getElementById("cartModal").style.display = "none"; }
+function openOrderForm(){ if(cart.length === 0){ alert("पहले Cart में product add करें।"); return; } closeCart(); document.getElementById("orderModal").style.display = "block"; }
+function closeOrderForm(){ document.getElementById("orderModal").style.display = "none"; }
+function openAdminLogin(){ document.getElementById("adminLoginModal").style.display = "block"; }
+function closeAdminLogin(){ document.getElementById("adminLoginModal").style.display = "none"; }
+function closeAdminDashboard(){ document.getElementById("adminDashboardModal").style.display = "none"; }
 
 async function updateAuthUI() {
-    const { data, error } = await supabaseClient.auth.getSession();
-
-    if (error) {
-        console.error("Session Error:", error.message);
-        return;
-    }
-
-    const session = data.session;
-    const user = session?.user;
-
-    const ADMIN_USER_ID =
-        "e8075a8a-1760-459b-9d33-b640b04b2d14";
-
+    const { data } = await supabaseClient.auth.getSession();
+    const user = data.session?.user;
     const isAdmin = !!user && user.id === ADMIN_USER_ID;
     const isCustomer = !!user && !isAdmin;
 
-    document.getElementById("customerLoginBtn").style.display =
-        isCustomer ? "none" : (isAdmin ? "none" : "inline-block");
-
-    document.getElementById("myOrdersBtn").style.display =
-        isCustomer ? "inline-block" : "none";
-
-    document.getElementById("customerLogoutBtn").style.display =
-    isCustomer ? "inline-block" : "none";
+    document.getElementById("customerLoginBtn").style.display = isCustomer ? "none" : (isAdmin ? "none" : "inline-block");
+    document.getElementById("myOrdersBtn").style.display = isCustomer ? "inline-block" : "none";
+    document.getElementById("customerLogoutBtn").style.display = isCustomer ? "inline-block" : "none";
+    document.getElementById("adminOrdersBtn").style.display = isAdmin ? "inline-block" : "none";
+    document.getElementById("adminLogoutBtn").style.display = isAdmin ? "inline-block" : "none";
     
-    document.getElementById("adminOrdersBtn").style.display =
-        isAdmin ? "inline-block" : "none";
-   
-const adminLoginBtn = document.querySelector(
-    'button[onclick="openAdminLogin()"]'
-);
+    const adminLoginBtn = document.querySelector('button[onclick="openAdminLogin()"]');
+    if (adminLoginBtn) adminLoginBtn.style.display = user ? "none" : "inline-block";
 
-if (adminLoginBtn) {
-    adminLoginBtn.style.display =
-        user ? "none" : "inline-block";
+    document.querySelector('button[onclick="openCart()"]').style.display = isAdmin ? "none" : "inline-block";
 }
 
-    document.querySelector(
-        'button[onclick="openCart()"]'
-    ).style.display = isAdmin ? "none" : "inline-block";
-
-    document.getElementById("adminDashboard").style.display =
-        isAdmin ? "block" : "none";
-   
-document.getElementById("adminLogoutBtn").style.display =
-    isAdmin ? "inline-block" : "none";
-
-}
-
-
-/* CUSTOMER SIGNUP */
-
+// CUSTOMER ACTIONS
 async function customerSignup(){
-
-  const email =
-    document.getElementById("customerEmail").value.trim();
-
-  const password =
-    document.getElementById("customerPassword").value;
-
-  if(!email || !password){
-    alert("Email और Password भरें।");
-    return;
-  }
-
-  const { data, error } =
-    await supabaseClient.auth.signUp({
-      email: email,
-      password: password
-    });
-
-  if(error){
-    alert("Signup Error: " + error.message);
-    return;
-  }
-
-  alert(
-    "Signup successful! अगर Email Confirmation ON है तो अपना email verify करें।"
-  );
+    const email = document.getElementById("customerEmail").value.trim();
+    const password = document.getElementById("customerPassword").value;
+    if(!email || !password){ alert("Email और Password भरें।"); return; }
+    const { error } = await supabaseClient.auth.signUp({ email: email, password: password });
+    if(error){ alert("Signup Error: " + error.message); return; }
+    alert("Signup successful!");
 }
-
-
-/* CUSTOMER LOGIN */
 
 async function customerLogin(){
-
-  const email =
-    document.getElementById("customerEmail").value.trim();
-
-  const password =
-    document.getElementById("customerPassword").value;
-
-  if(!email || !password){
-    alert("Email और Password भरें।");
-    return;
-  }
-
-  const { data, error } =
-    await supabaseClient.auth.signInWithPassword({
-      email: email,
-      password: password
-    });
-
-  if(error){
-    alert("Login Error: " + error.message);
-    return;
-  }
-
-  alert("Customer Login Successful! ✅");
-
-closeCustomerAuth();
-await updateMyOrdersButton();
-openCustomerOrders();
+    const email = document.getElementById("customerEmail").value.trim();
+    const password = document.getElementById("customerPassword").value;
+    if(!email || !password){ alert("Email और Password भरें।"); return; }
+    const { error } = await supabaseClient.auth.signInWithPassword({ email: email, password: password });
+    if(error){ alert("Login Error: " + error.message); return; }
+    alert("Login Successful! ✅");
+    closeCustomerAuth();
+    updateAuthUI();
 }
-
-/* =========================
-CUSTOMER ORDERS
-========================= */
-
-function openCustomerOrders(){
-
-  const modal = document.getElementById("customerOrdersModal");
-
-  modal.style.display = "block";
-
-  loadCustomerOrders();
-}
-
-
-function closeCustomerAuth(){
-
-    const modal =
-        document.getElementById("customerAuthModal");
-
-    if(modal){
-        modal.style.display = "none";
-    }
-}
-
-async function loadCustomerOrders(){
-
-    const list =
-        document.getElementById("customerOrdersList");
-
-    list.innerHTML =
-        "<p>Orders load हो रहे हैं...</p>";
-
-    const { data: { user }, error: userError } =
-        await supabaseClient.auth.getUser();
-
-    if(userError || !user){
-
-        list.innerHTML =
-            "<p>❌ पहले Login करें।</p>";
-
-        return;
-    }
-
-    // आपका Admin User ID
-    const ADMIN_USER_ID =
-        "e8075a8a-1760-459b-9d33-b640b04b2d14";
-
-    let query =
-        supabaseClient
-            .from("orders")
-            .select("*")
-            .order("order_date", {
-                ascending: false
-            });
-
-    // अगर Customer है → सिर्फ उसके Orders
-    if(user.id !== ADMIN_USER_ID){
-
-        query = query.eq("user_id", user.id);
-    }
-
-    // अगर Admin है → सभी Orders
-    const { data, error } = await query;
-
-    if(error){
-
-        console.error(
-            "Orders Error:",
-            error
-        );
-
-        list.innerHTML =
-            "<p>❌ Orders load नहीं हुए:<br>" +
-            error.message +
-            "</p>";
-
-        return;
-    }
-
-    if(!data || data.length === 0){
-
-        list.innerHTML =
-            "<p>📦 अभी कोई Order नहीं है।</p>";
-
-        return;
-    }
-
-    const isAdmin =
-        user.id === ADMIN_USER_ID;
-
-    list.innerHTML = data.map(order => `
-
-        <div style="
-            border:1px solid #ddd;
-            padding:15px;
-            margin:10px 0;
-            border-radius:10px;
-            background:#fff;
-        ">
-
-            <h3>
-                📦 Order ID: ${order.order_id}
-            </h3>
-
-            <p>
-                <b>Customer:</b>
-                ${order.customer_name || ""}
-            </p>
-
-            ${isAdmin ? `
-            <p>
-                <b>Mobile:</b>
-                ${order.mobile || ""}
-            </p>
-
-            <p>
-                <b>Address:</b>
-                ${order.address || ""}
-            </p>
-            ` : ""}
-
-            <p>
-                <b>Date:</b>
-                ${order.order_date
-                    ? new Date(order.order_date)
-                        .toLocaleString("en-IN")
-                    : ""}
-            </p>
-
-            <p>
-                <b>Total:</b>
-                ₹${order.total || 0}
-            </p>
-
-            <p>
-                <b>Status:</b>
-                ${order.status || "Pending"}
-            </p>
-
-            ${isAdmin ? `
-
-                <select
-                    onchange="updateOrderStatus(
-                        '${order.order_id}',
-                        this.value
-                    )"
-                    style="
-                        padding:10px;
-                        border-radius:6px;
-                        margin-top:8px;
-                        width:100%;
-                    "
-                >
-
-                    <option value="Pending"
-                        ${order.status === "Pending"
-                            ? "selected" : ""}>
-                        Pending
-                    </option>
-
-                    <option value="Confirmed"
-                        ${order.status === "Confirmed"
-                            ? "selected" : ""}>
-                        Confirmed
-                    </option>
-
-                    <option value="Out for Delivery"
-                        ${order.status === "Out for Delivery"
-                            ? "selected" : ""}>
-                        Out for Delivery
-                    </option>
-
-                    <option value="Delivered"
-                        ${order.status === "Delivered"
-                            ? "selected" : ""}>
-                        Delivered
-                    </option>
-
-                    <option value="Cancelled"
-                        ${order.status === "Cancelled"
-                            ? "selected" : ""}>
-                        Cancelled
-                    </option>
-
-                </select>
-
-            ` : ""}
-
-        </div>
-
-    `).join("");
-}
-
-
-/* =========================
-CUSTOMER LOGOUT
-========================= */
 
 async function customerLogout() {
-    const { error } = await supabaseClient.auth.signOut();
-
-    if (error) {
-        alert("Logout Error: " + error.message);
-        return;
-    }
-
+    await supabaseClient.auth.signOut();
     document.getElementById("customerOrdersModal").style.display = "none";
-    document.getElementById("customerAuthModal").style.display = "none";
-
-    await updateAuthUI();
-
-    alert("Customer Logout Successful.");
-}
-    
-/* =========================
-   ADMIN LOGIN SETTINGS
-   =========================
-
-   यहां अपना Username और Password डालें।
-*/
-
-let adminUsername = "JalvigoAdmin";
-
-let adminPassword = "YOUR_PASSWORD";
-
-
-/* =========================
-   WHATSAPP NUMBER
-   =========================
-
-   यहां अपना WhatsApp number रखें।
-   Example:
-   919876543210
-
-   + या space नहीं लगाना है.
-*/
-
-let yourWhatsAppNumber = "916260832599";
-
-
-/* CART */
-
-let cart = [];
-
-let shoppingType = "Retail";
-
-
-/* TYPE */
-
-function selectType(type){
-
-    shoppingType = type;
-
-    document.getElementById("selectedType").innerText = type;
-
-    document.getElementById("retailBtn")
-        .classList.remove("active");
-
-    document.getElementById("wholesaleBtn")
-        .classList.remove("active");
-
-
-    if(type === "Retail"){
-
-        document.getElementById("retailBtn")
-            .classList.add("active");
-
-    }
-    else{
-
-        document.getElementById("wholesaleBtn")
-            .classList.add("active");
-
-    }
-
+    updateAuthUI();
+    alert("Logout Successful.");
 }
 
-
-/* ADD CART */
-
-
-
-/* ADD CART - LOGIN REQUIRED */
-
+// CART & ORDERS
 async function addToCart(name, price) {
-
-    const { data: { user }, error } =
-        await supabaseClient.auth.getUser();
-
-    if (error || !user) {
-        alert("पहले Customer Login कीजिए।");
-        openCustomerAuth();
-        return;
-    }
-
-    const ADMIN_USER_ID =
-        "e8075a8a-1760-459b-9d33-b640b04b2d14";
-
-    if (user.id === ADMIN_USER_ID) {
-        alert("Admin account से Shopping नहीं कर सकते।");
-        return;
-    }
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    if (!user) { alert("पहले Customer Login कीजिए।"); openCustomerAuth(); return; }
+    if (user.id === ADMIN_USER_ID) { alert("Admin account से Shopping नहीं कर सकते।"); return; }
 
     let item = cart.find(p => p.name === name);
-
-    if (item) {
-        item.qty++;
-    } else {
-        cart.push({
-            name: name,
-            price: price,
-            qty: 1
-        });
-    }
-
+    if (item) { item.qty++; } else { cart.push({ name: name, price: price, qty: 1 }); }
     updateCart();
     alert(name + " Cart में Add हो गया!");
 }
 
-/* UPDATE CART */
-
 function updateCart(){
-
-    let count = 0;
-
-    let total = 0;
-
-
-    cart.forEach(item => {
-
-        count += item.qty;
-
-        total += item.price * item.qty;
-
-    });
-
-
+    let count = 0, total = 0;
+    cart.forEach(item => { count += item.qty; total += item.price * item.qty; });
     document.getElementById("cartCount").innerText = count;
-
     document.getElementById("cartTotal").innerText = total;
 
-
-    let html = "";
-
-
-    if(cart.length === 0){
-
-        html =
-        "<p style='padding:20px 0'>Cart खाली है।</p>";
-
-    }
-
-
+    let html = cart.length === 0 ? "<p style='padding:20px 0'>Cart खाली है।</p>" : "";
     cart.forEach((item,index) => {
-
-        html += `
-
-        <div class="cart-item">
-
-            <div>
-
-                <b>${item.name}</b>
-
-                <br>
-
-                ₹${item.price} × ${item.qty}
-
-            </div>
-
-            <div class="qty">
-
-                <button onclick="changeQty(${index},-1)">
-                    −
-                </button>
-
-                ${item.qty}
-
-                <button onclick="changeQty(${index},1)">
-                    +
-                </button>
-
-            </div>
-
-        </div>
-
-        `;
-
+        html += `<div class="cart-item"><div><b>${item.name}</b><br>₹${item.price} × ${item.qty}</div><div class="qty"><button onclick="changeQty(${index},-1)">−</button>${item.qty}<button onclick="changeQty(${index},1)">+</button></div></div>`;
     });
-
-
     document.getElementById("cartItems").innerHTML = html;
-
 }
-
-
-/* CHANGE QUANTITY */
 
 function changeQty(index,value){
-
     cart[index].qty += value;
-
-
-    if(cart[index].qty <= 0){
-
-        cart.splice(index,1);
-
-    }
-
-
+    if(cart[index].qty <= 0){ cart.splice(index,1); }
     updateCart();
-
 }
-
-
-/* CART OPEN */
-
-function openCart(){
-
-    updateCart();
-
-    document.getElementById("cartModal")
-        .style.display = "block";
-
-}
-
-
-/* CART CLOSE */
-
-function closeCart(){
-
-    document.getElementById("cartModal")
-        .style.display = "none";
-
-}
-
-
-/* ORDER FORM */
-
-function openOrderForm(){
-
-    if(cart.length === 0){
-
-        alert("पहले Cart में product add करें।");
-
-        return;
-
-    }
-
-
-    closeCart();
-
-    document.getElementById("orderModal")
-        .style.display = "block";
-
-}
-
-
-function closeOrderForm(){
-
-    document.getElementById("orderModal")
-        .style.display = "none";
-
-}
-
-
-/* SEND ORDER */
 
 async function sendOrder(){
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    if(!user){ alert("कृपया पहले Customer Login करें।"); return; }
+    const name = document.getElementById("customerName").value.trim();
+    const mobile = document.getElementById("customerMobile").value.trim();
+    const address = document.getElementById("customerAddress").value.trim();
 
-    // Check logged-in customer
-    const { data: { user }, error: userError } =
-        await supabaseClient.auth.getUser();
+    if(!name || !mobile || !address){ alert("कृपया Name, Mobile और Address भरें।"); return; }
+    if(!cart || cart.length === 0){ alert("Cart खाली है।"); return; }
 
-    if(userError || !user){
-        alert("कृपया पहले Customer Login करें।");
-        return;
-    }
-
-    // Customer details
-    const name =
-        document.getElementById("customerName").value.trim();
-
-    const mobile =
-        document.getElementById("customerMobile").value.trim();
-
-    const address =
-        document.getElementById("customerAddress").value.trim();
-
-    // Validation
-    if(name === "" || mobile === "" || address === ""){
-        alert("कृपया Name, Mobile और Address भरें।");
-        return;
-    }
-
-    // Cart check
-    if(!cart || cart.length === 0){
-        alert("Cart खाली है।");
-        return;
-    }
-
-    // Order ID
     const orderId = "JAL" + Date.now();
-
-    // Calculate total
     let total = 0;
+    cart.forEach(item => { total += Number(item.price) * Number(item.qty); });
 
-    cart.forEach(item => {
-        total += Number(item.price) * Number(item.qty);
-    });
+    const { error } = await supabaseClient.from("orders").insert([{
+        order_id: orderId, customer_name: name, mobile: mobile, address: address,
+        order_type: shoppingType, items: JSON.stringify(cart), total: total,
+        order_date: new Date().toISOString(), status: "Pending", user_id: user.id
+    }]);
 
-    // Save order in Supabase
-    const { data, error } = await supabaseClient
-        .from("orders")
-        .insert([{
-            order_id: orderId,
-            customer_name: name,
-            mobile: mobile,
-            address: address,
-            order_type: shoppingType,
-            items: JSON.stringify(cart),
-            total: total,
-            order_date: new Date().toISOString(),
-            status: "Pending",
-            user_id: user.id
-        }])
-        .select();
-
-    if(error){
-        console.error("Order Save Error:", error);
-        alert("Order save नहीं हुआ: " + error.message);
-        return;
-    }
-
-    alert("Order successfully placed! आपका Order ID: " + orderId);
-
-    // Clear cart
+    if(error){ alert("Order save नहीं हुआ: " + error.message); return; }
+    alert("Order successfully placed! Order ID: " + orderId);
     cart = [];
     updateCart();
+    closeOrderForm();
 }
 
-/* SHOPKEEPER */
-
-function registerShopkeeper(){
-
-    let name =
-        document.getElementById("shopName")
-        .value.trim();
-
-
-    let store =
-        document.getElementById("storeName")
-        .value.trim();
-
-
-    let mobile =
-        document.getElementById("shopMobile")
-        .value.trim();
-
-
-    let address =
-        document.getElementById("shopAddress")
-        .value.trim();
-
-
-    let products =
-        document.getElementById("shopProducts")
-        .value;
-
-
-    if(
-        name === "" ||
-        store === "" ||
-        mobile === "" ||
-        address === "" ||
-        products === ""
-    ){
-
-        alert(
-        "कृपया सभी जानकारी भरें।"
-        );
-
-        return;
-
-    }
-
-
-    let message =
-        "🏪 *Jalvigo Shopkeeper Registration*%0A%0A";
-
-
-    message +=
-        "👤 दुकानदार: " +
-        name +
-        "%0A";
-
-
-    message +=
-        "🏪 दुकान: " +
-        store +
-        "%0A";
-
-
-    message +=
-        "📱 मोबाइल: " +
-        mobile +
-        "%0A";
-
-
-    message +=
-        "📍 पता: " +
-        address +
-        "%0A";
-
-
-    message +=
-        "🥤 Products: " +
-        products;
-
-
-    let whatsappURL =
-        "https://wa.me/" +
-        yourWhatsAppNumber +
-        "?text=" +
-        message;
-
-
-    window.location.href =
-        whatsappURL;
-
+async function openMyOrders() {
+    document.getElementById("customerOrdersModal").style.display = "block";
+    loadCustomerOrders();
 }
 
-
-/* =========================
-   ADMIN LOGIN
-   ========================= */
-
-function openAdminLogin(){
-
-    document.getElementById("adminLoginModal")
-        .style.display = "block";
-
-}
-
-
-function closeAdminLogin(){
-    
-    document.getElementById("adminLoginModal")
-        .style.display = "none";
-
-}
-
-
-async function adminLogin(){
-
-    const email =
-        document.getElementById("adminUsernameInput").value.trim();
-
-    const password =
-        document.getElementById("adminPasswordInput").value;
-
-    if(!email || !password){
-        alert("Email और Password डालिए");
-        return;
-    }
-
-    const { data, error } =
-        await supabaseClient.auth.signInWithPassword({
-            email: email,
-            password: password 
-        });
-
-    if(error){
-        alert("❌ Admin Login failed: " + error.message);
-        return;
-    }
-
-    if(!data.user ||
-       data.user.id !== "e8075a8a-1760-459b-9d33-b640b04b2d14"){
-
-        await supabaseClient.auth.signOut();
-
-        alert("❌ यह Admin account नहीं है");
-        return;
-    }
-
-    closeAdminLogin();
-    document.getElementById("adminOrdersBtn")
-.style.display = "inline-block";
-    
-document.getElementById("adminLogoutBtn")
-.style.display = "inline-block";
-    
-document.getElementById("myOrdersBtn")
-.style.display = "none";
-
-document.querySelector(
-'button[onclick="openCustomerAuth()"]'
-).style.display = "none";
-
-document.querySelector(
-'button[onclick="openAdminLogin()"]'
-).style.display = "none";
-
-document.querySelector(
-'button[onclick="openCart()"]'
-).style.display = "none";
-
-    document.getElementById("adminDashboardModal")
-        .style.display = "block";
-
-    document.getElementById("adminDashboard")
-        .style.display = "block";
-
-    loadOrders();
-    loadOrderStatuses();
-}
-
-
-/* ADMIN DASHBOARD */
-
-function closeAdminDashboard(){
-
-    document.getElementById("adminDashboardModal")
-        .style.display = "none";
-
-}
-
-
-async function openAdminOrders() {
-
-    const { data: { user }, error } =
-        await supabaseClient.auth.getUser();
-
-    const ADMIN_USER_ID =
-        "e8075a8a-1760-459b-9d33-b640b04b2d14";
-
-    if (error || !user || user.id !== ADMIN_USER_ID) {
-        alert("केवल Admin ही सभी Orders देख सकता है।");
-        return;
-    }
-
-    document.getElementById("customerOrdersModal")
-        .style.display = "none";
-
-    document.getElementById("adminDashboardModal")
-        .style.display = "block";
-
-    document.getElementById("adminDashboard")
-        .style.display = "block";
-
-    await loadOrders();
-    await loadOrderStatuses();
-}
-
-
-async function loadAdminCustomerOrders(){
-
-await loadOrders();
-await loadOrderStatuses();
-
-}
-
-async function adminLogout() {
-    const { error } = await supabaseClient.auth.signOut();
-
-    if (error) {
-        alert("Logout Error: " + error.message);
-        return;
-    }
-
-    closeAdminDashboard();
-
-    document.getElementById("adminUsernameInput").value = "";
-    document.getElementById("adminPasswordInput").value = "";
-
-    await updateAuthUI();
-
-    document.getElementById("adminLogoutBtn")
-.style.display = "none";
-
-    alert("Admin Logout Successful.");
-}
-    
-updateCart();
-async function loadOrders(){
-
-  const list = document.getElementById("adminOrdersList");
-
-  list.innerHTML = "<p>Orders load हो रहे हैं...</p>";
-
-  const { data, error } = await supabaseClient
-    .from("orders")
-    .select("*")
-    .order("order_date", { ascending: false });
-
-  if(error){
-    console.error("Load Orders Error:", error);
-    list.innerHTML =
-      "<p style='color:red;'>Orders load नहीं हुए: " +
-      error.message + "</p>";
-    return;
-  }
-
-  if(!data || data.length === 0){
-    list.innerHTML = "<p>अभी कोई Order नहीं है।</p>";
-    return;
-  }
-
-  list.innerHTML = data.map(order => `
-    <div style="
-      border:1px solid #ddd;
-      padding:15px;
-      margin:10px 0;
-      border-radius:10px;
-      background:#fff;
-    ">
-
-      <h3>📦 Order ID: ${order.order_id}</h3>
-
-      <p><b>Customer:</b> ${order.customer_name}</p>
-
-      <p><b>Mobile:</b> ${order.mobile}</p>
-
-      <p><b>Address:</b> ${order.address}</p>
-
-      <p><b>Total:</b> ₹${order.total}</p>
-
-      <p><b>Status:</b> ${order.status || "Pending"}</p>
-
-    </div>
-  `).join("");
-}
-    async function loadOrderStatuses(){
-
-    const list = document.getElementById("adminOrderStatusList");
-
+async function loadCustomerOrders(){
+    const list = document.getElementById("customerOrdersList");
     list.innerHTML = "<p>Orders load हो रहे हैं...</p>";
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    if(!user){ list.innerHTML = "<p>❌ पहले Login करें।</p>"; return; }
 
-    const { data, error } = await supabaseClient
-        .from("orders")
-        .select("order_id, customer_name, total, status")
-        .order("order_date", { ascending: false });
-
-    if(error){
-        console.error("Status Load Error:", error);
-        list.innerHTML =
-            "<p style='color:red;'>Orders load नहीं हुए: " +
-            error.message + "</p>";
-        return;
-    }
-
-    if(!data || data.length === 0){
-        list.innerHTML = "<p>अभी कोई Order नहीं है।</p>";
-        return;
-    }
+    const { data, error } = await supabaseClient.from("orders").select("*").eq("user_id", user.id).order("order_date", { ascending: false });
+    if(error){ list.innerHTML = "<p>❌ Error loading orders</p>"; return; }
+    if(!data || data.length === 0){ list.innerHTML = "<p>📦 अभी कोई Order नहीं है।</p>"; return; }
 
     list.innerHTML = data.map(order => `
-
-        <div style="
-            border:1px solid #ddd;
-            padding:15px;
-            margin:10px 0;
-            border-radius:10px;
-            background:#fff;
-        ">
-
+        <div style="border:1px solid #ddd; padding:15px; margin:10px 0; border-radius:10px; background:#fff;">
             <h3>📦 Order ID: ${order.order_id}</h3>
-
-            <p>
-                <b>Customer:</b> ${order.customer_name}
-            </p>
-
-            <p>
-                <b>Total:</b> ₹${order.total}
-            </p>
-
-            <p>
-                <b>Current Status:</b>
-                ${order.status || "Pending"}
-            </p>
-
-            <select
-                onchange="updateOrderStatus('${order.order_id}', this.value)"
-                style="
-                    padding:10px;
-                    border-radius:6px;
-                    margin-top:5px;
-                "
-            >
-
-                <option value="Pending"
-                    ${order.status === "Pending" ? "selected" : ""}>
-                    Pending
-                </option>
-
-                <option value="Confirmed"
-                    ${order.status === "Confirmed" ? "selected" : ""}>
-                    Confirmed
-                </option>
-
-                <option value="Out for Delivery"
-                    ${order.status === "Out for Delivery" ? "selected" : ""}>
-                    Out for Delivery
-                </option>
-
-                <option value="Delivered"
-                    ${order.status === "Delivered" ? "selected" : ""}>
-                    Delivered
-                </option>
-
-                <option value="Cancelled"
-                    ${order.status === "Cancelled" ? "selected" : ""}>
-                    Cancelled
-                </option>
-
-            </select>
-
+            <p><b>Date:</b> ${new Date(order.order_date).toLocaleString("en-IN")}</p>
+            <p><b>Total:</b> ₹${order.total}</p>
+            <p><b>Status:</b> ${order.status || "Pending"}</p>
         </div>
-
     `).join("");
 }
 
-    
-async function updateOrderStatus(orderId, newStatus){
-
-    const { error } = await supabaseClient
-        .from("orders")
-        .update({
-            status: newStatus
-        })
-        .eq("order_id", orderId);
-
-    if(error){
-
-        console.error("Status Update Error:", error);
-
-        alert(
-            "❌ Status update नहीं हुआ: " +
-            error.message
-        );
-
-        return;
-    }
-
-    alert("✅ Order Status Updated");
-
-    loadOrders();
-    loadOrderStatuses();
-    }
-    
-// Refresh होने पर मौजूदा Login Session जाँचें
-updateAuthUI();
-
-// Login या Logout होने पर बटन अपडेट करें
-supabaseClient.auth.onAuthStateChange(() => {
-    updateAuthUI();
-});
-
-let customerLanguage = "hi"; // Default Hindi
-
-function toggleCustomerLanguage() {
-    // Language Toggle
-    customerLanguage = (customerLanguage === "hi") ? "en" : "hi";
-
-    // Header Button Text Update
-    const btn = document.getElementById("customerLanguageBtn");
-    if (btn) {
-        btn.innerText = (customerLanguage === "hi") ? "🌐 English" : "🌐 हिंदी";
-    }
-
-    // All Text Translate
-    const elements = document.querySelectorAll("[data-hi]");
-    elements.forEach(el => {
-        const newText = el.getAttribute(`data-${customerLanguage}`);
-        if (newText) {
-            el.innerText = newText;
-        }
-    });
-
-    // All Placeholders Translate
-    const inputElements = document.querySelectorAll("[data-hi-placeholder]");
-    inputElements.forEach(el => {
-        const newPlaceholder = el.getAttribute(`data-${customerLanguage}-placeholder`);
-        if (newPlaceholder) {
-            el.placeholder = newPlaceholder;
-        }
-    });
-}
-
-/* =========================================
-   DYNAMIC PRODUCTS SYSTEM (SUPABASE)
-========================================= */
-
-// 1. Database se Products Load karke Website par Dikhana
+// DYNAMIC PRODUCTS (WEBSITE)
 async function loadDynamicProducts() {
     const container = document.getElementById("dynamicProductsList");
     if (!container) return;
 
-    const { data: products, error } = await supabaseClient
-        .from("products")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-    if (error) {
-        console.error("Error loading products:", error);
-        container.innerHTML = "<p>❌ Products load करने में समस्या हुई।</p>";
+    const { data: products, error } = await supabaseClient.from("products").select("*").order("created_at", { ascending: false });
+    if (error || !products || products.length === 0) {
+        container.innerHTML = "<p style='text-align:center; grid-column:1/-1;'>अभी कोई Product उपलब्ध नहीं है।</p>";
         return;
     }
 
-    if (!products || products.length === 0) {
-        container.innerHTML = "<p style='text-align:center; grid-column:1/-1;'>अभी कोई Product उपलब्ध नहीं है। Admin Panel से Add करें।</p>";
-        return;
-    }
-
-    // Dynamic Products HTML Generate karein
     container.innerHTML = products.map(prod => `
         <div class="product">
             <div class="emoji">${prod.emoji || '💧'}</div>
-            <h3 data-hi="${prod.name}" data-en="${prod.name}">${prod.name}</h3>
+            <h3>${prod.name}</h3>
             <div class="price">₹${prod.price}</div>
-            <button onclick="addToCart('${prod.name}', ${prod.price})">
-                Add to Cart
-            </button>
+            <button onclick="addToCart('${prod.name}', ${prod.price})">Add to Cart</button>
         </div>
     `).join('');
 }
 
-// 2. Admin Panel se Naya Product Add karna
-async function addNewProduct() {
-    const nameInput = document.getElementById("newProdName");
-    const priceInput = document.getElementById("newProdPrice");
-    const emojiInput = document.getElementById("newProdEmoji");
-
-    const name = nameInput.value.trim();
-    const price = priceInput.value.trim();
-    const emoji = emojiInput.value.trim() || "💧";
-
-    if (!name || !price) {
-        alert("कृपया Product Name और Price भरें!");
-        return;
-    }
-
-    const { data, error } = await supabaseClient
-        .from("products")
-        .insert([{
-            name: name,
-            price: Number(price),
-            emoji: emoji
-        }]);
-
-    if (error) {
-        alert("❌ Product Save नहीं हुआ: " + error.message);
-        return;
-    }
-
-    alert("✅ Product सफलतापूर्वक Add हो गया!");
-
-    // Inputs Clear karein
-    nameInput.value = "";
-    priceInput.value = "";
-    emojiInput.value = "";
-
-    // Lists Refresh karein
-    loadDynamicProducts();
-    loadAdminProductsList();
-}
-
-// 3. Admin Panel me Manage Products List (Price Update & Delete ke sath)
-async function loadAdminProductsList() {
-    const list = document.getElementById("adminProductManageList");
-    if (!list) return;
-
-    const { data: products, error } = await supabaseClient
-        .from("products")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-    if (error || !products) {
-        list.innerHTML = "<p>Error loading products list.</p>";
-        return;
-    }
-
-    if (products.length === 0) {
-        list.innerHTML = "<p>Koi Product nahi hai.</p>";
-        return;
-    }
-
-    list.innerHTML = products.map(prod => `
-        <div style="border:1px solid #ddd; padding:12px; border-radius:8px; margin-bottom:10px; background:#fff;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                <b style="font-size:16px;">${prod.emoji || '💧'} ${prod.name}</b>
-                <button onclick="deleteProduct(${prod.id})" style="background:#dc2626; color:white; border:none; padding:5px 10px; border-radius:6px; cursor:pointer;">
-                    🗑️ Remove
-                </button>
-            </div>
-            
-            <div style="display:flex; gap:8px; align-items:center;">
-                <label style="font-size:14px; font-weight:bold;">Price (₹):</label>
-                <input type="number" id="priceInput_${prod.id}" value="${prod.price}" style="width:90px; padding:6px; border:1px solid #ccc; border-radius:6px;">
-                <button onclick="updateProductPrice(${prod.id})" style="background:#0284c7; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer;">
-                    ✏️ Update Price
-                </button>
-            </div>
-        </div>
-    `).join('');
-}
-
-// 4. Product Price Update Function
-async function updateProductPrice(productId) {
-    const newPriceInput = document.getElementById(`priceInput_${productId}`);
-    const newPrice = newPriceInput ? newPriceInput.value.trim() : null;
-
-    if (!newPrice || isNaN(newPrice) || Number(newPrice) <= 0) {
-        alert("Kripya sahi price daalein!");
-        return;
-    }
-
-    const { error } = await supabaseClient
-        .from("products")
-        .update({ price: Number(newPrice) })
-        .eq("id", productId);
-
-    if (error) {
-        alert("❌ Price update nahi hua: " + error.message);
-        return;
-    }
-
-    alert("✅ Product Price successfully update ho gaya!");
-    loadDynamicProducts();
-    loadAdminProductsList();
-}
-
-
-// 5. Admin Panel Khulne Par Admin Products Load Karein
-const originalAdminLogin = adminLogin;
-adminLogin = async function() {
-    await originalAdminLogin();
-    loadAdminProductsList();
-};
-
-// 6. Page Load hote hi Dynamic Products Load karein
-loadDynamicProducts();
-
-/* =========================================
-   SHOPKEEPER REGISTRATION SYSTEM (SUPABASE)
-========================================= */
-
-// 1. Shopkeeper Form Submit (Database + WhatsApp)
+// SHOPKEEPER REGISTRATION
 async function registerShopkeeper() {
     const name = document.getElementById("shopName").value.trim();
     const store = document.getElementById("storeName").value.trim();
@@ -2116,85 +603,153 @@ async function registerShopkeeper() {
         return;
     }
 
-    // Supabase me Save karein
-    const { data, error } = await supabaseClient
-        .from("shopkeepers")
-        .insert([{
-            name: name,
-            store_name: store,
-            mobile: mobile,
-            address: address,
-            products: products
-        }]);
+    await supabaseClient.from("shopkeepers").insert([{ name, store_name: store, mobile, address, products }]);
+    alert("✅ Store Registration Successful! WhatsApp redirect ho raha hai.");
 
-    if (error) {
-        alert("❌ Registration Error: " + error.message);
-        return;
-    }
-
-    alert("✅ Store Registration Successful! Ab WhatsApp redirect ho raha hai.");
-
-    // Clear Form Inputs
-    document.getElementById("shopName").value = "";
-    document.getElementById("storeName").value = "";
-    document.getElementById("shopMobile").value = "";
-    document.getElementById("shopAddress").value = "";
-    document.getElementById("shopProducts").value = "";
-
-    // WhatsApp Notification Message
-    let message = "🏪 *Jalvigo Shopkeeper Registration*%0A%0A";
-    message += "👤 Dukandar: " + name + "%0A";
-    message += "🏪 Dukan: " + store + "%0A";
-    message += "📱 Mobile: " + mobile + "%0A";
-    message += "📍 Pata: " + address + "%0A";
-    message += "🥤 Products: " + products;
-
+    let message = `🏪 *Jalvigo Shopkeeper Registration*%0A%0A👤 Dukandar: ${name}%0A🏪 Dukan: ${store}%0A📱 Mobile: ${mobile}%0A📍 Pata: ${address}%0A🥤 Products: ${products}`;
     window.location.href = "https://wa.me/" + yourWhatsAppNumber + "?text=" + message;
 }
 
-// 2. Admin Panel Me Shopkeepers List Load Karein
+// ADMIN DASHBOARD & MANAGEMENT
+async function adminLogin(){
+    const email = document.getElementById("adminUsernameInput").value.trim();
+    const password = document.getElementById("adminPasswordInput").value;
+    if(!email || !password){ alert("Email और Password डालिए"); return; }
+
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+    if(error || !data.user || data.user.id !== ADMIN_USER_ID){
+        alert("❌ Admin Login failed or unauthorized");
+        return;
+    }
+
+    closeAdminLogin();
+    document.getElementById("adminDashboardModal").style.display = "block";
+    document.getElementById("adminDashboard").style.display = "block";
+
+    loadOrders();
+    loadOrderStatuses();
+    loadShopkeepersList();
+    loadAdminProductsList();
+    updateAuthUI();
+}
+
+async function adminLogout() {
+    await supabaseClient.auth.signOut();
+    closeAdminDashboard();
+    updateAuthUI();
+    alert("Admin Logout Successful.");
+}
+
+async function loadOrders(){
+    const list = document.getElementById("adminOrdersList");
+    const { data } = await supabaseClient.from("orders").select("*").order("order_date", { ascending: false });
+    if(!data || data.length === 0){ list.innerHTML = "<p>अभी कोई Order नहीं है।</p>"; return; }
+    list.innerHTML = data.map(o => `<div style="border:1px solid #ddd; padding:10px; margin:5px 0;"><b>#${o.order_id}</b> - ${o.customer_name} (₹${o.total}) - Status: ${o.status}</div>`).join("");
+}
+
+async function loadOrderStatuses(){
+    const list = document.getElementById("adminOrderStatusList");
+    const { data } = await supabaseClient.from("orders").select("order_id, customer_name, total, status").order("order_date", { ascending: false });
+    if(!data || data.length === 0){ list.innerHTML = "<p>कोई Order नहीं है।</p>"; return; }
+    list.innerHTML = data.map(o => `
+        <div style="border:1px solid #ddd; padding:10px; margin:5px 0;">
+            <p><b>#${o.order_id}</b> - ${o.customer_name} (₹${o.total})</p>
+            <select onchange="updateOrderStatus('${o.order_id}', this.value)" style="padding:6px; margin-top:5px;">
+                <option value="Pending" ${o.status === "Pending" ? "selected" : ""}>Pending</option>
+                <option value="Confirmed" ${o.status === "Confirmed" ? "selected" : ""}>Confirmed</option>
+                <option value="Out for Delivery" ${o.status === "Out for Delivery" ? "selected" : ""}>Out for Delivery</option>
+                <option value="Delivered" ${o.status === "Delivered" ? "selected" : ""}>Delivered</option>
+                <option value="Cancelled" ${o.status === "Cancelled" ? "selected" : ""}>Cancelled</option>
+            </select>
+        </div>
+    `).join("");
+}
+
+async function updateOrderStatus(orderId, newStatus){
+    await supabaseClient.from("orders").update({ status: newStatus }).eq("order_id", orderId);
+    alert("✅ Status Updated");
+    loadOrders();
+    loadOrderStatuses();
+}
+
 async function loadShopkeepersList() {
     const list = document.getElementById("adminShopkeeperList");
-    if (!list) return;
-
-    list.innerHTML = "<p>Loading shopkeepers...</p>";
-
-    const { data: shopkeepers, error } = await supabaseClient
-        .from("shopkeepers")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-    if (error) {
-        list.innerHTML = "<p style='color:red;'>Error loading shopkeepers.</p>";
-        return;
-    }
-
-    if (!shopkeepers || shopkeepers.length === 0) {
-        list.innerHTML = "<p>Abhi koi shopkeeper registered nahi hai.</p>";
-        return;
-    }
-
-    list.innerHTML = shopkeepers.map(shop => `
-        <div style="border:1px solid #ddd; padding:12px; margin:8px 0; border-radius:8px; background:#fff;">
-            <h4>🏪 ${shop.store_name || ''}</h4>
-            <p><b>Dukandar:</b> ${shop.name || ''}</p>
-            <p><b>Mobile:</b> ${shop.mobile || ''}</p>
-            <p><b>Address:</b> ${shop.address || ''}</p>
-            <p><b>Products:</b> ${shop.products || ''}</p>
-            <p><small style="color:gray;">Date: ${shop.created_at ? new Date(shop.created_at).toLocaleString("en-IN") : ''}</small></p>
+    const { data, error } = await supabaseClient.from("shopkeepers").select("*").order("created_at", { ascending: false });
+    if(error || !data || data.length === 0){ list.innerHTML = "<p>कोई Registered Shopkeeper नहीं है।</p>"; return; }
+    list.innerHTML = data.map(s => `
+        <div style="border:1px solid #ddd; padding:10px; margin:6px 0; background:#fff; border-radius:6px;">
+            <h4>🏪 ${s.store_name}</h4>
+            <p><b>Dukandar:</b> ${s.name} | <b>Mobile:</b> ${s.mobile}</p>
+            <p><b>Address:</b> ${s.address}</p>
+            <p><b>Products:</b> ${s.products}</p>
         </div>
     `).join('');
 }
 
-// Admin Panel Login Par Automatic Load Karein
-const prevAdminLogin = adminLogin;
-adminLogin = async function() {
-    await prevAdminLogin();
-    loadShopkeepersList();
-};
-  
+async function addNewProduct() {
+    const name = document.getElementById("newProdName").value.trim();
+    const price = document.getElementById("newProdPrice").value.trim();
+    const emoji = document.getElementById("newProdEmoji").value.trim() || "💧";
+
+    if(!name || !price){ alert("कृपया Product Name और Price भरें!"); return; }
+
+    const { error } = await supabaseClient.from("products").insert([{ name, price: Number(price), emoji }]);
+    if(error){ alert("❌ Error: " + error.message); return; }
+
+    alert("✅ Product Successfully Added!");
+    document.getElementById("newProdName").value = "";
+    document.getElementById("newProdPrice").value = "";
+    document.getElementById("newProdEmoji").value = "";
+    loadDynamicProducts();
+    loadAdminProductsList();
+}
+
+async function loadAdminProductsList() {
+    const list = document.getElementById("adminProductManageList");
+    const { data, error } = await supabaseClient.from("products").select("*").order("created_at", { ascending: false });
+    if(error || !data || data.length === 0){ list.innerHTML = "<p>कोई Product उपलब्ध नहीं है।</p>"; return; }
+
+    list.innerHTML = data.map(prod => `
+        <div style="border:1px solid #ddd; padding:10px; border-radius:8px; margin-bottom:8px; background:#fff;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <b>${prod.emoji || '💧'} ${prod.name}</b>
+                <button onclick="deleteProduct(${prod.id})" style="background:#dc2626; color:white; border:none; padding:5px 10px; border-radius:6px; cursor:pointer;">🗑️ Remove</button>
+            </div>
+            <div style="display:flex; gap:8px; align-items:center;">
+                <label>Price (₹):</label>
+                <input type="number" id="priceInput_${prod.id}" value="${prod.price}" style="width:90px; padding:5px;">
+                <button onclick="updateProductPrice(${prod.id})" style="background:#0284c7; color:white; border:none; padding:5px 10px; border-radius:6px; cursor:pointer;">✏️ Update Price</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+async function updateProductPrice(productId) {
+    const newPrice = document.getElementById(`priceInput_${productId}`).value.trim();
+    if(!newPrice || isNaN(newPrice)){ alert("सਹੀ Price डालें!"); return; }
+
+    const { error } = await supabaseClient.from("products").update({ price: Number(newPrice) }).eq("id", productId);
+    if(error){ alert("❌ Error: " + error.message); return; }
+
+    alert("✅ Price Updated Successfully!");
+    loadDynamicProducts();
+    loadAdminProductsList();
+}
+
+async function deleteProduct(productId) {
+    if(!confirm("क्या आप वाकई इस Product को हटाना चाहते हैं?")) return;
+    const { error } = await supabaseClient.from("products").delete().eq("id", productId);
+    if(error){ alert("❌ Error: " + error.message); return; }
+    alert("✅ Product Deleted!");
+    loadDynamicProducts();
+    loadAdminProductsList();
+}
+
+// Init Load
+updateAuthUI();
+loadDynamicProducts();
+supabaseClient.auth.onAuthStateChange(() => { updateAuthUI(); });
 </script>
 
 </body>
 </html>
-
