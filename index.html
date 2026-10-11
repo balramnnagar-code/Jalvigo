@@ -731,15 +731,17 @@ Shopkeeper Registration अभी WhatsApp के माध्यम से प�
 
 </div>
 
-
 <div class="dashboard-card">
+    <h3>🏪 Registered Shopkeepers</h3>
+    <p style="margin-bottom:10px;">Jalvigo par judi hui sabhi dukanein:</p>
+    
+    <button class="primary-btn" onclick="loadShopkeepersList()" style="margin-bottom:12px;">
+        🔄 Refresh Shopkeepers
+    </button>
 
-<h3>🌐 Website Status</h3>
-
-<p>
-✅ Jalvigo Website Online
-</p>
-
+    <div id="adminShopkeeperList">
+        <p>Shopkeepers load ho rahe hain...</p>
+    </div>
 </div>
 
 
@@ -2084,7 +2086,101 @@ adminLogin = async function() {
 
 // 6. Page Load hote hi Dynamic Products Load karein
 loadDynamicProducts();
-    
+
+/* =========================================
+   SHOPKEEPER REGISTRATION SYSTEM (SUPABASE)
+========================================= */
+
+// 1. Shopkeeper Form Submit (Database + WhatsApp)
+async function registerShopkeeper() {
+    const name = document.getElementById("shopName").value.trim();
+    const store = document.getElementById("storeName").value.trim();
+    const mobile = document.getElementById("shopMobile").value.trim();
+    const address = document.getElementById("shopAddress").value.trim();
+    const products = document.getElementById("shopProducts").value;
+
+    if (!name || !store || !mobile || !address || !products) {
+        alert("Kripya sabhi jaankari bharen!");
+        return;
+    }
+
+    // Supabase me Save karein
+    const { data, error } = await supabaseClient
+        .from("shopkeepers")
+        .insert([{
+            name: name,
+            store_name: store,
+            mobile: mobile,
+            address: address,
+            products: products
+        }]);
+
+    if (error) {
+        alert("❌ Registration Error: " + error.message);
+        return;
+    }
+
+    alert("✅ Store Registration Successful! Ab WhatsApp redirect ho raha hai.");
+
+    // Clear Form Inputs
+    document.getElementById("shopName").value = "";
+    document.getElementById("storeName").value = "";
+    document.getElementById("shopMobile").value = "";
+    document.getElementById("shopAddress").value = "";
+    document.getElementById("shopProducts").value = "";
+
+    // WhatsApp Notification Message
+    let message = "🏪 *Jalvigo Shopkeeper Registration*%0A%0A";
+    message += "👤 Dukandar: " + name + "%0A";
+    message += "🏪 Dukan: " + store + "%0A";
+    message += "📱 Mobile: " + mobile + "%0A";
+    message += "📍 Pata: " + address + "%0A";
+    message += "🥤 Products: " + products;
+
+    window.location.href = "https://wa.me/" + yourWhatsAppNumber + "?text=" + message;
+}
+
+// 2. Admin Panel Me Shopkeepers List Load Karein
+async function loadShopkeepersList() {
+    const list = document.getElementById("adminShopkeeperList");
+    if (!list) return;
+
+    list.innerHTML = "<p>Loading shopkeepers...</p>";
+
+    const { data: shopkeepers, error } = await supabaseClient
+        .from("shopkeepers")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+    if (error) {
+        list.innerHTML = "<p style='color:red;'>Error loading shopkeepers.</p>";
+        return;
+    }
+
+    if (!shopkeepers || shopkeepers.length === 0) {
+        list.innerHTML = "<p>Abhi koi shopkeeper registered nahi hai.</p>";
+        return;
+    }
+
+    list.innerHTML = shopkeepers.map(shop => `
+        <div style="border:1px solid #ddd; padding:12px; margin:8px 0; border-radius:8px; background:#fff;">
+            <h4>🏪 ${shop.store_name || ''}</h4>
+            <p><b>Dukandar:</b> ${shop.name || ''}</p>
+            <p><b>Mobile:</b> ${shop.mobile || ''}</p>
+            <p><b>Address:</b> ${shop.address || ''}</p>
+            <p><b>Products:</b> ${shop.products || ''}</p>
+            <p><small style="color:gray;">Date: ${shop.created_at ? new Date(shop.created_at).toLocaleString("en-IN") : ''}</small></p>
+        </div>
+    `).join('');
+}
+
+// Admin Panel Login Par Automatic Load Karein
+const prevAdminLogin = adminLogin;
+adminLogin = async function() {
+    await prevAdminLogin();
+    loadShopkeepersList();
+};
+  
 </script>
 
 </body>
