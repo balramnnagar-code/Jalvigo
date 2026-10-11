@@ -803,6 +803,7 @@ async function loadShopkeepersList() {
     `).join('');
 }
 
+
 async function addNewProductFromModal() {
     const name = document.getElementById("modalNewProdName").value.trim();
     const price = document.getElementById("modalNewProdPrice").value.trim();
@@ -810,7 +811,13 @@ async function addNewProductFromModal() {
 
     if(!name || !price){ alert("कृपया Product Name और Price भरें!"); return; }
 
-    const { error } = await supabaseClient.from("products").insert([{ name, price: Number(price), emoji }]);
+    const { error } = await supabaseClient.from("products").insert([{ 
+        name, 
+        price: Number(price), 
+        emoji,
+        created_at: new Date().toISOString() // Yeh line error fix karegi
+    }]);
+    
     if(error){ alert("❌ Error: " + error.message); return; }
 
     alert("✅ Product Successfully Added!");
