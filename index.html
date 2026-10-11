@@ -233,7 +233,7 @@ footer{
         <button class="admin-btn" id="customerLogoutBtn" onclick="customerLogout()" style="display:none; background:#dc2626; color:white;">🚪 Customer Logout</button>
         <button class="admin-btn" id="adminOrdersBtn" onclick="openAdminOrders()" style="display:none;">📦 Customer Orders</button>
         
-        <!-- NEW DEDICATED ADMIN PRODUCT MANAGER BUTTON -->
+        <!-- ADMIN PRODUCT MANAGER BUTTON -->
         <button class="admin-btn" id="adminProductsBtn" onclick="openAdminProductsModal()" style="display:none; background:#0284c7;">📦 Manage Products</button>
 
         <button class="admin-btn" id="adminLogoutBtn" onclick="adminLogout()" style="display:none; background:#dc2626; color:white;">🚪 Admin Logout</button>
@@ -262,7 +262,7 @@ footer{
 <!-- SHOPKEEPER -->
 <section class="section-box">
     <h2 data-hi="🏪 Jalvigo पर अपनी दुकान जोड़ें" data-en="🏪 Register Your Shop on Jalvigo">🏪 Jalvigo पर अपनी दुकान जोड़ें</h2>
-    <p style="margin-bottom:20px;" data-hi="दुकानदार अपनी दुकान की जानकारी देकर Jalvigo से जुड़ सकते हैं।" data-en="Shopkeepers can join Jalvigo by providing their shop details.">दुकानदार अपनी दुकान की जानकारी देकर Jalvigo से जुड़ सकते हैं[span_2](start_span)[span_2](end_span)。</p>
+    <p style="margin-bottom:20px;" data-hi="दुकानदार अपनी दुकान की जानकारी देकर Jalvigo से जुड़ सकते हैं।" data-en="Shopkeepers can join Jalvigo by providing their shop details.">दुकानदार अपनी दुकान की जानकारी देकर Jalvigo से जुड़ सकते हैं।</p>
 
     <div class="form-group">
         <label data-hi="दुकानदार का नाम" data-en="Shopkeeper Name">दुकानदार का नाम</label>
@@ -293,7 +293,7 @@ footer{
             <option>Water & Cold Drinks सभी</option>
         </select>
     </div>
-    <button class="primary-btn" onclick="registerShopkeeper()">🏪 दुकान Register करें</button>
+    <button class="primary-btn" onclick="registerShopkeeper()" data-hi="🏪 दुकान Register करें" data-en="🏪 Register Store">🏪 दुकान Register करें</button>
 </section>
 
 <!-- CUSTOMER AUTH -->
@@ -363,7 +363,6 @@ footer{
     <span class="close" onclick="closeAdminProductsModal()">×</span>
     <h2>📦 Manage Products (Add, Remove & Update Price)</h2>
     
-    <!-- Add New Product Section Inside Modal -->
     <div class="dashboard-card" style="margin-top:15px;">
         <h3>➕ Add New Product</h3>
         <div class="form-group"><label>Product Name</label><input type="text" id="modalNewProdName" placeholder="जैसे: Lemon Soda"></div>
@@ -372,7 +371,6 @@ footer{
         <button class="primary-btn" onclick="addNewProductFromModal()" style="width:100%; margin-top:5px;">➕ Add Product</button>
     </div>
 
-    <!-- Remove / Update List Section Inside Modal -->
     <div class="dashboard-card" style="margin-top:15px;">
         <h3>🗑️ Existing Products List</h3>
         <button class="primary-btn" onclick="loadAdminProductsList()" style="margin-bottom:10px; background:#0284c7;">🔄 Refresh List</button>
@@ -426,7 +424,23 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_
 let yourWhatsAppNumber = "916260832599";
 let cart = [];
 let shoppingType = "Retail";
+let customerLanguage = "hi";
 const ADMIN_USER_ID = "e8075a8a-1760-459b-9d33-b640b04b2d14";
+
+// LANGUAGE TOGGLE FUNCTION
+function toggleCustomerLanguage() {
+    customerLanguage = customerLanguage === "hi" ? "en" : "hi";
+    document.querySelectorAll("[data-hi]").forEach(el => {
+        const text = el.getAttribute(`data-${customerLanguage}`);
+        if (text) {
+            if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") {
+                el.placeholder = text;
+            } else {
+                el.innerText = text;
+            }
+        }
+    });
+}
 
 // TYPE SELECT
 function selectType(type){
