@@ -37,6 +37,7 @@ header{
 .header-buttons{
     display:flex;
     gap:7px;
+    flex-wrap:wrap;
 }
 .cart-btn,
 .admin-btn{
@@ -231,6 +232,10 @@ footer{
         <button class="admin-btn" id="myOrdersBtn" onclick="openMyOrders()" style="display:none;">📦 My Orders</button>
         <button class="admin-btn" id="customerLogoutBtn" onclick="customerLogout()" style="display:none; background:#dc2626; color:white;">🚪 Customer Logout</button>
         <button class="admin-btn" id="adminOrdersBtn" onclick="openAdminOrders()" style="display:none;">📦 Customer Orders</button>
+        
+        <!-- NEW DEDICATED ADMIN PRODUCT MANAGER BUTTON -->
+        <button class="admin-btn" id="adminProductsBtn" onclick="openAdminProductsModal()" style="display:none; background:#0284c7;">📦 Manage Products</button>
+
         <button class="admin-btn" id="adminLogoutBtn" onclick="adminLogout()" style="display:none; background:#dc2626; color:white;">🚪 Admin Logout</button>
         <button class="cart-btn" onclick="openCart()">🛒 Cart: <span id="cartCount">0</span></button>
         <button class="admin-btn" id="customerLanguageBtn" onclick="toggleCustomerLanguage()">🌐 हिंदी / English</button>
@@ -257,7 +262,7 @@ footer{
 <!-- SHOPKEEPER -->
 <section class="section-box">
     <h2 data-hi="🏪 Jalvigo पर अपनी दुकान जोड़ें" data-en="🏪 Register Your Shop on Jalvigo">🏪 Jalvigo पर अपनी दुकान जोड़ें</h2>
-    <p style="margin-bottom:20px;" data-hi="दुकानदार अपनी दुकान की जानकारी देकर Jalvigo से जुड़ सकते हैं।" data-en="Shopkeepers can join Jalvigo by providing their shop details.">दुकानदार अपनी दुकान की जानकारी देकर Jalvigo से जुड़ सकते हैं।</p>
+    <p style="margin-bottom:20px;" data-hi="दुकानदार अपनी दुकान की जानकारी देकर Jalvigo से जुड़ सकते हैं।" data-en="Shopkeepers can join Jalvigo by providing their shop details.">दुकानदार अपनी दुकान की जानकारी देकर Jalvigo से जुड़ सकते हैं[span_2](start_span)[span_2](end_span)。</p>
 
     <div class="form-group">
         <label data-hi="दुकानदार का नाम" data-en="Shopkeeper Name">दुकानदार का नाम</label>
@@ -352,6 +357,30 @@ footer{
 </div>
 </div>
 
+<!-- DEDICATED ADMIN PRODUCTS MODAL -->
+<div class="modal" id="adminProductsModal">
+<div class="modal-box" style="max-width:600px;">
+    <span class="close" onclick="closeAdminProductsModal()">×</span>
+    <h2>📦 Manage Products (Add, Remove & Update Price)</h2>
+    
+    <!-- Add New Product Section Inside Modal -->
+    <div class="dashboard-card" style="margin-top:15px;">
+        <h3>➕ Add New Product</h3>
+        <div class="form-group"><label>Product Name</label><input type="text" id="modalNewProdName" placeholder="जैसे: Lemon Soda"></div>
+        <div class="form-group"><label>Price (₹)</label><input type="number" id="modalNewProdPrice" placeholder="जैसे: 35"></div>
+        <div class="form-group"><label>Emoji Icon</label><input type="text" id="modalNewProdEmoji" placeholder="जैसे: 🥤 (Default 💧)"></div>
+        <button class="primary-btn" onclick="addNewProductFromModal()" style="width:100%; margin-top:5px;">➕ Add Product</button>
+    </div>
+
+    <!-- Remove / Update List Section Inside Modal -->
+    <div class="dashboard-card" style="margin-top:15px;">
+        <h3>🗑️ Existing Products List</h3>
+        <button class="primary-btn" onclick="loadAdminProductsList()" style="margin-bottom:10px; background:#0284c7;">🔄 Refresh List</button>
+        <div id="adminProductManageList" style="max-height:300px; overflow-y:auto;"><p>Products load ho rahe hain...</p></div>
+    </div>
+</div>
+</div>
+
 <!-- ADMIN DASHBOARD -->
 <div class="modal" id="adminDashboardModal">
 <div class="modal-box" style="max-width:650px;">
@@ -378,22 +407,6 @@ footer{
         <div id="adminShopkeeperList"><p>Shopkeepers load ho rahe hain...</p></div>
     </div>
 
-    <!-- CARD 3: Add New Product -->
-    <div class="dashboard-card">
-        <h3>➕ Add New Product</h3>
-        <div class="form-group"><label>Product Name</label><input type="text" id="newProdName" placeholder="जैसे: Lemon Soda"></div>
-        <div class="form-group"><label>Price (₹)</label><input type="number" id="newProdPrice" placeholder="जैसे: 35"></div>
-        <div class="form-group"><label>Emoji Icon</label><input type="text" id="newProdEmoji" placeholder="जैसे: 🥤 (Default 💧)"></div>
-        <button class="primary-btn" onclick="addNewProduct()" style="width:100%; margin-top:10px;">➕ Add Product</button>
-    </div>
-
-    <!-- CARD 4: Remove Products & Update Price -->
-    <div class="dashboard-card">
-        <h3>🗑️ Remove Products & Update Price</h3>
-        <button class="primary-btn" onclick="loadAdminProductsList()" style="margin-bottom:10px; background:#0284c7;">🔄 Refresh Products List</button>
-        <div id="adminProductManageList" style="margin-top:10px;"><p>Products load ho रहे हैं...</p></div>
-    </div>
-
     <br>
     <button class="logout-btn" onclick="adminLogout()">Logout</button>
 </div>
@@ -413,7 +426,6 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_
 let yourWhatsAppNumber = "916260832599";
 let cart = [];
 let shoppingType = "Retail";
-let customerLanguage = "hi";
 const ADMIN_USER_ID = "e8075a8a-1760-459b-9d33-b640b04b2d14";
 
 // TYPE SELECT
@@ -429,7 +441,7 @@ function selectType(type){
     }
 }
 
-// AUTH & UI
+// AUTH & UI MODALS
 function openCustomerAuth(){ document.getElementById("customerAuthModal").style.display = "block"; }
 function closeCustomerAuth(){ document.getElementById("customerAuthModal").style.display = "none"; }
 function openCart(){ updateCart(); document.getElementById("cartModal").style.display = "block"; }
@@ -439,6 +451,14 @@ function closeOrderForm(){ document.getElementById("orderModal").style.display =
 function openAdminLogin(){ document.getElementById("adminLoginModal").style.display = "block"; }
 function closeAdminLogin(){ document.getElementById("adminLoginModal").style.display = "none"; }
 function closeAdminDashboard(){ document.getElementById("adminDashboardModal").style.display = "none"; }
+
+function openAdminProductsModal(){ 
+    document.getElementById("adminProductsModal").style.display = "block"; 
+    loadAdminProductsList();
+}
+function closeAdminProductsModal(){ 
+    document.getElementById("adminProductsModal").style.display = "none"; 
+}
 
 async function updateAuthUI() {
     const { data } = await supabaseClient.auth.getSession();
@@ -450,6 +470,7 @@ async function updateAuthUI() {
     document.getElementById("myOrdersBtn").style.display = isCustomer ? "inline-block" : "none";
     document.getElementById("customerLogoutBtn").style.display = isCustomer ? "inline-block" : "none";
     document.getElementById("adminOrdersBtn").style.display = isAdmin ? "inline-block" : "none";
+    document.getElementById("adminProductsBtn").style.display = isAdmin ? "inline-block" : "none";
     document.getElementById("adminLogoutBtn").style.display = isAdmin ? "inline-block" : "none";
     
     const adminLoginBtn = document.querySelector('button[onclick="openAdminLogin()"]');
@@ -629,13 +650,13 @@ async function adminLogin(){
     loadOrders();
     loadOrderStatuses();
     loadShopkeepersList();
-    loadAdminProductsList();
     updateAuthUI();
 }
 
 async function adminLogout() {
     await supabaseClient.auth.signOut();
     closeAdminDashboard();
+    closeAdminProductsModal();
     updateAuthUI();
     alert("Admin Logout Successful.");
 }
@@ -686,10 +707,10 @@ async function loadShopkeepersList() {
     `).join('');
 }
 
-async function addNewProduct() {
-    const name = document.getElementById("newProdName").value.trim();
-    const price = document.getElementById("newProdPrice").value.trim();
-    const emoji = document.getElementById("newProdEmoji").value.trim() || "💧";
+async function addNewProductFromModal() {
+    const name = document.getElementById("modalNewProdName").value.trim();
+    const price = document.getElementById("modalNewProdPrice").value.trim();
+    const emoji = document.getElementById("modalNewProdEmoji").value.trim() || "💧";
 
     if(!name || !price){ alert("कृपया Product Name और Price भरें!"); return; }
 
@@ -697,15 +718,16 @@ async function addNewProduct() {
     if(error){ alert("❌ Error: " + error.message); return; }
 
     alert("✅ Product Successfully Added!");
-    document.getElementById("newProdName").value = "";
-    document.getElementById("newProdPrice").value = "";
-    document.getElementById("newProdEmoji").value = "";
+    document.getElementById("modalNewProdName").value = "";
+    document.getElementById("modalNewProdPrice").value = "";
+    document.getElementById("modalNewProdEmoji").value = "";
     loadDynamicProducts();
     loadAdminProductsList();
 }
 
 async function loadAdminProductsList() {
     const list = document.getElementById("adminProductManageList");
+    if(!list) return;
     const { data, error } = await supabaseClient.from("products").select("*").order("created_at", { ascending: false });
     if(error || !data || data.length === 0){ list.innerHTML = "<p>कोई Product उपलब्ध नहीं है।</p>"; return; }
 
@@ -726,7 +748,7 @@ async function loadAdminProductsList() {
 
 async function updateProductPrice(productId) {
     const newPrice = document.getElementById(`priceInput_${productId}`).value.trim();
-    if(!newPrice || isNaN(newPrice)){ alert("सਹੀ Price डालें!"); return; }
+    if(!newPrice || isNaN(newPrice)){ alert("सही Price डालें!"); return; }
 
     const { error } = await supabaseClient.from("products").update({ price: Number(newPrice) }).eq("id", productId);
     if(error){ alert("❌ Error: " + error.message); return; }
