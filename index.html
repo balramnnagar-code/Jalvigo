@@ -230,12 +230,15 @@ footer{
         <button class="admin-btn" onclick="openAdminLogin()">🔐 Admin</button>
         <button class="admin-btn" id="customerLoginBtn" onclick="openCustomerAuth()">👤 Customer Login</button>
         <button class="admin-btn" id="myOrdersBtn" onclick="openMyOrders()" style="display:none;">📦 My Orders</button>
+        
+        <!-- DELIVERY PARTNER BUTTON -->
+        <button class="admin-btn" onclick="openDeliveryModal()" style="background:#16a34a;">🚚 Delivery Partner</button>
+
         <button class="admin-btn" id="customerLogoutBtn" onclick="customerLogout()" style="display:none; background:#dc2626; color:white;">🚪 Customer Logout</button>
         <button class="admin-btn" id="adminOrdersBtn" onclick="openAdminOrders()" style="display:none;">📦 Customer Orders</button>
-        
         <button class="admin-btn" id="adminProductsBtn" onclick="openAdminProductsModal()" style="display:none; background:#0284c7;">📦 Manage Products</button>
-
         <button class="admin-btn" id="adminLogoutBtn" onclick="adminLogout()" style="display:none; background:#dc2626; color:white;">🚪 Admin Logout</button>
+        
         <button class="cart-btn" onclick="openCart()">🛒 Cart: <span id="cartCount">0</span></button>
         <button class="admin-btn" id="customerLanguageBtn" onclick="toggleCustomerLanguage()">🌐 हिंदी / English</button>
     </div>
@@ -258,7 +261,7 @@ footer{
     </div>
 </section>
 
-<!-- SHOPKEEPER -->
+<!-- SHOPKEEPER SECTION -->
 <section class="section-box">
     <h2 data-hi="🏪 Jalvigo पर अपनी दुकान जोड़ें" data-en="🏪 Register Your Shop on Jalvigo">🏪 Jalvigo पर अपनी दुकान जोड़ें</h2>
     <p style="margin-bottom:20px;" data-hi="दुकानदार अपनी दुकान की जानकारी देकर Jalvigo से जुड़ सकते हैं।" data-en="Shopkeepers can join Jalvigo by providing their shop details.">दुकानदार अपनी दुकान की जानकारी देकर Jalvigo से जुड़ सकते हैं।</p>
@@ -292,7 +295,7 @@ footer{
             <option>Water & Cold Drinks सभी</option>
         </select>
     </div>
-    <button class="primary-btn" onclick="registerShopkeeper()" data-hi="🏪 दुकान Register करें" data-en="🏪 Register Store">🏪 दुकान Register करें</button>
+    <button class="primary-btn" onclick="registerShopkeeper()">🏪 दुकान Register करें</button>
 </section>
 
 <!-- CUSTOMER AUTH -->
@@ -313,7 +316,7 @@ footer{
   </div>
 </div>
 
-<!-- CUSTOMER ORDERS MODAL (WITH CANCEL BUTTON) -->
+<!-- CUSTOMER ORDERS MODAL -->
 <div class="modal" id="customerOrdersModal">
   <div class="modal-box">
     <span class="close" onclick="document.getElementById('customerOrdersModal').style.display='none'">×</span>
@@ -323,7 +326,7 @@ footer{
   </div>
 </div>
 
-<!-- CART -->
+<!-- CART MODAL -->
 <div class="modal" id="cartModal">
 <div class="modal-box">
 <span class="close" onclick="closeCart()">×</span>
@@ -334,7 +337,7 @@ footer{
 </div>
 </div>
 
-<!-- ORDER -->
+<!-- ORDER FORM MODAL WITH CASH ON DELIVERY & PROMO CODE -->
 <div class="modal" id="orderModal">
 <div class="modal-box">
 <span class="close" onclick="closeOrderForm()">×</span>
@@ -342,7 +345,34 @@ footer{
 <div class="form-group"><label>Name</label><input type="text" id="customerName" placeholder="आपका नाम"></div>
 <div class="form-group"><label>Mobile</label><input type="tel" id="customerMobile" placeholder="मोबाइल नंबर"></div>
 <div class="form-group"><label>Delivery Address</label><textarea id="customerAddress" placeholder="पूरा पता"></textarea></div>
+
+<!-- CASH ON DELIVERY / PAYMENT MODE -->
+<div class="form-group">
+    <label>Payment Mode (भुगतान का तरीका)</label>
+    <select id="paymentMode">
+        <option value="Cash on Delivery (COD)">💵 Cash on Delivery (COD)</option>
+        <option value="UPI / Online Pay">📱 Online Pay / UPI</option>
+    </select>
+</div>
+
+<!-- PROMO CODE -->
+<div class="form-group">
+    <label>Promo / Discount Code</label>
+    <input type="text" id="promoCodeInput" placeholder="जैसे: JALVIGO10 (Optional)">
+</div>
+
 <button class="primary-btn" onclick="sendOrder()">📦 Place Order</button>
+</div>
+</div>
+
+<!-- DELIVERY AGENT DASHBOARD MODAL -->
+<div class="modal" id="deliveryModal">
+<div class="modal-box" style="max-width:600px;">
+    <span class="close" onclick="closeDeliveryModal()">×</span>
+    <h2>🚚 Delivery Partner Panel</h2>
+    <p style="margin-bottom:12px;">यहाँ से डिलीवरी बॉय ऑर्डर डिलीवर कर सकते हैं:</p>
+    <button class="primary-btn" onclick="loadDeliveryOrders()" style="margin-bottom:10px; background:#16a34a;">🔄 Refresh Delivery List</button>
+    <div id="deliveryOrdersList"><p>Delivery Orders load हो रहे हैं...</p></div>
 </div>
 </div>
 
@@ -388,7 +418,6 @@ footer{
     <h2>🛠️ Jalvigo Admin Panel</h2>
     <p style="margin:10px 0 20px;">Welcome, Admin 👋</p>
 
-    <!-- CARD 1: Customer Orders -->
     <div class="dashboard-card">
         <h3>📦 Customer Orders</h3>
         <button class="primary-btn" onclick="loadOrders()" style="margin-bottom:10px;">🔄 Refresh Orders</button>
@@ -398,7 +427,6 @@ footer{
         <div id="adminOrderStatusList"><p>Orders यहाँ दिखाई देंगे...</p></div>
     </div>
 
-    <!-- CARD 2: Registered Shopkeepers -->
     <div class="dashboard-card">
         <h3>🏪 Registered Shopkeepers</h3>
         <button class="primary-btn" onclick="loadShopkeepersList()" style="margin-bottom:10px;">🔄 Refresh Shopkeepers</button>
@@ -427,7 +455,7 @@ let shoppingType = "Retail";
 let customerLanguage = "hi";
 const ADMIN_USER_ID = "e8075a8a-1760-459b-9d33-b640b04b2d14";
 
-// LANGUAGE TOGGLE FUNCTION
+// LANGUAGE TOGGLE
 function toggleCustomerLanguage() {
     customerLanguage = customerLanguage === "hi" ? "en" : "hi";
     document.querySelectorAll("[data-hi]").forEach(el => {
@@ -442,7 +470,6 @@ function toggleCustomerLanguage() {
     });
 }
 
-// TYPE SELECT
 function selectType(type){
     shoppingType = type;
     document.getElementById("selectedType").innerText = type;
@@ -455,7 +482,7 @@ function selectType(type){
     }
 }
 
-// AUTH & UI MODALS
+// MODALS
 function openCustomerAuth(){ document.getElementById("customerAuthModal").style.display = "block"; }
 function closeCustomerAuth(){ document.getElementById("customerAuthModal").style.display = "none"; }
 function openCart(){ updateCart(); document.getElementById("cartModal").style.display = "block"; }
@@ -472,6 +499,14 @@ function openAdminProductsModal(){
 }
 function closeAdminProductsModal(){ 
     document.getElementById("adminProductsModal").style.display = "none"; 
+}
+
+function openDeliveryModal(){
+    document.getElementById("deliveryModal").style.display = "block";
+    loadDeliveryOrders();
+}
+function closeDeliveryModal(){
+    document.getElementById("deliveryModal").style.display = "none";
 }
 
 async function updateAuthUI() {
@@ -558,6 +593,7 @@ async function sendOrder(){
     const name = document.getElementById("customerName").value.trim();
     const mobile = document.getElementById("customerMobile").value.trim();
     const address = document.getElementById("customerAddress").value.trim();
+    const payMode = document.getElementById("paymentMode").value;
 
     if(!name || !mobile || !address){ alert("कृपया Name, Mobile और Address भरें।"); return; }
     if(!cart || cart.length === 0){ alert("Cart खाली है।"); return; }
@@ -573,7 +609,7 @@ async function sendOrder(){
     }]);
 
     if(error){ alert("Order save नहीं हुआ: " + error.message); return; }
-    alert("Order successfully placed! Order ID: " + orderId);
+    alert(`Order Place हो गया! ✅\nOrder ID: ${orderId}\nPayment: ${payMode}`);
     cart = [];
     updateCart();
     closeOrderForm();
@@ -584,7 +620,6 @@ async function openMyOrders() {
     loadCustomerOrders();
 }
 
-// CUSTOMER ORDERS WITH CANCEL FEATURE
 async function loadCustomerOrders(){
     const list = document.getElementById("customerOrdersList");
     list.innerHTML = "<p>Orders load हो रहे हैं...</p>";
@@ -605,7 +640,7 @@ async function loadCustomerOrders(){
                 </div>
                 <p style="margin-top:5px;"><b>Date:</b> ${new Date(order.order_date).toLocaleString("en-IN")}</p>
                 <p><b>Total:</b> ₹${order.total}</p>
-                <p><b>Status:</b> <span style="font-weight:bold; color:${order.status === 'Cancelled' ? '#dc2626' : '#0284c7'}">${order.status || "Pending"}</span></p>
+                <p><b>Status:</b> <span style="font-weight:bold; color:${order.status === 'Cancelled' ? '#dc2626' : (order.status === 'Delivered' ? '#16a34a' : '#0284c7')}">${order.status || "Pending"}</span></p>
             </div>
         `;
     }).join("");
@@ -615,16 +650,43 @@ async function cancelCustomerOrder(orderId) {
     if(!confirm("क्या आप वाकई अपना यह Order Cancel करना चाहते हैं?")) return;
 
     const { error } = await supabaseClient.from("orders").update({ status: "Cancelled" }).eq("order_id", orderId);
-    if(error){
-        alert("❌ Order cancel नहीं हो सका: " + error.message);
-        return;
-    }
+    if(error){ alert("❌ Order cancel नहीं हो सका: " + error.message); return; }
 
     alert("✅ आपका Order Cancel कर दिया गया है!");
     loadCustomerOrders();
 }
 
-// DYNAMIC PRODUCTS (WEBSITE)
+// DELIVERY AGENT SYSTEM
+async function loadDeliveryOrders() {
+    const list = document.getElementById("deliveryOrdersList");
+    list.innerHTML = "<p>Orders Load हो रहे हैं...</p>";
+    
+    const { data, error } = await supabaseClient.from("orders").select("*").neq("status", "Cancelled").order("order_date", { ascending: false });
+    if(error || !data || data.length === 0){ list.innerHTML = "<p>कोई Active Delivery Order नहीं है।</p>"; return; }
+
+    list.innerHTML = data.map(o => `
+        <div style="border:1px solid #ddd; padding:12px; margin:8px 0; border-radius:8px; background:#fff;">
+            <b>📦 Order #${o.order_id}</b>
+            <p>👤 <b>Customer:</b> ${o.customer_name} (${o.mobile})</p>
+            <p>📍 <b>Address:</b> ${o.address}</p>
+            <p>💵 <b>Total:</b> ₹${o.total}</p>
+            <p>📌 <b>Status:</b> <b style="color:#0284c7;">${o.status}</b></p>
+            <div style="margin-top:8px; display:flex; gap:8px;">
+                <button onclick="changeDeliveryStatus('${o.order_id}', 'Out for Delivery')" style="background:#0284c7; color:white; border:none; padding:6px 10px; border-radius:6px; cursor:pointer;">🚚 Out for Delivery</button>
+                <button onclick="changeDeliveryStatus('${o.order_id}', 'Delivered')" style="background:#16a34a; color:white; border:none; padding:6px 10px; border-radius:6px; cursor:pointer;">✅ Mark Delivered</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+async function changeDeliveryStatus(orderId, newStatus) {
+    const { error } = await supabaseClient.from("orders").update({ status: newStatus }).eq("order_id", orderId);
+    if(error){ alert("Error: " + error.message); return; }
+    alert(`Order Status Updated to: ${newStatus}`);
+    loadDeliveryOrders();
+}
+
+// DYNAMIC PRODUCTS
 async function loadDynamicProducts() {
     const container = document.getElementById("dynamicProductsList");
     if (!container) return;
@@ -665,7 +727,7 @@ async function registerShopkeeper() {
     window.location.href = "https://wa.me/" + yourWhatsAppNumber + "?text=" + message;
 }
 
-// ADMIN DASHBOARD & MANAGEMENT
+// ADMIN DASHBOARD
 async function adminLogin(){
     const email = document.getElementById("adminUsernameInput").value.trim();
     const password = document.getElementById("adminPasswordInput").value;
