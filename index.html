@@ -720,17 +720,7 @@ Welcome, Admin 👋
 
 </div>
 
-
-<div class="dashboard-card">
-
-<h3>🏪 Shopkeepers</h3>
-
-<p>
-Shopkeeper Registration अभी WhatsApp के माध्यम से प्राप्त होगा।
-</p>
-
-</div>
-
+<!-- CARD 1: Registered Shopkeepers -->
 <div class="dashboard-card">
     <h3>🏪 Registered Shopkeepers</h3>
     <p style="margin-bottom:10px;">Jalvigo par judi hui sabhi dukanein:</p>
@@ -744,35 +734,42 @@ Shopkeeper Registration अभी WhatsApp के माध्यम से प�
     </div>
 </div>
 
-
+<!-- CARD 2: Add New Product -->
 <div class="dashboard-card">
-    <h3>🛒 Manage Products (Dynamic)</h3>
-    <p style="margin-bottom:10px;">यहाँ से नए Products जोड़ें या पुराने Remove करें:</p>
+    <h3>➕ Add New Product</h3>
+    <p style="margin-bottom:10px;">Yahan se naya Product add karein:</p>
 
     <div class="form-group">
         <label>Product Name</label>
-        <input type="text" id="newProdName" placeholder="जैसे: Lemon Soda">
+        <input type="text" id="newProdName" placeholder="Jaise: Lemon Soda">
     </div>
 
     <div class="form-group">
         <label>Price (₹)</label>
-        <input type="number" id="newProdPrice" placeholder="जैसे: 35">
+        <input type="number" id="newProdPrice" placeholder="Jaise: 35">
     </div>
 
     <div class="form-group">
         <label>Emoji Icon</label>
-        <input type="text" id="newProdEmoji" placeholder="जैसे: 🥤 (Default 💧)">
+        <input type="text" id="newProdEmoji" placeholder="Jaise: 🥤 (Default 💧)">
     </div>
 
     <button class="primary-btn" onclick="addNewProduct()" style="width:100%; margin-top:10px;">
-        ➕ Add New Product
+        ➕ Add Product
+    </button>
+</div>
+
+<!-- CARD 3: Remove & Update Price -->
+<div class="dashboard-card">
+    <h3>🗑️ Remove Products & Update Price</h3>
+    <p style="margin-bottom:10px;">Yahan se live products ki price badlein ya remove karein:</p>
+    
+    <button class="primary-btn" onclick="loadAdminProductsList()" style="margin-bottom:12px; background:#0284c7;">
+        🔄 Refresh Products List
     </button>
 
-    <hr style="margin:20px 0;">
-
-    <h4>📦 Current Live Products List</h4>
     <div id="adminProductManageList" style="margin-top:10px;">
-        <p>Products load हो रहे हैं...</p>
+        <p>Products load ho rahe hain...</p>
     </div>
 </div>
 
@@ -2026,7 +2023,7 @@ async function addNewProduct() {
     loadAdminProductsList();
 }
 
-// 3. Admin Panel me Manage Products List Dikhana
+// 3. Admin Panel me Manage Products List (Price Update & Delete ke sath)
 async function loadAdminProductsList() {
     const list = document.getElementById("adminProductManageList");
     if (!list) return;
@@ -2042,40 +2039,55 @@ async function loadAdminProductsList() {
     }
 
     if (products.length === 0) {
-        list.innerHTML = "<p>कोई Product नहीं है।</p>";
+        list.innerHTML = "<p>Koi Product nahi hai.</p>";
         return;
     }
 
     list.innerHTML = products.map(prod => `
-        <div style="display:flex; justify-content:space-between; align-items:center; border:1px solid #ddd; padding:10px; border-radius:8px; margin-bottom:8px; background:#fff;">
-            <div>
-                <b>${prod.emoji || '💧'} ${prod.name}</b> - ₹${prod.price}
+        <div style="border:1px solid #ddd; padding:12px; border-radius:8px; margin-bottom:10px; background:#fff;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <b style="font-size:16px;">${prod.emoji || '💧'} ${prod.name}</b>
+                <button onclick="deleteProduct(${prod.id})" style="background:#dc2626; color:white; border:none; padding:5px 10px; border-radius:6px; cursor:pointer;">
+                    🗑️ Remove
+                </button>
             </div>
-            <button onclick="deleteProduct(${prod.id})" style="background:#dc2626; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer;">
-                🗑️ Delete
-            </button>
+            
+            <div style="display:flex; gap:8px; align-items:center;">
+                <label style="font-size:14px; font-weight:bold;">Price (₹):</label>
+                <input type="number" id="priceInput_${prod.id}" value="${prod.price}" style="width:90px; padding:6px; border:1px solid #ccc; border-radius:6px;">
+                <button onclick="updateProductPrice(${prod.id})" style="background:#0284c7; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer;">
+                    ✏️ Update Price
+                </button>
+            </div>
         </div>
     `).join('');
 }
 
-// 4. Admin Panel se Product Delete karna
-async function deleteProduct(productId) {
-    if (!confirm("क्या आप वाकई इस Product को हटाना चाहते हैं?")) return;
+// 4. Product Price Update Function
+async function updateProductPrice(productId) {
+    const newPriceInput = document.getElementById(`priceInput_${productId}`);
+    const newPrice = newPriceInput ? newPriceInput.value.trim() : null;
 
-    const { error } = await supabaseClient
-        .from("products")
-        .delete()
-        .eq("id", productId);
-
-    if (error) {
-        alert("❌ Delete नहीं हो पाया: " + error.message);
+    if (!newPrice || isNaN(newPrice) || Number(newPrice) <= 0) {
+        alert("Kripya sahi price daalein!");
         return;
     }
 
-    alert("✅ Product Delete कर दिया गया!");
+    const { error } = await supabaseClient
+        .from("products")
+        .update({ price: Number(newPrice) })
+        .eq("id", productId);
+
+    if (error) {
+        alert("❌ Price update nahi hua: " + error.message);
+        return;
+    }
+
+    alert("✅ Product Price successfully update ho gaya!");
     loadDynamicProducts();
     loadAdminProductsList();
 }
+
 
 // 5. Admin Panel Khulne Par Admin Products Load Karein
 const originalAdminLogin = adminLogin;
