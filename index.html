@@ -17,7 +17,9 @@ header{background:#0284c7;color:white;padding:15px;display:flex;justify-content:
 .hero{text-align:center;padding:30px 15px;background:linear-gradient(135deg,#dff6ff,#fff);}
 .hero h1{color:#0369a1;margin-bottom:8px;}
 .hero p{color:#555;}
-.search-container{padding:15px 20px;text-align:center;background:#e0f2fe;}
+.promo-banner{background:linear-gradient(135deg,#0284c7,#0369a1);color:white;margin:15px 20px;padding:18px;border-radius:15px;text-align:center;box-shadow:0 4px 15px rgba(0,0,0,.15);}
+.promo-banner h3{font-size:20px;margin-bottom:5px;}
+.search-container{padding:10px 20px;text-align:center;background:#e0f2fe;}
 .search-container input{width:100%;max-width:500px;padding:12px 15px;border:1px solid #0284c7;border-radius:25px;font-size:16px;outline:none;}
 .type-box{text-align:center;padding:15px;}
 .type-box button{padding:10px 18px;border:2px solid #0284c7;background:white;color:#0284c7;border-radius:25px;margin:5px;font-weight:bold;cursor:pointer;}
@@ -56,11 +58,11 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
         <button class="admin-btn" onclick="openAdminLogin()">🔐 Admin</button>
         <button class="admin-btn" id="customerLoginBtn" onclick="openCustomerAuth()">👤 Customer Login</button>
         <button class="admin-btn" id="myOrdersBtn" onclick="openMyOrders()" style="display:none;">📦 My Orders</button>
-        <button class="admin-btn" onclick="openDeliveryModal()" style="background:#16a34a;">🚚 Delivery Partner</button>
+        <button class="admin-btn" id="deliveryBtn" onclick="openDeliveryModal()" style="background:#16a34a;">🚚 Delivery Partner</button>
         <button class="admin-btn" id="customerLogoutBtn" onclick="customerLogout()" style="display:none; background:#dc2626;">🚪 Logout</button>
         <button class="admin-btn" id="adminOrdersBtn" onclick="openAdminDashboard()" style="display:none;">🛠️ Admin Panel</button>
         <button class="admin-btn" id="adminProductsBtn" onclick="openAdminProductsModal()" style="display:none; background:#0284c7;">📦 Manage Products</button>
-        <button class="cart-btn" onclick="openCart()">🛒 Cart: <span id="cartCount">0</span></button>
+        <button class="cart-btn" onclick="openCart()" id="cartMainBtn">🛒 Cart: <span id="cartCount">0</span></button>
     </div>
 </header>
 
@@ -68,6 +70,12 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
     <h1>Fresh Water & Beverages Marketplace 💧</h1>
     <p>Fast delivery to your doorstep with exciting offers!</p>
 </section>
+
+<!-- DYNAMIC ADVERTISEMENT / PROMO BANNER -->
+<div class="promo-banner">
+    <h3 id="bannerTitle">📢 Special Offer: Free Delivery on Orders above ₹250!</h3>
+    <p id="bannerDesc">Daily Fresh 20L Water Jars & Cold Drinks available at best wholesale & retail prices.</p>
+</div>
 
 <!-- SEARCH BAR -->
 <div class="search-container">
@@ -77,6 +85,7 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
 <div class="type-box">
     <button id="retailBtn" class="active" onclick="selectType('Retail')">🛍️ Retail</button>
     <button id="wholesaleBtn" onclick="selectType('Wholesale')">📦 Wholesale</button>
+    <button onclick="openSubscriptionModal()" style="background:#16a34a; color:white; border:none; padding:10px 18px; border-radius:25px; font-weight:bold; cursor:pointer; margin:5px;">⭐ Jalvigo Prime Plan</button>
     <p style="margin-top:8px; font-size:14px;">Selected Type: <b id="selectedType">Retail</b></p>
 </div>
 
@@ -97,6 +106,20 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
     <div class="form-group"><label>Pata (Address)</label><textarea id="shopAddress" placeholder="Pura pata"></textarea></div>
     <button class="primary-btn" onclick="registerShopkeeper()">🏪 Register Store</button>
 </section>
+
+<!-- SUBSCRIPTION MODAL -->
+<div class="modal" id="subscriptionModal">
+  <div class="modal-box" style="text-align:center;">
+    <span class="close" onclick="closeSubscriptionModal()">×</span>
+    <h2>⭐ Jalvigo Prime Water Subscription</h2>
+    <p style="margin:10px 0; color:#555;">Rozana paani ki jarurat ke liye best monthly plan!</p>
+    <div style="background:#f0f9ff; padding:15px; border-radius:10px; margin:15px 0;">
+        <h3>₹299 / Month</h3>
+        <p style="font-size:14px; margin-top:5px;">✅ Daily 20L Water Jar Delivery<br>✅ Zero Delivery Fee<br>✅ Priority 30-Min Service</p>
+    </div>
+    <button class="primary-btn" onclick="subscribePlan('Jalvigo Prime - ₹299/mo')" style="width:100%;">Subscribe Now</button>
+  </div>
+</div>
 
 <!-- CUSTOMER AUTH MODAL -->
 <div class="modal" id="customerAuthModal">
@@ -180,28 +203,34 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
 <div class="modal" id="adminProductsModal">
 <div class="modal-box" style="max-width:600px;">
     <span class="close" onclick="closeAdminProductsModal()">×</span>
-    <h2>📦 Manage Products & Discounts</h2>
+    <h2>📦 Manage Products & Ads Banner</h2>
+    <div class="dashboard-card" style="margin-top:10px;">
+        <h3>📢 Update Website Advertisement Banner</h3>
+        <div class="form-group"><label>Banner Title</label><input type="text" id="adminBannerTitleInput" placeholder="Banner Heading"></div>
+        <div class="form-group"><label>Banner Description</label><input type="text" id="adminBannerDescInput" placeholder="Banner Details"></div>
+        <button class="primary-btn" onclick="updateWebsiteBanner()" style="width:100%; background:#16a34a;">📢 Publish Banner</button>
+    </div>
     <div class="dashboard-card" style="margin-top:10px;">
         <h3>➕ Add New Product</h3>
         <div class="form-group"><label>Product Name</label><input type="text" id="modalNewProdName" placeholder="jaise: Bisleri Water Jar 20L"></div>
         <div class="form-group"><label>Selling Price (₹)</label><input type="number" id="modalNewProdPrice" placeholder="jaise: 60"></div>
-        <div class="form-group"><label>Original MRP (₹) - For Discount</label><input type="number" id="modalNewProdMrp" placeholder="jaise: 80 (optional)"></div>
+        <div class="form-group"><label>Original MRP (₹)</label><input type="number" id="modalNewProdMrp" placeholder="jaise: 80"></div>
         <div class="form-group"><label>Emoji Icon</label><input type="text" id="modalNewProdEmoji" placeholder="jaise: 💧"></div>
         <button class="primary-btn" onclick="addNewProductFromModal()" style="width:100%;">➕ Add Product</button>
     </div>
     <div class="dashboard-card">
         <h3>📋 Existing Products & Rate Updater</h3>
         <button class="primary-btn" onclick="loadAdminProductsList()" style="margin-bottom:10px;">🔄 Refresh List</button>
-        <div id="adminProductManageList" style="max-height:250px; overflow-y:auto;"><p>Loading products...</p></div>
+        <div id="adminProductManageList" style="max-height:220px; overflow-y:auto;"><p>Loading products...</p></div>
     </div>
 </div>
 </div>
 
-<!-- ADMIN DASHBOARD MODAL WITH SEPARATED ORDER TABS -->
+<!-- ADMIN DASHBOARD MODAL -->
 <div class="modal" id="adminDashboardModal">
 <div class="modal-box" style="max-width:650px;">
 <span class="close" onclick="closeAdminDashboard()">×</span>
-<h2>🛠️ Admin Panel - Order Management</h2>
+<h2>🛠️ Admin Panel - Orders & Commission Summary</h2>
 <div style="margin:15px 0; display:flex; gap:8px; flex-wrap:wrap;">
     <button class="primary-btn" onclick="filterAdminOrders('All')">All Orders</button>
     <button class="primary-btn" onclick="filterAdminOrders('Confirmed')" style="background:#0284c7;">Confirmed</button>
@@ -244,6 +273,8 @@ function openCustomerAuth(){ document.getElementById("customerAuthModal").style.
 function closeCustomerAuth(){ document.getElementById("customerAuthModal").style.display = "none"; }
 function openCart(){ updateCart(); document.getElementById("cartModal").style.display = "block"; }
 function closeCart(){ document.getElementById("cartModal").style.display = "none"; }
+function openSubscriptionModal(){ document.getElementById("subscriptionModal").style.display = "block"; }
+function closeSubscriptionModal(){ document.getElementById("subscriptionModal").style.display = "none"; }
 function openOrderForm(){ if(cart.length === 0){ alert("Cart khali hai!"); return; } closeCart(); document.getElementById("orderModal").style.display = "block"; }
 function closeOrderForm(){ document.getElementById("orderModal").style.display = "none"; }
 function openAdminLogin(){ document.getElementById("adminLoginModal").style.display = "block"; }
@@ -260,18 +291,14 @@ async function updateAuthUI() {
     const isAdmin = !!user && user.id === ADMIN_USER_ID;
     const isCustomer = !!user && !isAdmin;
 
-    // Buttons Visibility Settings
     document.getElementById("customerLoginBtn").style.display = isCustomer ? "none" : (isAdmin ? "none" : "inline-block");
     document.getElementById("myOrdersBtn").style.display = isCustomer ? "inline-block" : "none";
     document.getElementById("customerLogoutBtn").style.display = user ? "inline-block" : "none";
     document.getElementById("adminOrdersBtn").style.display = isAdmin ? "inline-block" : "none";
     document.getElementById("adminProductsBtn").style.display = isAdmin ? "inline-block" : "none";
     
-    // DELIVERY PARTNER BUTTON: Sirf bina login wale guest users aur Delivery partners/Admin ko dikhega, Customer Login par chhup jayega
-    const deliveryBtn = document.querySelector('button[onclick="openDeliveryModal()"]');
-    if (deliveryBtn) {
-        deliveryBtn.style.display = isCustomer ? "none" : "inline-block";
-    }
+    const deliveryBtn = document.getElementById("deliveryBtn");
+    if(deliveryBtn) deliveryBtn.style.display = isCustomer ? "none" : "inline-block";
 
     const adminLoginBtn = document.querySelector('button[onclick="openAdminLogin()"]');
     if (adminLoginBtn) adminLoginBtn.style.display = user ? "none" : "inline-block";
@@ -304,7 +331,13 @@ async function customerLogout() {
     alert("Logout Successful.");
 }
 
-// LOAD & DISPLAY PRODUCTS
+async function subscribePlan(planName){
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    if(!user){ alert("Pehle Customer Login karein!"); openCustomerAuth(); return; }
+    alert("✅ " + planName + " Successfully Subscribed!");
+    closeSubscriptionModal();
+}
+
 async function loadDynamicProducts() {
     const container = document.getElementById("dynamicProductsList");
     if (!container) return;
@@ -348,7 +381,6 @@ function filterProducts() {
     renderProducts(filtered);
 }
 
-// CART & FREE DELIVERY LOGIC
 function addToCart(name, price) {
     let item = cart.find(p => p.name === name);
     if (item) { item.qty++; } else { cart.push({ name, price, qty: 1 }); }
@@ -405,9 +437,14 @@ async function sendOrder(){
     let deliveryFee = subtotal >= 250 ? 0 : 30;
     let total = subtotal + deliveryFee;
 
+    // Automatic Commission Calculation (10% Admin Commission, 90% Seller Payout)
+    let commissionAmount = Math.round(subtotal * 0.10);
+    let sellerPayout = subtotal - commissionAmount;
+
     const { error } = await supabaseClient.from("orders").insert([{
         order_id: orderId, customer_name: name, mobile, address,
         order_type: shoppingType, items: JSON.stringify(cart), total,
+        commission_amount: commissionAmount, seller_payout: sellerPayout,
         order_date: new Date().toISOString(), status: "Confirmed", user_id: user.id
     }]);
 
@@ -441,7 +478,6 @@ async function loadCustomerOrders(){
     `).join("");
 }
 
-// ADMIN DASHBOARD & TABS
 async function adminLogin(){
     const email = document.getElementById("adminUsernameInput").value.trim();
     const password = document.getElementById("adminPasswordInput").value;
@@ -475,6 +511,7 @@ function filterAdminOrders(statusFilter){
     list.innerHTML = filtered.map(o => `
         <div style="border:1px solid #ddd; padding:10px; margin:6px 0; background:#fff; border-radius:6px;">
             <p><b>#${o.order_id}</b> - ${o.customer_name} (₹${o.total})</p>
+            <p style="font-size:13px; color:#16a34a;">💰 Admin Commission: ₹${o.commission_amount || 0} | Seller Payout: ₹${o.seller_payout || 0}</p>
             <p>Status: <b>${o.status}</b></p>
             <select onchange="updateOrderStatus('${o.order_id}', this.value)" style="margin-top:5px; padding:5px;">
                 <option value="Confirmed" ${o.status === "Confirmed" ? "selected" : ""}>Confirmed</option>
@@ -500,7 +537,16 @@ async function adminLogout() {
     alert("Admin Logout Successful.");
 }
 
-// ADMIN PRODUCT MANAGEMENT & DISCOUNT
+async function updateWebsiteBanner(){
+    const title = document.getElementById("adminBannerTitleInput").value.trim();
+    const desc = document.getElementById("adminBannerDescInput").value.trim();
+    if(!title || !desc){ alert("Banner Title aur Description bharen!"); return; }
+    
+    document.getElementById("bannerTitle").innerText = title;
+    document.getElementById("bannerDesc").innerText = desc;
+    alert("📢 Banner Updated Successfully!");
+}
+
 async function addNewProductFromModal() {
     const name = document.getElementById("modalNewProdName").value.trim();
     const price = document.getElementById("modalNewProdPrice").value.trim();
@@ -609,3 +655,4 @@ supabaseClient.auth.onAuthStateChange(() => { updateAuthUI(); });
 
 </body>
 </html>
+
