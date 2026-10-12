@@ -34,11 +34,13 @@ header{background:#0284c7;color:white;padding:15px;display:flex;justify-content:
 .form-group label{display:block;margin-bottom:5px;font-weight:bold;}
 .form-group input,.form-group textarea,.form-group select{width:100%;padding:11px;border:1px solid #bbb;border-radius:8px;font-size:15px;}
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:100;padding:15px;overflow:auto;}
-.modal-box{background:white;max-width:520px;margin:25px auto;padding:20px;border-radius:15px;}
+.modal-box{background:white;max-width:550px;margin:25px auto;padding:20px;border-radius:15px;}
 .close{float:right;font-size:28px;cursor:pointer;}
 .cart-item{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #ddd;padding:10px 0;}
 .dashboard-card{background:#f0f9ff;padding:15px;border-radius:12px;margin:10px 0;}
 .logout-btn{background:#dc2626;color:white;border:none;padding:10px 16px;border-radius:8px;font-weight:bold;cursor:pointer;}
+.tab-btn{background:#e2e8f0; border:none; padding:8px 12px; border-radius:6px; cursor:pointer; font-weight:bold; margin-right:5px; margin-bottom:5px;}
+.tab-btn.active{background:#0284c7; color:white;}
 footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:30px;}
 </style>
 </head>
@@ -49,7 +51,8 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
     <div class="header-buttons">
         <button class="admin-btn" id="customerLoginBtn" onclick="openCustomerAuth()">👤 Customer Login / Signup</button>
         <button class="admin-btn" id="myOrdersBtn" onclick="openMyOrders()" style="display:none; background:#0284c7;">📦 My Orders</button>
-        <button class="admin-btn" onclick="openB2BAuth()" style="background:#059669;">🏢 Restaurant / B2B Login</button>
+        <button class="admin-btn" id="b2bLoginBtn" onclick="openB2BAuth()" style="background:#059669;">🏢 Restaurant / B2B Login</button>
+        <button class="admin-btn" id="deliveryBtn" onclick="openDeliveryModal()" style="background:#16a34a;">🚚 Delivery Partner</button>
         <button class="admin-btn" id="adminMainBtn" onclick="handleAdminButtonClick()" style="background:#082f49;">🔐 Admin Panel</button>
         <button class="admin-btn" id="userLogoutBtn" onclick="userLogout()" style="display:none; background:#dc2626;">🚪 Logout</button>
         <button class="cart-btn" onclick="openCart()" id="cartMainBtn">🛒 Cart: <span id="cartCount">0</span></button>
@@ -61,13 +64,11 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
     <p>Aapke Ghar aur Business ke liye Fast Water & Drink Delivery!</p>
 </section>
 
-<!-- PROMO BANNER -->
 <div class="promo-banner">
     <h3>📢 Special Offer: ₹250 se upar ke orders par FREE Delivery!</h3>
     <p>Chhote aur bade sabhi customers ke liye best prices available.</p>
 </div>
 
-<!-- SEARCH BAR -->
 <div class="search-container">
     <input type="text" id="productSearchInput" placeholder="🔍 Search Water Jar, Cold Drink..." onkeyup="filterProducts()">
 </div>
@@ -101,7 +102,7 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
 <div class="modal" id="b2bAuthModal">
   <div class="modal-box">
     <span class="close" onclick="closeB2BAuth()">×</span>
-    <h2>🏢 Restaurant & B2B Business Signup</h2>
+    <h2>🏢 Restaurant & B2B Signup</h2>
     <div class="form-group"><label>Business Name</label><input type="text" id="b2bBizName" placeholder="Restaurant / Shop Name"></div>
     <div class="form-group"><label>Owner Name</label><input type="text" id="b2bOwnerName" placeholder="Owner Name"></div>
     <div class="form-group"><label>Mobile</label><input type="tel" id="b2bMobile" placeholder="Mobile Number"></div>
@@ -111,6 +112,22 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
         <input type="password" id="b2bPassword" placeholder="Password">
     </div>
     <button class="primary-btn" onclick="registerB2BUser()" style="width:100%; background:#059669;">📝 Register Business</button>
+  </div>
+</div>
+
+<!-- DELIVERY PARTNER MODAL WITH SECURITY PIN -->
+<div class="modal" id="deliveryModal">
+  <div class="modal-box">
+    <span class="close" onclick="closeDeliveryModal()">×</span>
+    <h2>🚚 Delivery Partner Access</h2>
+    <div id="deliveryAuthSection">
+        <div class="form-group"><label>Security Secret Key</label><input type="password" id="deliveryPasscode" placeholder="Enter Agent Secret PIN"></div>
+        <button class="primary-btn" onclick="verifyDeliveryPartner()" style="width:100%; background:#16a34a;">🔓 Verify & Access Orders</button>
+    </div>
+    <div id="deliveryContentSection" style="display:none;">
+        <button class="primary-btn" onclick="loadDeliveryOrders()" style="margin-bottom:10px;">🔄 Refresh List</button>
+        <div id="deliveryOrdersList"></div>
+    </div>
   </div>
 </div>
 
@@ -171,34 +188,57 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
 <div class="modal-box">
 <span class="close" onclick="closeAdminLogin()">×</span>
 <h2>🔐 Jalvigo Admin Login</h2>
-<p style="font-size:12px; color:#555; margin-bottom:8px;">Apni Admin Email aur Password dalein:</p>
 <div class="form-group"><label>Admin Email</label><input type="email" id="adminEmailInput" placeholder="Admin Email"></div>
 <div class="form-group"><label>Password</label><input type="password" id="adminPasswordInput" placeholder="Password"></div>
 <button class="primary-btn" onclick="adminLogin()" style="width:100%;">🔐 Login as Admin</button>
 </div>
 </div>
 
-<!-- ADMIN DASHBOARD MODAL -->
+<!-- ADMIN DASHBOARD MODAL WITH SEPARATE BUTTON TABS -->
 <div class="modal" id="adminDashboardModal">
 <div class="modal-box" style="max-width:650px;">
 <span class="close" onclick="closeAdminDashboard()">×</span>
-<h2>🛠️ Admin Dashboard & Order Management</h2>
+<h2>🛠️ Admin Panel Dashboard</h2>
 
-<div class="dashboard-card">
-    <h3>📋 Customer Orders List</h3>
-    <button class="primary-btn" onclick="loadAdminOrders()" style="margin-bottom:10px;">🔄 Refresh Orders List</button>
+<!-- ADMIN ACTION BUTTON TABS -->
+<div style="margin:12px 0;">
+    <button class="tab-btn active" id="tabOrdersBtn" onclick="switchAdminTab('orders')">📦 Manage Orders</button>
+    <button class="tab-btn" id="tabCancelledBtn" onclick="switchAdminTab('cancelled')">❌ Cancelled Orders</button>
+    <button class="tab-btn" id="tabAddProductBtn" onclick="switchAdminTab('addProduct')">➕ Add Product</button>
+    <button class="tab-btn" id="tabRemoveProductBtn" onclick="switchAdminTab('removeProduct')">🗑️ Remove Product</button>
+</div>
+
+<!-- TAB 1: MANAGE ACTIVE ORDERS -->
+<div id="adminOrdersTabSection" class="dashboard-card">
+    <h3>📦 Orders List & Status Controller</h3>
+    <button class="primary-btn" onclick="loadAdminOrders('active')" style="margin-bottom:10px;">🔄 Refresh Orders</button>
     <div id="adminOrdersList"><p>Loading Orders...</p></div>
 </div>
 
-<div class="dashboard-card">
+<!-- TAB 2: CANCELLED ORDERS -->
+<div id="adminCancelledTabSection" class="dashboard-card" style="display:none;">
+    <h3 style="color:#dc2626;">❌ Radd (Cancelled) Orders</h3>
+    <button class="primary-btn" onclick="loadAdminOrders('cancelled')" style="margin-bottom:10px; background:#dc2626;">🔄 Refresh Cancelled List</button>
+    <div id="adminCancelledOrdersList"><p>Loading Cancelled Orders...</p></div>
+</div>
+
+<!-- TAB 3: ADD PRODUCT -->
+<div id="adminAddProductTabSection" class="dashboard-card" style="display:none;">
     <h3>➕ Add New Product</h3>
     <div class="form-group"><label>Product Name</label><input type="text" id="newProdName" placeholder="Product Name"></div>
     <div class="form-group"><label>Price (₹)</label><input type="number" id="newProdPrice" placeholder="Price"></div>
-    <div class="form-group"><label>Emoji</label><input type="text" id="newProdEmoji" placeholder="💧"></div>
-    <button class="primary-btn" onclick="addNewProduct()" style="width:100%; background:#16a34a;">Add Product</button>
+    <div class="form-group"><label>Emoji Icon</label><input type="text" id="newProdEmoji" placeholder="💧"></div>
+    <button class="primary-btn" onclick="addNewProduct()" style="width:100%; background:#16a34a;">Save & Publish Product</button>
 </div>
 
-<button class="logout-btn" onclick="adminLogout()" style="width:100%; margin-top:10px;">🚪 Admin Logout</button>
+<!-- TAB 4: REMOVE / DELETE PRODUCT -->
+<div id="adminRemoveProductTabSection" class="dashboard-card" style="display:none;">
+    <h3>🗑️ Remove / Delete Existing Products</h3>
+    <button class="primary-btn" onclick="loadManageProductsList()" style="margin-bottom:10px; background:#dc2626;">🔄 Refresh Products List</button>
+    <div id="adminProductsRemoveList"><p>Loading products...</p></div>
+</div>
+
+<button class="logout-btn" onclick="adminLogout()" style="width:100%; margin-top:10px;">🚪 Logout Admin</button>
 </div>
 </div>
 
@@ -214,9 +254,8 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_
 let cart = [];
 let shoppingType = "Retail";
 let allProductsList = [];
-
-// **YAHAN APNI ACTUAL ADMIN EMAIL DAAL DEIN** (Jis email se aap admin login karte hain)
-const ADMIN_EMAIL = "balramnnagar0077@gmail.com"; // Agar kuch aur hai toh yahan badal sakte hain
+const ADMIN_EMAIL = "balramnnagar0077@gmail.com";
+const DELIVERY_AGENT_PIN = "1234"; // Delivery partner pin code
 
 function selectType(type){
     shoppingType = type;
@@ -234,6 +273,12 @@ function openCustomerAuth(){ document.getElementById("customerAuthModal").style.
 function closeCustomerAuth(){ document.getElementById("customerAuthModal").style.display = "none"; }
 function openB2BAuth(){ document.getElementById("b2bAuthModal").style.display = "block"; }
 function closeB2BAuth(){ document.getElementById("b2bAuthModal").style.display = "none"; }
+function openDeliveryModal(){ 
+    document.getElementById("deliveryModal").style.display = "block"; 
+    document.getElementById("deliveryAuthSection").style.display = "block";
+    document.getElementById("deliveryContentSection").style.display = "none";
+}
+function closeDeliveryModal(){ document.getElementById("deliveryModal").style.display = "none"; }
 function openCart(){ updateCart(); document.getElementById("cartModal").style.display = "block"; }
 function closeCart(){ document.getElementById("cartModal").style.display = "none"; }
 function openOrderForm(){ if(cart.length===0){alert("Cart khali hai!"); return;} closeCart(); document.getElementById("orderModal").style.display="block"; }
@@ -241,14 +286,24 @@ function closeOrderForm(){ document.getElementById("orderModal").style.display =
 function closeAdminLogin(){ document.getElementById("adminLoginModal").style.display = "none"; }
 function closeAdminDashboard(){ document.getElementById("adminDashboardModal").style.display = "none"; }
 
+function verifyDeliveryPartner() {
+    const pass = document.getElementById("deliveryPasscode").value;
+    if(pass === DELIVERY_AGENT_PIN){
+        document.getElementById("deliveryAuthSection").style.display = "none";
+        document.getElementById("deliveryContentSection").style.display = "block";
+        loadDeliveryOrders();
+    } else {
+        alert("❌ Galat Delivery PIN!");
+    }
+}
+
 async function handleAdminButtonClick() {
     const { data } = await supabaseClient.auth.getSession();
     const user = data.session?.user;
     
-    // Check if logged in user is admin by email
     if (user && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
         document.getElementById("adminDashboardModal").style.display = "block";
-        loadAdminOrders();
+        switchAdminTab('orders');
     } else {
         document.getElementById("adminLoginModal").style.display = "block";
     }
@@ -257,10 +312,45 @@ async function handleAdminButtonClick() {
 async function updateAuthUI() {
     const { data } = await supabaseClient.auth.getSession();
     const user = data.session?.user;
+    const isAdmin = user && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
 
-    document.getElementById("customerLoginBtn").style.display = user ? "none" : "inline-block";
-    document.getElementById("myOrdersBtn").style.display = user ? "inline-block" : "none";
-    document.getElementById("userLogoutBtn").style.display = user ? "inline-block" : "none";
+    // 1. RULE: Admin logged in => Hide Customer Login
+    // 2. RULE: Customer logged in => Hide Admin Login
+    if (isAdmin) {
+        document.getElementById("customerLoginBtn").style.display = "none";
+        document.getElementById("b2bLoginBtn").style.display = "none";
+        document.getElementById("adminMainBtn").style.display = "inline-block";
+        document.getElementById("myOrdersBtn").style.display = "none";
+        document.getElementById("userLogoutBtn").style.display = "inline-block";
+    } else if (user) {
+        document.getElementById("customerLoginBtn").style.display = "none";
+        document.getElementById("b2bLoginBtn").style.display = "none";
+        document.getElementById("adminMainBtn").style.display = "none";
+        document.getElementById("myOrdersBtn").style.display = "inline-block";
+        document.getElementById("userLogoutBtn").style.display = "inline-block";
+    } else {
+        document.getElementById("customerLoginBtn").style.display = "inline-block";
+        document.getElementById("b2bLoginBtn").style.display = "inline-block";
+        document.getElementById("adminMainBtn").style.display = "inline-block";
+        document.getElementById("myOrdersBtn").style.display = "none";
+        document.getElementById("userLogoutBtn").style.display = "none";
+    }
+}
+
+function switchAdminTab(tabName) {
+    document.getElementById("adminOrdersTabSection").style.display = tabName === 'orders' ? 'block' : 'none';
+    document.getElementById("adminCancelledTabSection").style.display = tabName === 'cancelled' ? 'block' : 'none';
+    document.getElementById("adminAddProductTabSection").style.display = tabName === 'addProduct' ? 'block' : 'none';
+    document.getElementById("adminRemoveProductTabSection").style.display = tabName === 'removeProduct' ? 'block' : 'none';
+
+    document.getElementById("tabOrdersBtn").classList.toggle('active', tabName === 'orders');
+    document.getElementById("tabCancelledBtn").classList.toggle('active', tabName === 'cancelled');
+    document.getElementById("tabAddProductBtn").classList.toggle('active', tabName === 'addProduct');
+    document.getElementById("tabRemoveProductBtn").classList.toggle('active', tabName === 'removeProduct');
+
+    if(tabName === 'orders') loadAdminOrders('active');
+    if(tabName === 'cancelled') loadAdminOrders('cancelled');
+    if(tabName === 'removeProduct') loadManageProductsList();
 }
 
 async function customerSignup(){
@@ -418,9 +508,8 @@ async function adminLogin(){
     const password = document.getElementById("adminPasswordInput").value;
     
     const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-    if(error || !data.user){ alert("❌ Login Failed: " + (error ? error.message : "Invalid user")); return; }
+    if(error || !data.user){ alert("❌ Login Failed!"); return; }
 
-    // Check if email matches admin email
     if(data.user.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()){
         alert("❌ Yeh account Admin nahi hai!");
         await supabaseClient.auth.signOut();
@@ -428,19 +517,30 @@ async function adminLogin(){
     }
 
     closeAdminLogin();
+    updateAuthUI();
     document.getElementById("adminDashboardModal").style.display = "block";
-    loadAdminOrders();
+    switchAdminTab('orders');
 }
 
-async function loadAdminOrders(){
-    const list = document.getElementById("adminOrdersList");
+async function loadAdminOrders(type) {
+    const list = type === 'cancelled' ? document.getElementById("adminCancelledOrdersList") : document.getElementById("adminOrdersList");
     const { data } = await supabaseClient.from("orders").select("*").order("order_date", { ascending: false });
+    
     if(!data || data.length === 0){ list.innerHTML = "<p>Koi order nahi hai.</p>"; return; }
 
-    list.innerHTML = data.map(o => `
+    let filtered = data;
+    if(type === 'cancelled') {
+        filtered = data.filter(o => o.status === 'Cancelled');
+    } else {
+        filtered = data.filter(o => o.status !== 'Cancelled');
+    }
+
+    if(filtered.length === 0){ list.innerHTML = `<p>Koi ${type} order nahi hai.</p>`; return; }
+
+    list.innerHTML = filtered.map(o => `
         <div style="border:1px solid #ccc; padding:10px; margin:6px 0; background:#fff; border-radius:6px;">
             <p><b>#${o.order_id}</b> - ${o.customer_name} (${o.mobile})</p>
-            <p>Address: ${o.address}</p>
+            <p style="font-size:13px;">Address: ${o.address}</p>
             <p>Total: <b>₹${o.total}</b> | Status: <b>${o.status}</b></p>
             <select onchange="updateOrderStatus('${o.order_id}', this.value)" style="margin-top:5px; padding:4px;">
                 <option value="Confirmed" ${o.status==='Confirmed'?'selected':''}>Confirmed</option>
@@ -454,8 +554,8 @@ async function loadAdminOrders(){
 
 async function updateOrderStatus(orderId, newStatus) {
     await supabaseClient.from("orders").update({ status: newStatus }).eq("order_id", orderId);
-    alert("✅ Status Updated!");
-    loadAdminOrders();
+    alert("✅ Order Status Updated!");
+    loadAdminOrders('active');
 }
 
 async function addNewProduct() {
@@ -465,17 +565,62 @@ async function addNewProduct() {
 
     if(!name || !price){ alert("Name aur Price bharein!"); return; }
     await supabaseClient.from("products").insert([{ name, price: Number(price), emoji, created_at: new Date().toISOString() }]);
-    alert("✅ Product Added!");
+    alert("✅ Product Published!");
     document.getElementById("newProdName").value = "";
     document.getElementById("newProdPrice").value = "";
     loadDynamicProducts();
+}
+
+async function loadManageProductsList() {
+    const list = document.getElementById("adminProductsRemoveList");
+    const { data } = await supabaseClient.from("products").select("*").order("created_at", { ascending: false });
+    if(!data || data.length === 0){ list.innerHTML = "<p>Koi product nahi hai.</p>"; return; }
+
+    list.innerHTML = data.map(p => `
+        <div style="display:flex; justify-style:space-between; justify-content:space-between; align-items:center; border:1px solid #ccc; padding:8px; margin:5px 0; background:#fff; border-radius:6px;">
+            <div><b>${p.emoji || '💧'} ${p.name}</b> (₹${p.price})</div>
+            <button onclick="deleteProduct(${p.id})" style="background:#dc2626; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">🗑️ Delete</button>
+        </div>
+    `).join('');
+}
+
+async function deleteProduct(id) {
+    if(!confirm("Kya aap is product ko remove karna chahte hain?")) return;
+    await supabaseClient.from("products").delete().eq("id", id);
+    alert("✅ Product Removed!");
+    loadManageProductsList();
+    loadDynamicProducts();
+}
+
+async function loadDeliveryOrders() {
+    const list = document.getElementById("deliveryOrdersList");
+    const { data } = await supabaseClient.from("orders").select("*").neq("status", "Cancelled").order("order_date", { ascending: false });
+    if(!data || data.length === 0){ list.innerHTML = "<p>Koi delivery order nahi hai.</p>"; return; }
+
+    list.innerHTML = data.map(o => `
+        <div style="border:1px solid #ccc; padding:10px; margin:5px 0; background:#fff; border-radius:6px;">
+            <b>Order #${o.order_id}</b> - ${o.customer_name} (${o.mobile})<br>
+            Address: ${o.address}<br>
+            Status: <b>${o.status}</b>
+            <div style="margin-top:6px;">
+                <button onclick="updateDeliveryStatus('${o.order_id}', 'Out for Delivery')" style="background:#0284c7; color:white; border:none; padding:4px 8px; border-radius:4px;">Out for Delivery</button>
+                <button onclick="updateDeliveryStatus('${o.order_id}', 'Delivered')" style="background:#16a34a; color:white; border:none; padding:4px 8px; border-radius:4px;">Delivered</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+async function updateDeliveryStatus(orderId, status) {
+    await supabaseClient.from("orders").update({ status }).eq("order_id", orderId);
+    alert("✅ Delivery Status Updated!");
+    loadDeliveryOrders();
 }
 
 async function adminLogout() {
     await supabaseClient.auth.signOut();
     closeAdminDashboard();
     updateAuthUI();
-    alert("Admin Logged Out Successfully.");
+    alert("Admin Logged Out.");
 }
 
 updateAuthUI();
