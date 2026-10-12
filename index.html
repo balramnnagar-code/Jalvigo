@@ -63,48 +63,51 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
         <button class="admin-btn" id="adminOrdersBtn" onclick="openAdminDashboard()" style="display:none;">🛠️ Admin Panel</button>
         <button class="admin-btn" id="adminProductsBtn" onclick="openAdminProductsModal()" style="display:none; background:#0284c7;">📦 Manage Products</button>
         <button class="cart-btn" onclick="openCart()" id="cartMainBtn">🛒 Cart: <span id="cartCount">0</span></button>
+        
+        <!-- LANGUAGE CHANGE BUTTON -->
+        <button class="admin-btn" id="langToggleBtn" onclick="toggleCustomerLanguage()" style="background:#0ea5e9;">🌐 English / हिंदी</button>
     </div>
 </header>
 
 <section class="hero">
-    <h1>Fresh Water & Beverages Marketplace 💧</h1>
-    <p>Fast delivery to your doorstep with exciting offers!</p>
+    <h1 data-hi="Fresh Water & Beverages Marketplace 💧" data-en="Fresh Water & Beverages Marketplace 💧">Fresh Water & Beverages Marketplace 💧</h1>
+    <p data-hi="पानी और Cold Drinks अब आसानी से घर तक" data-en="Fast delivery to your doorstep with exciting offers!">पानी और Cold Drinks अब आसानी से घर तक</p>
 </section>
 
 <!-- DYNAMIC ADVERTISEMENT / PROMO BANNER -->
 <div class="promo-banner">
-    <h3 id="bannerTitle">📢 Special Offer: Free Delivery on Orders above ₹250!</h3>
-    <p id="bannerDesc">Daily Fresh 20L Water Jars & Cold Drinks available at best wholesale & retail prices.</p>
+    <h3 id="bannerTitle" data-hi="📢 Special Offer: ₹250 से ऊपर के Orders पर Free Delivery!" data-en="📢 Special Offer: Free Delivery on Orders above ₹250!">📢 Special Offer: ₹250 से ऊपर के Orders पर Free Delivery!</h3>
+    <p id="bannerDesc" data-hi="रोजाना ताज़ा 20L Water Jars और Cold Drinks बेस्ट होलसेल और रिटेल दामों पर उपलब्ध।" data-en="Daily Fresh 20L Water Jars & Cold Drinks available at best wholesale & retail prices.">रोजाना ताज़ा 20L Water Jars और Cold Drinks बेस्ट होलसेल और रिटेल दामों पर उपलब्ध।</p>
 </div>
 
 <!-- SEARCH BAR -->
 <div class="search-container">
-    <input type="text" id="productSearchInput" placeholder="🔍 Paani, Cold Drink ya product search karein..." onkeyup="filterProducts()">
+    <input type="text" id="productSearchInput" data-hi="🔍 पानी, Cold Drink या product search करें..." data-en="🔍 Search Water, Cold Drinks or products..." placeholder="🔍 पानी, Cold Drink या product search करें..." onkeyup="filterProducts()">
 </div>
 
 <div class="type-box">
-    <button id="retailBtn" class="active" onclick="selectType('Retail')">🛍️ Retail</button>
-    <button id="wholesaleBtn" onclick="selectType('Wholesale')">📦 Wholesale</button>
-    <button onclick="openSubscriptionModal()" style="background:#16a34a; color:white; border:none; padding:10px 18px; border-radius:25px; font-weight:bold; cursor:pointer; margin:5px;">⭐ Jalvigo Prime Plan</button>
-    <p style="margin-top:8px; font-size:14px;">Selected Type: <b id="selectedType">Retail</b></p>
+    <button id="retailBtn" class="active" onclick="selectType('Retail')" data-hi="🛍️ Retail" data-en="🛍️ Retail">🛍️ Retail</button>
+    <button id="wholesaleBtn" onclick="selectType('Wholesale')" data-hi="📦 Wholesale" data-en="📦 Wholesale">📦 Wholesale</button>
+    <button onclick="openSubscriptionModal()" style="background:#16a34a; color:white; border:none; padding:10px 18px; border-radius:25px; font-weight:bold; cursor:pointer; margin:5px;" data-hi="⭐ Jalvigo Prime Plan" data-en="⭐ Jalvigo Prime Plan">⭐ Jalvigo Prime Plan</button>
+    <p style="margin-top:8px; font-size:14px;"><span data-hi="चुना गया प्रकार: " data-en="Selected Type: ">चुना गया प्रकार: </span><b id="selectedType">Retail</b></p>
 </div>
 
 <!-- PRODUCTS DISPLAY SECTION -->
 <section>
     <div class="products" id="dynamicProductsList">
-        <p style="text-align:center; width:100%; grid-column:1 / -1;">💧 Products Load ho rahe hain...</p>
+        <p style="text-align:center; width:100%; grid-column:1 / -1;" data-hi="💧 Products Load हो रहे हैं..." data-en="💧 Loading Products...">💧 Products Load हो रहे हैं...</p>
     </div>
 </section>
 
 <!-- SHOPKEEPER REGISTRATION -->
 <section class="section-box">
-    <h2>🏪 Jalvigo par apni dukan jodein (Seller Portal)</h2>
-    <p style="margin-bottom:15px; font-size:14px; color:#555;">Dukandar apni dukan register karke apne products bech sakte hain.</p>
-    <div class="form-group"><label>Dukandar ka Naam</label><input type="text" id="shopName" placeholder="Naam likhein"></div>
-    <div class="form-group"><label>Dukan ka Naam</label><input type="text" id="storeName" placeholder="Store Name"></div>
-    <div class="form-group"><label>Mobile Number</label><input type="tel" id="shopMobile" placeholder="10 digit mobile"></div>
-    <div class="form-group"><label>Pata (Address)</label><textarea id="shopAddress" placeholder="Pura pata"></textarea></div>
-    <button class="primary-btn" onclick="registerShopkeeper()">🏪 Register Store</button>
+    <h2 data-hi="🏪 Jalvigo पर अपनी दुकान जोड़ें (Seller Portal)" data-en="🏪 Register Store on Jalvigo (Seller Portal)">🏪 Jalvigo पर अपनी दुकान जोड़ें (Seller Portal)</h2>
+    <p style="margin-bottom:15px; font-size:14px; color:#555;" data-hi="दुकानदार अपनी दुकान register करके अपने products बेच सकते हैं।" data-en="Shopkeepers can register their store and sell products.">दुकानदार अपनी दुकान register करके अपने products बेच सकते हैं।</p>
+    <div class="form-group"><label data-hi="दुकानदार का नाम" data-en="Shopkeeper Name">दुकानदार का नाम</label><input type="text" id="shopName" data-hi="नाम लिखें" data-en="Enter Name" placeholder="नाम लिखें"></div>
+    <div class="form-group"><label data-hi="दुकान का नाम" data-en="Store Name">दुकान का नाम</label><input type="text" id="storeName" data-hi="Store Name लिखें" data-en="Enter Store Name" placeholder="Store Name लिखें"></div>
+    <div class="form-group"><label data-hi="मोबाइल नंबर" data-en="Mobile Number">मोबाइल नंबर</label><input type="tel" id="shopMobile" data-hi="10 अंकों का मोबाइल नंबर" data-en="10 digit mobile number" placeholder="10 अंकों का मोबाइल नंबर"></div>
+    <div class="form-group"><label data-hi="पता (Address)" data-en="Address">पता (Address)</label><textarea id="shopAddress" data-hi="पूरा पता" data-en="Full Address" placeholder="पूरा पता"></textarea></div>
+    <button class="primary-btn" onclick="registerShopkeeper()" data-hi="🏪 Store Register करें" data-en="🏪 Register Store">🏪 Store Register करें</button>
 </section>
 
 <!-- SUBSCRIPTION MODAL -->
@@ -112,12 +115,12 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
   <div class="modal-box" style="text-align:center;">
     <span class="close" onclick="closeSubscriptionModal()">×</span>
     <h2>⭐ Jalvigo Prime Water Subscription</h2>
-    <p style="margin:10px 0; color:#555;">Rozana paani ki jarurat ke liye best monthly plan!</p>
+    <p style="margin:10px 0; color:#555;" data-hi="रोजाना पानी की जरूरत के लिए बेस्ट monthly plan!" data-en="Best monthly plan for daily water supply!">रोजाना पानी की जरूरत के लिए बेस्ट monthly plan!</p>
     <div style="background:#f0f9ff; padding:15px; border-radius:10px; margin:15px 0;">
         <h3>₹299 / Month</h3>
-        <p style="font-size:14px; margin-top:5px;">✅ Daily 20L Water Jar Delivery<br>✅ Zero Delivery Fee<br>✅ Priority 30-Min Service</p>
+        <p style="font-size:14px; margin-top:5px;" data-hi="✅ Daily 20L Water Jar Delivery<br>✅ Zero Delivery Fee<br>✅ Priority 30-Min Service" data-en="✅ Daily 20L Water Jar Delivery<br>✅ Zero Delivery Fee<br>✅ Priority 30-Min Service">✅ Daily 20L Water Jar Delivery<br>✅ Zero Delivery Fee<br>✅ Priority 30-Min Service</p>
     </div>
-    <button class="primary-btn" onclick="subscribePlan('Jalvigo Prime - ₹299/mo')" style="width:100%;">Subscribe Now</button>
+    <button class="primary-btn" onclick="subscribePlan('Jalvigo Prime - ₹299/mo')" style="width:100%;" data-hi="अभी Subscribe करें" data-en="Subscribe Now">अभी Subscribe करें</button>
   </div>
 </div>
 
@@ -126,8 +129,8 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
   <div class="modal-box">
     <span class="close" onclick="closeCustomerAuth()">×</span>
     <h2>👤 Customer Login / Signup</h2>
-    <div class="form-group"><label>Email</label><input type="email" id="customerEmail" placeholder="Email daalein"></div>
-    <div class="form-group"><label>Password</label><input type="password" id="customerPassword" placeholder="Password"></div>
+    <div class="form-group"><label>Email</label><input type="email" id="customerEmail" placeholder="Email डालें"></div>
+    <div class="form-group"><label>Password</label><input type="password" id="customerPassword" placeholder="Password डालें"></div>
     <button class="primary-btn" onclick="customerSignup()">📝 Signup</button>
     <button class="primary-btn" onclick="customerLogin()" style="background:#16a34a; margin-top:8px;">🔐 Login</button>
   </div>
@@ -137,9 +140,9 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
 <div class="modal" id="customerOrdersModal">
   <div class="modal-box">
     <span class="close" onclick="document.getElementById('customerOrdersModal').style.display='none'">×</span>
-    <h2>📦 Mere Orders</h2>
-    <button class="primary-btn" onclick="loadCustomerOrders()" style="margin-bottom:10px;">🔄 Refresh Orders</button>
-    <div id="customerOrdersList"><p>Orders load ho rahe hain...</p></div>
+    <h2 data-hi="📦 मेरे Orders" data-en="📦 My Orders">📦 मेरे Orders</h2>
+    <button class="primary-btn" onclick="loadCustomerOrders()" style="margin-bottom:10px;" data-hi="🔄 Refresh Orders" data-en="🔄 Refresh Orders">🔄 Refresh Orders</button>
+    <div id="customerOrdersList"><p>Orders load हो रहे हैं...</p></div>
   </div>
 </div>
 
@@ -147,34 +150,34 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
 <div class="modal" id="cartModal">
 <div class="modal-box">
 <span class="close" onclick="closeCart()">×</span>
-<h2>🛒 Aapka Cart</h2>
+<h2 data-hi="🛒 आपका Cart" data-en="🛒 Your Cart">🛒 आपका Cart</h2>
 <div id="cartItems"></div>
 <div class="total-section">
-    <div>Items Total: ₹<span id="cartSubtotal">0</span></div>
-    <div>Delivery Fee: ₹<span id="deliveryFeeDisplay">30</span> <span id="freeDeliveryBadge" style="color:#16a34a; font-weight:bold; display:none;">(🎉 FREE Delivery applied!)</span></div>
-    <div style="font-size:18px; font-weight:bold; margin-top:5px;">Final Total: ₹<span id="cartTotal">0</span></div>
-    <p style="font-size:12px; color:#e11d48; margin-top:3px;">*Orders above ₹250 qualify for Free Delivery!</p>
+    <div><span data-hi="Items Total: " data-en="Items Total: ">Items Total: </span>₹<span id="cartSubtotal">0</span></div>
+    <div><span data-hi="Delivery Fee: " data-en="Delivery Fee: ">Delivery Fee: </span>₹<span id="deliveryFeeDisplay">30</span> <span id="freeDeliveryBadge" style="color:#16a34a; font-weight:bold; display:none;" data-hi="(🎉 FREE Delivery लागू!)" data-en="(🎉 FREE Delivery applied!)">(🎉 FREE Delivery लागू!)</span></div>
+    <div style="font-size:18px; font-weight:bold; margin-top:5px;"><span data-hi="Final Total: " data-en="Final Total: ">Final Total: </span>₹<span id="cartTotal">0</span></div>
+    <p style="font-size:12px; color:#e11d48; margin-top:3px;" data-hi="*₹250 से ऊपर के Orders पर Free Delivery मिलती है!" data-en="*Orders above ₹250 qualify for Free Delivery!">*₹250 से ऊपर के Orders पर Free Delivery मिलती है!</p>
 </div>
-<button class="primary-btn" onclick="openOrderForm()" style="width:100%;">Proceed to Checkout</button>
+<button class="primary-btn" onclick="openOrderForm()" style="width:100%;" data-hi="Checkout पर जाएँ" data-en="Proceed to Checkout">Checkout पर जाएँ</button>
 </div>
 </div>
 
-<!-- ORDER FORM MODAL (COD & ONLINE PAY) -->
+<!-- ORDER FORM MODAL -->
 <div class="modal" id="orderModal">
 <div class="modal-box">
 <span class="close" onclick="closeOrderForm()">×</span>
-<h2>📦 Delivery & Payment Details</h2>
-<div class="form-group"><label>Name</label><input type="text" id="customerName" placeholder="Aapka naam"></div>
-<div class="form-group"><label>Mobile</label><input type="tel" id="customerMobile" placeholder="Mobile number"></div>
-<div class="form-group"><label>Delivery Address</label><textarea id="customerAddress" placeholder="Pura pata"></textarea></div>
+<h2 data-hi="📦 Delivery & Payment की जानकारी" data-en="📦 Delivery & Payment Details">📦 Delivery & Payment की जानकारी</h2>
+<div class="form-group"><label data-hi="नाम" data-en="Name">नाम</label><input type="text" id="customerName" data-hi="आपका नाम" data-en="Your Name" placeholder="आपका नाम"></div>
+<div class="form-group"><label data-hi="मोबाइल नंबर" data-en="Mobile Number">मोबाइल नंबर</label><input type="tel" id="customerMobile" data-hi="मोबाइल नंबर" data-en="Mobile Number" placeholder="मोबाइल नंबर"></div>
+<div class="form-group"><label data-hi="Delivery Address" data-en="Delivery Address">Delivery Address</label><textarea id="customerAddress" data-hi="पूरा पता" data-en="Full Address" placeholder="पूरा पता"></textarea></div>
 <div class="form-group">
-    <label>Payment Mode</label>
+    <label data-hi="भुगतान का तरीका (Payment Mode)" data-en="Payment Mode">भुगतान का तरीका (Payment Mode)</label>
     <select id="paymentMode">
         <option value="Cash on Delivery (COD)">💵 Cash on Delivery (COD)</option>
         <option value="Online / UPI Pay">📱 Online Pay / UPI (GPay / PhonePe)</option>
     </select>
 </div>
-<button class="primary-btn" onclick="sendOrder()" style="width:100%;">📦 Confirm & Place Order</button>
+<button class="primary-btn" onclick="sendOrder()" style="width:100%;" data-hi="📦 Order Confirm करें" data-en="📦 Confirm & Place Order">📦 Order Confirm करें</button>
 </div>
 </div>
 
@@ -184,7 +187,7 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
     <span class="close" onclick="closeDeliveryModal()">×</span>
     <h2>🚚 Delivery Partner Panel</h2>
     <button class="primary-btn" onclick="loadDeliveryOrders()" style="margin-bottom:10px; background:#16a34a;">🔄 Refresh Delivery List</button>
-    <div id="deliveryOrdersList"><p>Delivery Orders load ho rahe hain...</p></div>
+    <div id="deliveryOrdersList"><p>Delivery Orders load हो रहे हैं...</p></div>
 </div>
 </div>
 
@@ -212,10 +215,10 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
     </div>
     <div class="dashboard-card" style="margin-top:10px;">
         <h3>➕ Add New Product</h3>
-        <div class="form-group"><label>Product Name</label><input type="text" id="modalNewProdName" placeholder="jaise: Bisleri Water Jar 20L"></div>
-        <div class="form-group"><label>Selling Price (₹)</label><input type="number" id="modalNewProdPrice" placeholder="jaise: 60"></div>
-        <div class="form-group"><label>Original MRP (₹)</label><input type="number" id="modalNewProdMrp" placeholder="jaise: 80"></div>
-        <div class="form-group"><label>Emoji Icon</label><input type="text" id="modalNewProdEmoji" placeholder="jaise: 💧"></div>
+        <div class="form-group"><label>Product Name</label><input type="text" id="modalNewProdName" placeholder="जैसे: Bisleri Water Jar 20L"></div>
+        <div class="form-group"><label>Selling Price (₹)</label><input type="number" id="modalNewProdPrice" placeholder="जैसे: 60"></div>
+        <div class="form-group"><label>Original MRP (₹)</label><input type="number" id="modalNewProdMrp" placeholder="जैसे: 80"></div>
+        <div class="form-group"><label>Emoji Icon</label><input type="text" id="modalNewProdEmoji" placeholder="जैसे: 💧"></div>
         <button class="primary-btn" onclick="addNewProductFromModal()" style="width:100%;">➕ Add Product</button>
     </div>
     <div class="dashboard-card">
@@ -238,7 +241,7 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
     <button class="primary-btn" onclick="filterAdminOrders('Cancelled')" style="background:#dc2626;">Cancelled</button>
 </div>
 <div class="dashboard-card">
-    <div id="adminOrdersList"><p>Orders load ho rahe hain...</p></div>
+    <div id="adminOrdersList"><p>Orders load हो रहे हैं...</p></div>
 </div>
 <button class="logout-btn" onclick="adminLogout()">Logout</button>
 </div>
@@ -256,9 +259,25 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_
 
 let cart = [];
 let shoppingType = "Retail";
+let customerLanguage = "hi";
 let allProductsList = [];
 let allAdminOrdersList = [];
 const ADMIN_USER_ID = "e8075a8a-1760-459b-9d33-b640b04b2d14";
+
+// LANGUAGE TOGGLE FUNCTIONALITY
+function toggleCustomerLanguage() {
+    customerLanguage = customerLanguage === "hi" ? "en" : "hi";
+    document.querySelectorAll("[data-hi]").forEach(el => {
+        const text = el.getAttribute(`data-${customerLanguage}`);
+        if (text) {
+            if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") {
+                el.placeholder = text;
+            } else {
+                el.innerHTML = text;
+            }
+        }
+    });
+}
 
 function selectType(type){
     shoppingType = type;
@@ -275,7 +294,7 @@ function openCart(){ updateCart(); document.getElementById("cartModal").style.di
 function closeCart(){ document.getElementById("cartModal").style.display = "none"; }
 function openSubscriptionModal(){ document.getElementById("subscriptionModal").style.display = "block"; }
 function closeSubscriptionModal(){ document.getElementById("subscriptionModal").style.display = "none"; }
-function openOrderForm(){ if(cart.length === 0){ alert("Cart khali hai!"); return; } closeCart(); document.getElementById("orderModal").style.display = "block"; }
+function openOrderForm(){ if(cart.length === 0){ alert("Cart खाली है!"); return; } closeCart(); document.getElementById("orderModal").style.display = "block"; }
 function closeOrderForm(){ document.getElementById("orderModal").style.display = "none"; }
 function openAdminLogin(){ document.getElementById("adminLoginModal").style.display = "block"; }
 function closeAdminLogin(){ document.getElementById("adminLoginModal").style.display = "none"; }
@@ -307,7 +326,7 @@ async function updateAuthUI() {
 async function customerSignup(){
     const email = document.getElementById("customerEmail").value.trim();
     const password = document.getElementById("customerPassword").value;
-    if(!email || !password){ alert("Email aur Password bharen!"); return; }
+    if(!email || !password){ alert("Email और Password भरें!"); return; }
     const { error } = await supabaseClient.auth.signUp({ email, password });
     if(error){ alert("Signup Error: " + error.message); return; }
     alert("Signup Successful! Ab Login karein.");
@@ -316,7 +335,7 @@ async function customerSignup(){
 async function customerLogin(){
     const email = document.getElementById("customerEmail").value.trim();
     const password = document.getElementById("customerPassword").value;
-    if(!email || !password){ alert("Email aur Password bharen!"); return; }
+    if(!email || !password){ alert("Email और Password भरें!"); return; }
     const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
     if(error){ alert("Login Error: " + error.message); return; }
     alert("Login Successful! ✅");
@@ -333,7 +352,7 @@ async function customerLogout() {
 
 async function subscribePlan(planName){
     const { data: { user } } = await supabaseClient.auth.getUser();
-    if(!user){ alert("Pehle Customer Login karein!"); openCustomerAuth(); return; }
+    if(!user){ alert("पहले Customer Login करें!"); openCustomerAuth(); return; }
     alert("✅ " + planName + " Successfully Subscribed!");
     closeSubscriptionModal();
 }
@@ -344,7 +363,7 @@ async function loadDynamicProducts() {
 
     const { data: products, error } = await supabaseClient.from("products").select("*").order("created_at", { ascending: false });
     if (error || !products || products.length === 0) {
-        container.innerHTML = "<p style='text-align:center; grid-column:1/-1;'>Abhi koi Product uplabdh nahi hai.</p>";
+        container.innerHTML = "<p style='text-align:center; grid-column:1/-1;'>अभी कोई Product उपलब्ध नहीं है।</p>";
         return;
     }
     allProductsList = products;
@@ -354,7 +373,7 @@ async function loadDynamicProducts() {
 function renderProducts(prods) {
     const container = document.getElementById("dynamicProductsList");
     if(prods.length === 0){
-        container.innerHTML = "<p style='text-align:center; grid-column:1/-1;'>Koi product nahi mila.</p>";
+        container.innerHTML = "<p style='text-align:center; grid-column:1/-1;'>कोई product नहीं मिला।</p>";
         return;
     }
     container.innerHTML = prods.map(prod => {
@@ -406,7 +425,7 @@ function updateCart(){
     }
     document.getElementById("cartTotal").innerText = finalTotal;
 
-    let html = cart.length === 0 ? "<p style='padding:15px 0'>Cart khali hai.</p>" : "";
+    let html = cart.length === 0 ? "<p style='padding:15px 0'>Cart खाली है।</p>" : "";
     cart.forEach((item,index) => {
         html += `<div class="cart-item"><div><b>${item.name}</b><br>₹${item.price} × ${item.qty}</div><div class="qty"><button onclick="changeQty(${index},-1)">−</button>${item.qty}<button onclick="changeQty(${index},1)">+</button></div></div>`;
     });
@@ -421,15 +440,15 @@ function changeQty(index,value){
 
 async function sendOrder(){
     const { data: { user } } = await supabaseClient.auth.getUser();
-    if(!user){ alert("Kripya pehle Customer Login karein!"); openCustomerAuth(); return; }
+    if(!user){ alert("कृपया पहले Customer Login करें!"); openCustomerAuth(); return; }
     
     const name = document.getElementById("customerName").value.trim();
     const mobile = document.getElementById("customerMobile").value.trim();
     const address = document.getElementById("customerAddress").value.trim();
     const payMode = document.getElementById("paymentMode").value;
 
-    if(!name || !mobile || !address){ alert("Name, Mobile aur Address bharen!"); return; }
-    if(!cart || cart.length === 0){ alert("Cart khali hai!"); return; }
+    if(!name || !mobile || !address){ alert("Name, Mobile और Address भरें!"); return; }
+    if(!cart || cart.length === 0){ alert("Cart खाली है!"); return; }
 
     const orderId = "JAL" + Date.now();
     let subtotal = 0;
@@ -437,7 +456,6 @@ async function sendOrder(){
     let deliveryFee = subtotal >= 250 ? 0 : 30;
     let total = subtotal + deliveryFee;
 
-    // Automatic Commission Calculation (10% Admin Commission, 90% Seller Payout)
     let commissionAmount = Math.round(subtotal * 0.10);
     let sellerPayout = subtotal - commissionAmount;
 
@@ -448,7 +466,7 @@ async function sendOrder(){
         order_date: new Date().toISOString(), status: "Confirmed", user_id: user.id
     }]);
 
-    if(error){ alert("Order save nahi ho saka: " + error.message); return; }
+    if(error){ alert("Order save नहीं हो सका: " + error.message); return; }
     alert(`Order Successfully Placed! ✅\nOrder ID: ${orderId}\nPayment Mode: ${payMode}`);
     cart = [];
     updateCart();
@@ -462,12 +480,12 @@ async function openMyOrders() {
 
 async function loadCustomerOrders(){
     const list = document.getElementById("customerOrdersList");
-    list.innerHTML = "<p>Orders load ho rahe hain...</p>";
+    list.innerHTML = "<p>Orders load हो रहे हैं...</p>";
     const { data: { user } } = await supabaseClient.auth.getUser();
-    if(!user){ list.innerHTML = "<p>Pehle Login karein.</p>"; return; }
+    if(!user){ list.innerHTML = "<p>पहले Login करें।</p>"; return; }
 
     const { data, error } = await supabaseClient.from("orders").select("*").eq("user_id", user.id).order("order_date", { ascending: false });
-    if(error || !data || data.length === 0){ list.innerHTML = "<p>Abhi koi order nahi hai.</p>"; return; }
+    if(error || !data || data.length === 0){ list.innerHTML = "<p>अभी कोई order नहीं है।</p>"; return; }
 
     list.innerHTML = data.map(o => `
         <div style="border:1px solid #ddd; padding:12px; margin:8px 0; border-radius:8px; background:#fff;">
@@ -506,7 +524,7 @@ function filterAdminOrders(statusFilter){
     if(statusFilter !== 'All'){
         filtered = allAdminOrdersList.filter(o => o.status === statusFilter);
     }
-    if(filtered.length === 0){ list.innerHTML = `<p>Koi ${statusFilter} order nahi hai.</p>`; return; }
+    if(filtered.length === 0){ list.innerHTML = `<p>कोई ${statusFilter} order नहीं है।</p>`; return; }
 
     list.innerHTML = filtered.map(o => `
         <div style="border:1px solid #ddd; padding:10px; margin:6px 0; background:#fff; border-radius:6px;">
@@ -540,7 +558,7 @@ async function adminLogout() {
 async function updateWebsiteBanner(){
     const title = document.getElementById("adminBannerTitleInput").value.trim();
     const desc = document.getElementById("adminBannerDescInput").value.trim();
-    if(!title || !desc){ alert("Banner Title aur Description bharen!"); return; }
+    if(!title || !desc){ alert("Banner Title और Description भरें!"); return; }
     
     document.getElementById("bannerTitle").innerText = title;
     document.getElementById("bannerDesc").innerText = desc;
@@ -553,7 +571,7 @@ async function addNewProductFromModal() {
     const mrp = document.getElementById("modalNewProdMrp").value.trim();
     const emoji = document.getElementById("modalNewProdEmoji").value.trim() || "💧";
 
-    if(!name || !price){ alert("Product Name aur Price bharen!"); return; }
+    if(!name || !price){ alert("Product Name और Price भरें!"); return; }
 
     const { error } = await supabaseClient.from("products").insert([{ 
         name, 
@@ -577,7 +595,7 @@ async function loadAdminProductsList() {
     const list = document.getElementById("adminProductManageList");
     if(!list) return;
     const { data } = await supabaseClient.from("products").select("*").order("created_at", { ascending: false });
-    if(!data || data.length === 0){ list.innerHTML = "<p>Koi product nahi hai.</p>"; return; }
+    if(!data || data.length === 0){ list.innerHTML = "<p>कोई product नहीं है।</p>"; return; }
 
     list.innerHTML = data.map(prod => `
         <div style="border:1px solid #ddd; padding:10px; border-radius:8px; margin-bottom:8px; background:#fff;">
@@ -608,7 +626,7 @@ async function updateProductPrice(productId) {
 }
 
 async function deleteProduct(productId) {
-    if(!confirm("Kya aap is product ko delete karna chahte hain?")) return;
+    if(!confirm("क्या आप इस product को delete करना चाहते हैं?")) return;
     await supabaseClient.from("products").delete().eq("id", productId);
     loadDynamicProducts();
     loadAdminProductsList();
@@ -619,7 +637,7 @@ async function registerShopkeeper() {
     const store = document.getElementById("storeName").value.trim();
     const mobile = document.getElementById("shopMobile").value.trim();
     const address = document.getElementById("shopAddress").value.trim();
-    if(!name || !store || !mobile || !address){ alert("Sabhi fields bharen!"); return; }
+    if(!name || !store || !mobile || !address){ alert("सभी fields भरें!"); return; }
 
     await supabaseClient.from("shopkeepers").insert([{ name, store_name: store, mobile, address }]);
     alert("✅ Store Registered Successfully!");
@@ -628,7 +646,7 @@ async function registerShopkeeper() {
 async function loadDeliveryOrders() {
     const list = document.getElementById("deliveryOrdersList");
     const { data } = await supabaseClient.from("orders").select("*").neq("status", "Cancelled").order("order_date", { ascending: false });
-    if(!data || data.length === 0){ list.innerHTML = "<p>Koi delivery order nahi hai.</p>"; return; }
+    if(!data || data.length === 0){ list.innerHTML = "<p>कोई delivery order नहीं है।</p>"; return; }
     list.innerHTML = data.map(o => `
         <div style="border:1px solid #ddd; padding:10px; margin:5px 0; background:#fff; border-radius:6px;">
             <b>Order #${o.order_id}</b> - ${o.customer_name} (${o.mobile})<br>
@@ -655,4 +673,3 @@ supabaseClient.auth.onAuthStateChange(() => { updateAuthUI(); });
 
 </body>
 </html>
-
