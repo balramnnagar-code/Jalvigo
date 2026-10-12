@@ -51,24 +51,26 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
 <header>
     <div class="logo">💧 Jalvigo</div>
     <div class="header-buttons">
-        <button class="admin-btn" id="customerLoginBtn" onclick="openCustomerAuth()">👤 Customer Login / Signup</button>
-        <button class="admin-btn" id="myOrdersBtn" onclick="openMyOrders()" style="display:none; background:#0284c7;">📦 My Orders</button>
-        <button class="admin-btn" id="b2bLoginBtn" onclick="openB2BAuth()" style="background:#059669;">🏢 Restaurant / B2B Login</button>
-        <button class="admin-btn" id="deliveryBtn" onclick="openDeliveryModal()" style="background:#16a34a;">🚚 Delivery Partner</button>
-        <button class="admin-btn" id="adminMainBtn" onclick="handleAdminButtonClick()" style="background:#082f49;">🔐 Admin Panel</button>
-        <button class="admin-btn" id="userLogoutBtn" onclick="userLogout()" style="display:none; background:#dc2626;">🚪 Logout</button>
-        <button class="cart-btn" onclick="openCart()" id="cartMainBtn">🛒 Cart: <span id="cartCount">0</span></button>
+        <button class="admin-btn" id="customerLoginBtn" onclick="openCustomerAuth()">👤 <span data-hi="Customer Login / Signup" data-en="Customer Login / Signup">Customer Login / Signup</span></button>
+        <button class="admin-btn" id="myOrdersBtn" onclick="openMyOrders()" style="display:none; background:#0284c7;">📦 <span data-hi="Mere Orders" data-en="My Orders">Mere Orders</span></button>
+        <button class="admin-btn" id="b2bLoginBtn" onclick="openB2BAuth()" style="background:#059669;">🏢 <span data-hi="B2B Login" data-en="B2B Login">B2B Login</span></button>
+        <button class="admin-btn" id="deliveryBtn" onclick="openDeliveryModal()" style="background:#16a34a;">🚚 <span data-hi="Delivery Partner" data-en="Delivery Partner">Delivery Partner</span></button>
+        <button class="admin-btn" id="adminMainBtn" onclick="handleAdminButtonClick()" style="background:#082f49;">🔐 <span data-hi="Admin Panel" data-en="Admin Panel">Admin Panel</span></button>
+        <button class="admin-btn" id="userLogoutBtn" onclick="userLogout()" style="display:none; background:#dc2626;">🚪 <span data-hi="Logout" data-en="Logout">Logout</span></button>
+        <button class="cart-btn" onclick="openCart()" id="cartMainBtn">🛒 <span data-hi="Cart" data-en="Cart">Cart</span>: <span id="cartCount">0</span></button>
+        <!-- LANGUAGE TOGGLE BUTTON -->
+        <button class="admin-btn" id="langToggleBtn" onclick="toggleLanguage()" style="background:#0ea5e9;">🌐 <span id="langText">English</span></button>
     </div>
 </header>
 
 <section class="hero">
-    <h1>Jalvigo Fresh Water & Beverages 💧</h1>
-    <p>Aapke Ghar aur Business ke liye Fast Water & Drink Delivery!</p>
+    <h1 id="heroTitle">Jalvigo Fresh Water & Beverages 💧</h1>
+    <p id="heroDesc">Aapke Ghar aur Business ke liye Fast Water & Drink Delivery!</p>
 </section>
 
 <div class="promo-banner">
-    <h3>📢 Special Offer: ₹250 se upar ke orders par FREE Delivery!</h3>
-    <p>Chhote aur bade sabhi customers ke liye best prices available.</p>
+    <h3 id="promoTitle">📢 Special Offer: ₹250 se upar ke orders par FREE Delivery!</h3>
+    <p id="promoDesc">Chhote aur bade sabhi customers ke liye best prices available.</p>
 </div>
 
 <div class="search-container">
@@ -76,9 +78,9 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
 </div>
 
 <div class="type-box">
-    <button id="retailBtn" class="active" onclick="selectType('Retail')">🛍️ Retail (Ghar ke liye)</button>
-    <button id="wholesaleBtn" onclick="selectType('Wholesale')">📦 Wholesale (B2B Bulk)</button>
-    <p style="margin-top:8px; font-size:14px;">Selected Mode: <b id="selectedType">Retail</b></p>
+    <button id="retailBtn" class="active" onclick="selectType('Retail')">🛍️ <span data-hi="Retail (Ghar ke liye)" data-en="Retail (Home)">Retail (Ghar ke liye)</span></button>
+    <button id="wholesaleBtn" onclick="selectType('Wholesale')">📦 <span data-hi="Wholesale (B2B Bulk)" data-en="Wholesale (B2B Bulk)">Wholesale (B2B Bulk)</span></button>
+    <p style="margin-top:8px; font-size:14px;"><span data-hi="Selected Mode" data-en="Selected Mode">Selected Mode</span>: <b id="selectedType">Retail</b></p>
 </div>
 
 <!-- PRODUCTS DISPLAY SECTION -->
@@ -117,7 +119,7 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
   </div>
 </div>
 
-<!-- DELIVERY PARTNER MODAL WITH SECURITY PIN -->
+<!-- DELIVERY PARTNER MODAL -->
 <div class="modal" id="deliveryModal">
   <div class="modal-box">
     <span class="close" onclick="closeDeliveryModal()">×</span>
@@ -202,7 +204,6 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
 <span class="close" onclick="closeAdminDashboard()">×</span>
 <h2>🛠️ Admin Panel Dashboard</h2>
 
-<!-- ADMIN ACTION BUTTON TABS -->
 <div style="margin:12px 0;">
     <button class="tab-btn active" id="tabOrdersBtn" onclick="switchAdminTab('orders')">📦 Manage Orders</button>
     <button class="tab-btn" id="tabCancelledBtn" onclick="switchAdminTab('cancelled')">❌ Cancelled Orders</button>
@@ -210,21 +211,18 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
     <button class="tab-btn" id="tabRemoveProductBtn" onclick="switchAdminTab('removeProduct')">🗑️ Remove Product</button>
 </div>
 
-<!-- TAB 1: MANAGE ACTIVE ORDERS -->
 <div id="adminOrdersTabSection" class="dashboard-card">
     <h3>📦 Orders List & Status Controller</h3>
     <button class="primary-btn" onclick="loadAdminOrders('active')" style="margin-bottom:10px;">🔄 Refresh Orders</button>
     <div id="adminOrdersList"><p>Loading Orders...</p></div>
 </div>
 
-<!-- TAB 2: CANCELLED ORDERS -->
 <div id="adminCancelledTabSection" class="dashboard-card" style="display:none;">
     <h3 style="color:#dc2626;">❌ Radd (Cancelled) Orders</h3>
     <button class="primary-btn" onclick="loadAdminOrders('cancelled')" style="margin-bottom:10px; background:#dc2626;">🔄 Refresh Cancelled List</button>
     <div id="adminCancelledOrdersList"><p>Loading Cancelled Orders...</p></div>
 </div>
 
-<!-- TAB 3: ADD PRODUCT (WITH MRP & DISCOUNT PRICE) -->
 <div id="adminAddProductTabSection" class="dashboard-card" style="display:none;">
     <h3>➕ Add New Product</h3>
     <div class="form-group"><label>Product Name</label><input type="text" id="newProdName" placeholder="e.g. Bisleri Water Jar 20L"></div>
@@ -234,7 +232,6 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
     <button class="primary-btn" onclick="addNewProduct()" style="width:100%; background:#16a34a;">Save & Publish Product</button>
 </div>
 
-<!-- TAB 4: REMOVE / DELETE PRODUCT -->
 <div id="adminRemoveProductTabSection" class="dashboard-card" style="display:none;">
     <h3>🗑️ Remove / Delete Existing Products</h3>
     <button class="primary-btn" onclick="loadManageProductsList()" style="margin-bottom:10px; background:#dc2626;">🔄 Refresh Products List</button>
@@ -257,8 +254,29 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_
 let cart = [];
 let shoppingType = "Retail";
 let allProductsList = [];
+let currentLang = "hi"; // Default Hindi
 const ADMIN_EMAIL = "balramnnagar0077@gmail.com";
 const DELIVERY_AGENT_PIN = "1234";
+
+function toggleLanguage() {
+    currentLang = currentLang === "hi" ? "en" : "hi";
+    document.getElementById("langText").innerText = currentLang === "hi" ? "English" : "हिंदी";
+    
+    // Switch Text Content dynamically
+    if(currentLang === "en") {
+        document.getElementById("heroTitle").innerText = "Jalvigo Fresh Water & Beverages 💧";
+        document.getElementById("heroDesc").innerText = "Fast Water & Drink Delivery for your Home and Business!";
+        document.getElementById("promoTitle").innerText = "📢 Special Offer: FREE Delivery on orders above ₹250!";
+        document.getElementById("promoDesc").innerText = "Best prices available for both retail and wholesale customers.";
+        document.getElementById("productSearchInput").placeholder = "🔍 Search Water Jar, Cold Drink...";
+    } else {
+        document.getElementById("heroTitle").innerText = "Jalvigo Fresh Water & Beverages 💧";
+        document.getElementById("heroDesc").innerText = "Aapke Ghar aur Business ke liye Fast Water & Drink Delivery!";
+        document.getElementById("promoTitle").innerText = "📢 Special Offer: ₹250 se upar ke orders par FREE Delivery!";
+        document.getElementById("promoDesc").innerText = "Chhote aur bade sabhi customers ke liye best prices available.";
+        document.getElementById("productSearchInput").placeholder = "🔍 Search Water Jar, Cold Drink...";
+    }
+}
 
 function selectType(type){
     shoppingType = type;
@@ -317,8 +335,6 @@ async function updateAuthUI() {
     const user = data.session?.user;
     const isAdmin = user && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
 
-    // 1. RULE: Admin logged in => Hide Customer & Delivery Login
-    // 2. RULE: Customer logged in => Hide Admin & Delivery Partner
     if (isAdmin) {
         document.getElementById("customerLoginBtn").style.display = "none";
         document.getElementById("b2bLoginBtn").style.display = "none";
@@ -329,7 +345,7 @@ async function updateAuthUI() {
     } else if (user) {
         document.getElementById("customerLoginBtn").style.display = "none";
         document.getElementById("b2bLoginBtn").style.display = "none";
-        document.getElementById("deliveryBtn").style.display = "none"; // HIDE DELIVERY PARTNER FOR CUSTOMERS
+        document.getElementById("deliveryBtn").style.display = "none"; 
         document.getElementById("adminMainBtn").style.display = "none";
         document.getElementById("myOrdersBtn").style.display = "inline-block";
         document.getElementById("userLogoutBtn").style.display = "inline-block";
