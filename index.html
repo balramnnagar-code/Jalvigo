@@ -90,7 +90,6 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
   <div class="modal-box">
     <span class="close" onclick="closeCustomerAuth()">×</span>
     <h2>👤 Customer Login / Signup</h2>
-    <p style="font-size:13px; color:#555; margin-bottom:10px;">Apne order track karne aur address save karne ke liye login karein.</p>
     <div class="form-group"><label>Email</label><input type="email" id="customerEmail" placeholder="Email id dalein"></div>
     <div class="form-group"><label>Password</label><input type="password" id="customerPassword" placeholder="Password dalein"></div>
     <button class="primary-btn" onclick="customerSignup()" style="width:100%; margin-bottom:6px;">📝 New Customer Signup</button>
@@ -126,7 +125,7 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
 </div>
 </div>
 
-<!-- ORDER FORM MODAL WITH ADDRESS FIELDS -->
+<!-- ORDER FORM MODAL -->
 <div class="modal" id="orderModal">
 <div class="modal-box">
 <span class="close" onclick="closeOrderForm()">×</span>
@@ -153,7 +152,6 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
 <div id="upiQrSection" style="display:none; text-align:center; background:#f0f9ff; padding:10px; border-radius:8px; margin-bottom:10px;">
     <p style="font-weight:bold; color:#0369a1;">Scan & Pay via UPI:</p>
     <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi://pay?pa=balramnnagar@okaxis%26pn=Jalvigo%26cu=INR" alt="UPI QR" style="width:150px; height:150px; border-radius:8px; border:2px solid #0284c7;">
-    <p style="font-size:13px; margin-top:4px;">UPI ID: <b>balramnnagar@okaxis</b></p>
 </div>
 <button class="primary-btn" onclick="sendOrder()" style="width:100%;">📦 Order Confirm Karein</button>
 </div>
@@ -173,13 +171,14 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
 <div class="modal-box">
 <span class="close" onclick="closeAdminLogin()">×</span>
 <h2>🔐 Jalvigo Admin Login</h2>
+<p style="font-size:12px; color:#555; margin-bottom:8px;">Apni Admin Email aur Password dalein:</p>
 <div class="form-group"><label>Admin Email</label><input type="email" id="adminEmailInput" placeholder="Admin Email"></div>
 <div class="form-group"><label>Password</label><input type="password" id="adminPasswordInput" placeholder="Password"></div>
 <button class="primary-btn" onclick="adminLogin()" style="width:100%;">🔐 Login as Admin</button>
 </div>
 </div>
 
-<!-- ADMIN DASHBOARD MODAL (FULL MANAGEMENT) -->
+<!-- ADMIN DASHBOARD MODAL -->
 <div class="modal" id="adminDashboardModal">
 <div class="modal-box" style="max-width:650px;">
 <span class="close" onclick="closeAdminDashboard()">×</span>
@@ -215,7 +214,9 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_
 let cart = [];
 let shoppingType = "Retail";
 let allProductsList = [];
-const ADMIN_USER_ID = "e8075a8a-1760-459b-9d33-b640b04b2d14";
+
+// **YAHAN APNI ACTUAL ADMIN EMAIL DAAL DEIN** (Jis email se aap admin login karte hain)
+const ADMIN_EMAIL = "balramnnagar@gmail.com"; // Agar kuch aur hai toh yahan badal sakte hain
 
 function selectType(type){
     shoppingType = type;
@@ -243,7 +244,9 @@ function closeAdminDashboard(){ document.getElementById("adminDashboardModal").s
 async function handleAdminButtonClick() {
     const { data } = await supabaseClient.auth.getSession();
     const user = data.session?.user;
-    if (user && user.id === ADMIN_USER_ID) {
+    
+    // Check if logged in user is admin by email
+    if (user && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
         document.getElementById("adminDashboardModal").style.display = "block";
         loadAdminOrders();
     } else {
@@ -413,8 +416,16 @@ async function openMyOrders() {
 async function adminLogin(){
     const email = document.getElementById("adminEmailInput").value.trim();
     const password = document.getElementById("adminPasswordInput").value;
+    
     const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-    if(error || !data.user || data.user.id !== ADMIN_USER_ID){ alert("❌ Galt Admin Email/Password!"); return; }
+    if(error || !data.user){ alert("❌ Login Failed: " + (error ? error.message : "Invalid user")); return; }
+
+    // Check if email matches admin email
+    if(data.user.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()){
+        alert("❌ Yeh account Admin nahi hai!");
+        await supabaseClient.auth.signOut();
+        return;
+    }
 
     closeAdminLogin();
     document.getElementById("adminDashboardModal").style.display = "block";
