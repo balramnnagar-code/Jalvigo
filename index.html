@@ -260,11 +260,19 @@ async function updateAuthUI() {
     const isAdmin = !!user && user.id === ADMIN_USER_ID;
     const isCustomer = !!user && !isAdmin;
 
+    // Buttons Visibility Settings
     document.getElementById("customerLoginBtn").style.display = isCustomer ? "none" : (isAdmin ? "none" : "inline-block");
     document.getElementById("myOrdersBtn").style.display = isCustomer ? "inline-block" : "none";
     document.getElementById("customerLogoutBtn").style.display = user ? "inline-block" : "none";
     document.getElementById("adminOrdersBtn").style.display = isAdmin ? "inline-block" : "none";
     document.getElementById("adminProductsBtn").style.display = isAdmin ? "inline-block" : "none";
+    
+    // DELIVERY PARTNER BUTTON: Sirf bina login wale guest users aur Delivery partners/Admin ko dikhega, Customer Login par chhup jayega
+    const deliveryBtn = document.querySelector('button[onclick="openDeliveryModal()"]');
+    if (deliveryBtn) {
+        deliveryBtn.style.display = isCustomer ? "none" : "inline-block";
+    }
+
     const adminLoginBtn = document.querySelector('button[onclick="openAdminLogin()"]');
     if (adminLoginBtn) adminLoginBtn.style.display = user ? "none" : "inline-block";
 }
