@@ -63,8 +63,6 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
         <button class="admin-btn" id="adminOrdersBtn" onclick="openAdminDashboard()" style="display:none;">🛠️ Admin Panel</button>
         <button class="admin-btn" id="adminProductsBtn" onclick="openAdminProductsModal()" style="display:none; background:#0284c7;">📦 Manage Products</button>
         <button class="cart-btn" onclick="openCart()" id="cartMainBtn">🛒 Cart: <span id="cartCount">0</span></button>
-        
-        <!-- LANGUAGE CHANGE BUTTON -->
         <button class="admin-btn" id="langToggleBtn" onclick="toggleCustomerLanguage()" style="background:#0ea5e9;">🌐 English / हिंदी</button>
     </div>
 </header>
@@ -162,7 +160,7 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
 </div>
 </div>
 
-<!-- ORDER FORM MODAL -->
+<!-- ORDER FORM MODAL WITH DYNAMIC UPI QR CODE -->
 <div class="modal" id="orderModal">
 <div class="modal-box">
 <span class="close" onclick="closeOrderForm()">×</span>
@@ -172,11 +170,21 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
 <div class="form-group"><label data-hi="Delivery Address" data-en="Delivery Address">Delivery Address</label><textarea id="customerAddress" data-hi="पूरा पता" data-en="Full Address" placeholder="पूरा पता"></textarea></div>
 <div class="form-group">
     <label data-hi="भुगतान का तरीका (Payment Mode)" data-en="Payment Mode">भुगतान का तरीका (Payment Mode)</label>
-    <select id="paymentMode">
+    <select id="paymentMode" onchange="toggleUpiQrBox()">
         <option value="Cash on Delivery (COD)">💵 Cash on Delivery (COD)</option>
         <option value="Online / UPI Pay">📱 Online Pay / UPI (GPay / PhonePe)</option>
     </select>
 </div>
+
+<!-- UPI QR SCANNER BOX -->
+<div id="upiQrSection" style="display:none; text-align:center; background:#f0f9ff; padding:12px; border-radius:10px; border:1px solid #0284c7; margin-bottom:12px;">
+    <p style="font-weight:bold; color:#0369a1; margin-bottom:6px;">📱 Scan & Pay via GPay / PhonePe / Paytm:</p>
+    <!-- Dynamic UPI QR Code Generation using official UPI parameters -->
+    <img id="upiQrImage" src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=Balramnnagar@okaxis%26pn=Jalvigo%26cu=INR" alt="Jalvigo UPI QR Code" style="width:170px; height:170px; border-radius:8px; border:2px solid #0284c7;">
+    <p style="margin-top:6px; font-size:14px;">UPI ID: <b style="color:#0284c7;">Balramnnagar@okaxis</b></p>
+    <p style="font-size:12px; color:#555; margin-top:3px;">Payment karne ke baad neeche Confirm button dabayein.</p>
+</div>
+
 <button class="primary-btn" onclick="sendOrder()" style="width:100%;" data-hi="📦 Order Confirm करें" data-en="📦 Confirm & Place Order">📦 Order Confirm करें</button>
 </div>
 </div>
@@ -264,7 +272,6 @@ let allProductsList = [];
 let allAdminOrdersList = [];
 const ADMIN_USER_ID = "e8075a8a-1760-459b-9d33-b640b04b2d14";
 
-// LANGUAGE TOGGLE FUNCTIONALITY
 function toggleCustomerLanguage() {
     customerLanguage = customerLanguage === "hi" ? "en" : "hi";
     document.querySelectorAll("[data-hi]").forEach(el => {
@@ -288,13 +295,28 @@ function selectType(type){
     else { document.getElementById("wholesaleBtn").classList.add("active"); }
 }
 
+function toggleUpiQrBox() {
+    const payMode = document.getElementById("paymentMode").value;
+    const qrBox = document.getElementById("upiQrSection");
+    if (payMode === "Online / UPI Pay") {
+        qrBox.style.display = "block";
+    } else {
+        qrBox.style.display = "none";
+    }
+}
+
 function openCustomerAuth(){ document.getElementById("customerAuthModal").style.display = "block"; }
 function closeCustomerAuth(){ document.getElementById("customerAuthModal").style.display = "none"; }
 function openCart(){ updateCart(); document.getElementById("cartModal").style.display = "block"; }
 function closeCart(){ document.getElementById("cartModal").style.display = "none"; }
 function openSubscriptionModal(){ document.getElementById("subscriptionModal").style.display = "block"; }
 function closeSubscriptionModal(){ document.getElementById("subscriptionModal").style.display = "none"; }
-function openOrderForm(){ if(cart.length === 0){ alert("Cart खाली है!"); return; } closeCart(); document.getElementById("orderModal").style.display = "block"; }
+function openOrderForm(){ 
+    if(cart.length === 0){ alert("Cart खाली है!"); return; } 
+    closeCart(); 
+    document.getElementById("orderModal").style.display = "block"; 
+    toggleUpiQrBox();
+}
 function closeOrderForm(){ document.getElementById("orderModal").style.display = "none"; }
 function openAdminLogin(){ document.getElementById("adminLoginModal").style.display = "block"; }
 function closeAdminLogin(){ document.getElementById("adminLoginModal").style.display = "none"; }
