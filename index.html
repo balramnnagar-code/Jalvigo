@@ -58,11 +58,10 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
     <div class="header-buttons">
         <button class="admin-btn" onclick="openB2BAuth()" style="background:#059669;">🏢 Restaurant / B2B Login</button>
         <button class="admin-btn" id="dealerPanelBtn" onclick="openDealerModal()" style="display:none; background:#d97706;">🏭 Dealer / Vendor Panel</button>
-        <button class="admin-btn" onclick="openAdminLogin()">🔐 Admin</button>
+        <button class="admin-btn" id="adminMainBtn" onclick="handleAdminClick()">🔐 Admin</button>
         <button class="admin-btn" id="customerLoginBtn" onclick="openCustomerAuth()">👤 Customer Login</button>
         <button class="admin-btn" id="myOrdersBtn" onclick="openMyOrders()" style="display:none;">📦 My Orders</button>
         <button class="admin-btn" id="customerLogoutBtn" onclick="customerLogout()" style="display:none; background:#dc2626;">🚪 Logout</button>
-        <button class="admin-btn" id="adminOrdersBtn" onclick="openAdminDashboard()" style="display:none;">🛠️ Admin Panel</button>
         <button class="cart-btn" onclick="openCart()" id="cartMainBtn">🛒 Cart: <span id="cartCount">0</span></button>
         <button class="admin-btn" id="langToggleBtn" onclick="toggleCustomerLanguage()" style="background:#0ea5e9;">🌐 English / हिंदी</button>
     </div>
@@ -212,7 +211,7 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
 <div class="modal" id="adminDashboardModal">
 <div class="modal-box" style="max-width:650px;">
 <span class="close" onclick="closeAdminDashboard()">×</span>
-<h2>🛠️ Admin Panel - B2B & Retail Orders Summary</h2>
+<h2>🛠️ Admin Panel - Orders Summary</h2>
 <div class="dashboard-card">
     <div id="adminOrdersList"><p>Orders load ho rahe hain...</p></div>
 </div>
@@ -235,11 +234,8 @@ let shoppingType = "Retail";
 let customerLanguage = "hi";
 let allProductsList = [];
 const ADMIN_USER_ID = "e8075a8a-1760-459b-9d33-b640b04b2d14";
-const DEALER_USER_ID = "e8075a8a-1760-459b-9d33-b640b04b2d14"; // Aap baad me dealer id update kar sakte hain
 
-function toggleCustomerLanguage() {
-    customerLanguage = customerLanguage === "hi" ? "en" : "hi";
-}
+function toggleCustomerLanguage() { customerLanguage = customerLanguage === "hi" ? "en" : "hi"; }
 
 function selectType(type){
     shoppingType = type;
@@ -269,9 +265,21 @@ function openOrderForm(){
     document.getElementById("orderModal").style.display = "block"; 
 }
 function closeOrderForm(){ document.getElementById("orderModal").style.display = "none"; }
+
+async function handleAdminClick() {
+    const { data } = await supabaseClient.auth.getSession();
+    const user = data.session?.user;
+    if (user && user.id === ADMIN_USER_ID) {
+        document.getElementById("adminDashboardModal").style.display = "block";
+        loadAdminOrders();
+    } else {
+        document.getElementById("adminLoginModal").style.display = "block";
+    }
+}
+
 function openAdminLogin(){ document.getElementById("adminLoginModal").style.display = "block"; }
 function closeAdminLogin(){ document.getElementById("adminLoginModal").style.display = "none"; }
-function closeAdminDashboard(){ document.getElementById("adminDashboardModal").style.display = "none"; loadAdminOrders(); }
+function closeAdminDashboard(){ document.getElementById("adminDashboardModal").style.display = "none"; }
 
 async function updateAuthUI() {
     const { data } = await supabaseClient.auth.getSession();
@@ -281,7 +289,6 @@ async function updateAuthUI() {
     document.getElementById("customerLoginBtn").style.display = user ? "none" : "inline-block";
     document.getElementById("myOrdersBtn").style.display = user ? "inline-block" : "none";
     document.getElementById("customerLogoutBtn").style.display = user ? "inline-block" : "none";
-    document.getElementById("adminOrdersBtn").style.display = isAdmin ? "inline-block" : "none";
     document.getElementById("dealerPanelBtn").style.display = user ? "inline-block" : "none";
 }
 
@@ -428,7 +435,7 @@ async function sendOrder(){
     cart.forEach(item => { subtotal += Number(item.price) * Number(item.qty); });
     let total = subtotal + (subtotal >= 250 ? 0 : 30);
 
-    let commission = Math.round(subtotal * 0.10); // 10% Platform Commission
+    let commission = Math.round(subtotal * 0.10);
     let dealerPayout = subtotal - commission;
 
     const { error } = await supabaseClient.from("b2b_orders").insert([{
@@ -469,9 +476,31 @@ async function adminLogin(){
     const email = document.getElementById("adminUsernameInput").value.trim();
     const password = document.getElementById("adminPasswordInput").value;
     const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-    if(error || !data.user || data.user.id !== ADMIN_USER_ID){ alert("❌ Unauthorized Admin"); return; }
+    if(error || !data.user || data.user.id !== ADMIN_USER_ID){ alert("❌ Unauthorized Admin Login"); return; }
     closeAdminLogin();
     document.getElementById("adminDashboardModal").style.display = "block";
+    loadAdminOrders();
+}
+
+async function loadAdminOrders() {
+    const list = document.getElementById("adminOrdersList");
+    const { data, error } = await supabaseClient.from("b2b_orders").select("*").order("order_date", { ascending: false });
+    if(error || !data || data.length === 0){ list.innerHTML = "<p>Koi order nahi hai.</p>"; return; }
+
+    list.innerHTML = data.map(o => `
+        <div style="border:1px solid #ddd; padding:10px; margin:6px 0; background:#fff; border-radius:6px;">
+            <p><b>Order #${o.order_id}</b> - ${o.business_name} (₹${o.total_amount})</p>
+            <p style="font-size:13px; color:#16a34a;">Commission: ₹${o.commission_amount} | Payout: ₹${o.dealer_payout}</p>
+            <p>Status: <b>${o.status}</b></p>
+        </div>
+    `).join("");
+}
+
+async function adminLogout() {
+    await supabaseClient.auth.signOut();
+    closeAdminDashboard();
+    updateAuthUI();
+    alert("Admin Logout Successful.");
 }
 
 updateAuthUI();
@@ -480,4 +509,3 @@ loadDynamicProducts();
 
 </body>
 </html>
-
