@@ -161,14 +161,42 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
 </div>
 </div>
 
-<!-- ORDER FORM MODAL WITH DYNAMIC UPI QR CODE -->
+<!-- ORDER FORM MODAL WITH SAVED ADDRESSES & UPI QR -->
 <div class="modal" id="orderModal">
-<div class="modal-box">
+<div class="modal-box" style="max-height:90vh; overflow-y:auto;">
 <span class="close" onclick="closeOrderForm()">×</span>
 <h2 data-hi="📦 Delivery & Payment की जानकारी" data-en="📦 Delivery & Payment Details">📦 Delivery & Payment की जानकारी</h2>
+
+<!-- Saved Addresses Container -->
+<div id="savedAddressesSection" style="margin-bottom:15px; border-bottom:1px solid #ddd; padding-bottom:10px;">
+    <label style="font-weight:bold; display:block; margin-bottom:5px;">📍 Select Saved Address:</label>
+    <div id="savedAddressesList" style="max-height:150px; overflow-y:auto; margin-bottom:8px;">
+        <p style="font-size:13px; color:#666;">Loading addresses...</p>
+    </div>
+    <button type="button" onclick="toggleNewAddressForm()" style="background:#0284c7; color:white; border:none; padding:6px 12px; border-radius:6px; font-size:13px; cursor:pointer;">+ Add New Address</button>
+</div>
+
+<!-- New Address Form (Toggleable) -->
+<div id="newAddressFormBox" style="display:none; background:#f8fafc; padding:12px; border-radius:8px; border:1px solid #cbd5e1; margin-bottom:12px;">
+    <h3 style="font-size:15px; margin-bottom:8px; color:#0369a1;">Add New Address</h3>
+    <div class="form-group" style="margin:6px 0;"><label style="font-size:13px;">Address Type</label>
+        <div style="display:flex; gap:15px; margin-top:3px;">
+            <label><input type="radio" name="address_type" value="Home" checked> 🏠 Home</label>
+            <label><input type="radio" name="address_type" value="Work"> 🏢 Work</label>
+            <label><input type="radio" name="address_type" value="Other"> 📍 Other</label>
+        </div>
+    </div>
+    <div class="form-group" style="margin:6px 0;"><label style="font-size:13px;">House / Flat / Building No.</label><input type="text" id="newHouseNo" placeholder="Flat / House No."></div>
+    <div class="form-group" style="margin:6px 0;"><label style="font-size:13px;">Street / Area / Village</label><input type="text" id="newStreet" placeholder="Street / Locality"></div>
+    <div class="form-group" style="margin:6px 0;"><label style="font-size:13px;">Landmark</label><input type="text" id="newLandmark" placeholder="Landmark (e.g. Near Water Tank)"></div>
+    <div class="form-group" style="margin:6px 0;"><label style="font-size:13px;">Pincode</label><input type="text" id="newPincode" placeholder="Pincode"></div>
+    <div class="form-group" style="margin:6px 0;"><label style="font-size:13px;">City</label><input type="text" id="newCity" placeholder="City"></div>
+    <button type="button" onclick="saveNewCustomerAddress()" style="background:#16a34a; color:white; border:none; padding:8px 12px; border-radius:6px; font-size:13px; cursor:pointer; margin-top:5px; width:100%;">Save Address</button>
+</div>
+
 <div class="form-group"><label data-hi="नाम" data-en="Name">नाम</label><input type="text" id="customerName" data-hi="आपका नाम" data-en="Your Name" placeholder="आपका नाम"></div>
 <div class="form-group"><label data-hi="मोबाइल नंबर" data-en="Mobile Number">मोबाइल नंबर</label><input type="tel" id="customerMobile" data-hi="मोबाइल नंबर" data-en="Mobile Number" placeholder="मोबाइल नंबर"></div>
-<div class="form-group"><label data-hi="Delivery Address" data-en="Delivery Address">Delivery Address</label><textarea id="customerAddress" data-hi="पूरा पता" data-en="Full Address" placeholder="पूरा पता"></textarea></div>
+
 <div class="form-group">
     <label data-hi="भुगतान का तरीका (Payment Mode)" data-en="Payment Mode">भुगतान का तरीका (Payment Mode)</label>
     <select id="paymentMode" onchange="toggleUpiQrBox()">
@@ -180,7 +208,6 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
 <!-- UPI QR SCANNER BOX -->
 <div id="upiQrSection" style="display:none; text-align:center; background:#f0f9ff; padding:12px; border-radius:10px; border:1px solid #0284c7; margin-bottom:12px;">
     <p style="font-weight:bold; color:#0369a1; margin-bottom:6px;">📱 Scan & Pay via GPay / PhonePe / Paytm:</p>
-    <!-- Dynamic UPI QR Code Generation using official UPI parameters -->
     <img id="upiQrImage" src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=balramnnagar@okaxis%26pn=Jalvigo%26cu=INR" alt="Jalvigo UPI QR Code" style="width:170px; height:170px; border-radius:8px; border:2px solid #0284c7;">
     <p style="margin-top:6px; font-size:14px;">UPI ID: <b style="color:#0284c7;">balramnnagar@okaxis</b></p>
     <p style="font-size:12px; color:#555; margin-top:3px;">Payment karne ke baad neeche Confirm button dabayein.</p>
@@ -271,6 +298,7 @@ let shoppingType = "Retail";
 let customerLanguage = "hi";
 let allProductsList = [];
 let allAdminOrdersList = [];
+let selectedDeliveryAddress = "";
 const ADMIN_USER_ID = "e8075a8a-1760-459b-9d33-b640b04b2d14";
 
 function toggleCustomerLanguage() {
@@ -312,13 +340,16 @@ function openCart(){ updateCart(); document.getElementById("cartModal").style.di
 function closeCart(){ document.getElementById("cartModal").style.display = "none"; }
 function openSubscriptionModal(){ document.getElementById("subscriptionModal").style.display = "block"; }
 function closeSubscriptionModal(){ document.getElementById("subscriptionModal").style.display = "none"; }
+
 function openOrderForm(){ 
     if(cart.length === 0){ alert("Cart खाली है!"); return; } 
     closeCart(); 
     document.getElementById("orderModal").style.display = "block"; 
     toggleUpiQrBox();
+    loadCustomerAddresses();
 }
 function closeOrderForm(){ document.getElementById("orderModal").style.display = "none"; }
+
 function openAdminLogin(){ document.getElementById("adminLoginModal").style.display = "block"; }
 function closeAdminLogin(){ document.getElementById("adminLoginModal").style.display = "none"; }
 function closeAdminDashboard(){ document.getElementById("adminDashboardModal").style.display = "none"; }
@@ -326,6 +357,79 @@ function openAdminProductsModal(){ document.getElementById("adminProductsModal")
 function closeAdminProductsModal(){ document.getElementById("adminProductsModal").style.display = "none"; }
 function openDeliveryModal(){ document.getElementById("deliveryModal").style.display = "block"; loadDeliveryOrders(); }
 function closeDeliveryModal(){ document.getElementById("deliveryModal").style.display = "none"; }
+
+function toggleNewAddressForm() {
+    const box = document.getElementById("newAddressFormBox");
+    box.style.display = box.style.display === "none" ? "block" : "none";
+}
+
+async function loadCustomerAddresses() {
+    const listContainer = document.getElementById("savedAddressesList");
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    if(!user){ 
+        listContainer.innerHTML = "<p style='font-size:13px; color:#e11d48;'>Address save karne ke liye pehle Login karein.</p>"; 
+        return; 
+    }
+
+    const { data, error } = await supabaseClient.from("customer_addresses").select("*").eq("user_id", user.id);
+    if(error || !data || data.length === 0){
+        listContainer.innerHTML = "<p style='font-size:13px; color:#666;'>Koi saved address nahi hai. Naya address add karein.</p>";
+        return;
+    }
+
+    listContainer.innerHTML = data.map((addr, idx) => `
+        <div style="border:1px solid #cbd5e1; padding:8px; border-radius:6px; margin-bottom:6px; background:#fff; font-size:13px;">
+            <label style="cursor:pointer; display:flex; align-items:flex-start; gap:6px;">
+                <input type="radio" name="selected_saved_address" value="${addr.house_flat_no}, ${addr.street_locality}, Landmark: ${addr.landmark || 'N/A'}, Pincode: ${addr.pincode} (${addr.address_type})" ${idx === 0 ? 'checked' : ''} onchange="setChosenAddress(this.value)">
+                <div>
+                    <b>[${addr.address_type}]</b> ${addr.house_flat_no}, ${addr.street_locality}<br>
+                    Landmark: ${addr.landmark || 'N/A'} | Pincode: <b>${addr.pincode}</b>
+                </div>
+            </label>
+        </div>
+    `).join("");
+
+    if(data.length > 0) {
+        selectedDeliveryAddress = `${data[0].house_flat_no}, ${data[0].street_locality}, Landmark: ${data[0].landmark || 'N/A'}, Pincode: ${data[0].pincode} (${data[0].address_type})`;
+    }
+}
+
+function setChosenAddress(addrStr) {
+    selectedDeliveryAddress = addrStr;
+}
+
+async function saveNewCustomerAddress() {
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    if(!user){ alert("Pehle Customer Login karein!"); return; }
+
+    const address_type = document.querySelector('input[name="address_type"]:checked').value;
+    const house_flat_no = document.getElementById("newHouseNo").value.trim();
+    const street_locality = document.getElementById("newStreet").value.trim();
+    const landmark = document.getElementById("newLandmark").value.trim();
+    const pincode = document.getElementById("newPincode").value.trim();
+    const city = document.getElementById("newCity").value.trim();
+
+    if(!house_flat_no || !street_locality || !pincode || !city){
+        alert("Kripya sabhi zaruri address fields bharein!");
+        return;
+    }
+
+    const { error } = await supabaseClient.from("customer_addresses").insert([{
+        user_id: user.id,
+        address_type,
+        house_flat_no,
+        street_locality,
+        landmark,
+        pincode,
+        city,
+        state: "Maharashtra"
+    }]);
+
+    if(error){ alert("Error saving address: " + error.message); return; }
+    alert("✅ Address Successfully Saved!");
+    document.getElementById("newAddressFormBox").style.display = "none";
+    loadCustomerAddresses();
+}
 
 async function updateAuthUI() {
     const { data } = await supabaseClient.auth.getSession();
@@ -467,10 +571,11 @@ async function sendOrder(){
     
     const name = document.getElementById("customerName").value.trim();
     const mobile = document.getElementById("customerMobile").value.trim();
-    const address = document.getElementById("customerAddress").value.trim();
+    const address = selectedDeliveryAddress;
     const payMode = document.getElementById("paymentMode").value;
 
-    if(!name || !mobile || !address){ alert("Name, Mobile और Address भरें!"); return; }
+    if(!name || !mobile){ alert("Name aur Mobile number bharein!"); return; }
+    if(!address){ alert("Kripya delivery address select karein ya naya add karein!"); return; }
     if(!cart || cart.length === 0){ alert("Cart खाली है!"); return; }
 
     const orderId = "JAL" + Date.now();
