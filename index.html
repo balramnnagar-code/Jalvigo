@@ -29,6 +29,8 @@ header{background:#0284c7;color:white;padding:15px;display:flex;justify-content:
 .product .emoji{font-size:40px;margin-bottom:8px;}
 .product h3{margin-bottom:6px;font-size:16px;}
 .price{color:#0284c7;font-size:18px;font-weight:bold;}
+.old-price{text-decoration:line-through;color:#888;font-size:14px;margin-left:6px;}
+.discount-tag{background:#fee2e2;color:#dc2626;font-size:11px;padding:2px 6px;border-radius:4px;font-weight:bold;display:inline-block;margin-bottom:5px;}
 .product button,.primary-btn{background:#0284c7;color:white;border:none;padding:10px 15px;border-radius:8px;font-weight:bold;cursor:pointer;}
 .form-group{margin:12px 0;text-align:left;}
 .form-group label{display:block;margin-bottom:5px;font-weight:bold;}
@@ -194,7 +196,7 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
 </div>
 </div>
 
-<!-- ADMIN DASHBOARD MODAL WITH SEPARATE BUTTON TABS -->
+<!-- ADMIN DASHBOARD MODAL -->
 <div class="modal" id="adminDashboardModal">
 <div class="modal-box" style="max-width:650px;">
 <span class="close" onclick="closeAdminDashboard()">×</span>
@@ -222,12 +224,13 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
     <div id="adminCancelledOrdersList"><p>Loading Cancelled Orders...</p></div>
 </div>
 
-<!-- TAB 3: ADD PRODUCT -->
+<!-- TAB 3: ADD PRODUCT (WITH MRP & DISCOUNT PRICE) -->
 <div id="adminAddProductTabSection" class="dashboard-card" style="display:none;">
     <h3>➕ Add New Product</h3>
-    <div class="form-group"><label>Product Name</label><input type="text" id="newProdName" placeholder="Product Name"></div>
-    <div class="form-group"><label>Price (₹)</label><input type="number" id="newProdPrice" placeholder="Price"></div>
-    <div class="form-group"><label>Emoji Icon</label><input type="text" id="newProdEmoji" placeholder="💧"></div>
+    <div class="form-group"><label>Product Name</label><input type="text" id="newProdName" placeholder="e.g. Bisleri Water Jar 20L"></div>
+    <div class="form-group"><label>Product Actual Price / MRP (₹)</label><input type="number" id="newProdMrp" placeholder="e.g. 80"></div>
+    <div class="form-group"><label>Price After Discount / Selling Price (₹)</label><input type="number" id="newProdPrice" placeholder="e.g. 60"></div>
+    <div class="form-group"><label>Product Icon / Emoji</label><input type="text" id="newProdEmoji" placeholder="e.g. 💧, 🥤, 🍾"></div>
     <button class="primary-btn" onclick="addNewProduct()" style="width:100%; background:#16a34a;">Save & Publish Product</button>
 </div>
 
@@ -255,7 +258,7 @@ let cart = [];
 let shoppingType = "Retail";
 let allProductsList = [];
 const ADMIN_EMAIL = "balramnnagar0077@gmail.com";
-const DELIVERY_AGENT_PIN = "1234"; // Delivery partner pin code
+const DELIVERY_AGENT_PIN = "1234";
 
 function selectType(type){
     shoppingType = type;
@@ -314,23 +317,26 @@ async function updateAuthUI() {
     const user = data.session?.user;
     const isAdmin = user && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
 
-    // 1. RULE: Admin logged in => Hide Customer Login
-    // 2. RULE: Customer logged in => Hide Admin Login
+    // 1. RULE: Admin logged in => Hide Customer & Delivery Login
+    // 2. RULE: Customer logged in => Hide Admin & Delivery Partner
     if (isAdmin) {
         document.getElementById("customerLoginBtn").style.display = "none";
         document.getElementById("b2bLoginBtn").style.display = "none";
+        document.getElementById("deliveryBtn").style.display = "inline-block";
         document.getElementById("adminMainBtn").style.display = "inline-block";
         document.getElementById("myOrdersBtn").style.display = "none";
         document.getElementById("userLogoutBtn").style.display = "inline-block";
     } else if (user) {
         document.getElementById("customerLoginBtn").style.display = "none";
         document.getElementById("b2bLoginBtn").style.display = "none";
+        document.getElementById("deliveryBtn").style.display = "none"; // HIDE DELIVERY PARTNER FOR CUSTOMERS
         document.getElementById("adminMainBtn").style.display = "none";
         document.getElementById("myOrdersBtn").style.display = "inline-block";
         document.getElementById("userLogoutBtn").style.display = "inline-block";
     } else {
         document.getElementById("customerLoginBtn").style.display = "inline-block";
         document.getElementById("b2bLoginBtn").style.display = "inline-block";
+        document.getElementById("deliveryBtn").style.display = "inline-block";
         document.getElementById("adminMainBtn").style.display = "inline-block";
         document.getElementById("myOrdersBtn").style.display = "none";
         document.getElementById("userLogoutBtn").style.display = "none";
@@ -414,14 +420,22 @@ async function loadDynamicProducts() {
 
 function renderProducts(prods) {
     const container = document.getElementById("dynamicProductsList");
-    container.innerHTML = prods.map(prod => `
-        <div class="product">
-            <div class="emoji">${prod.emoji || '💧'}</div>
-            <h3>${prod.name}</h3>
-            <div class="price">₹${prod.price}</div>
-            <button onclick="addToCart('${prod.name}', ${prod.price})" style="margin-top:8px;">Add to Cart</button>
-        </div>
-    `).join('');
+    container.innerHTML = prods.map(prod => {
+        let discountHtml = "";
+        if(prod.mrp && Number(prod.mrp) > Number(prod.price)){
+            let discountPercent = Math.round(((prod.mrp - prod.price) / prod.mrp) * 100);
+            discountHtml = `<div class="discount-tag">${discountPercent}% OFF</div> <span class="old-price">₹${prod.mrp}</span>`;
+        }
+        return `
+            <div class="product">
+                <div class="emoji">${prod.emoji || '💧'}</div>
+                <h3>${prod.name}</h3>
+                ${discountHtml}
+                <div class="price">₹${prod.price}</div>
+                <button onclick="addToCart('${prod.name}', ${prod.price})" style="margin-top:8px;">Add to Cart</button>
+            </div>
+        `;
+    }).join('');
 }
 
 function filterProducts() {
@@ -560,14 +574,25 @@ async function updateOrderStatus(orderId, newStatus) {
 
 async function addNewProduct() {
     const name = document.getElementById("newProdName").value.trim();
+    const mrp = document.getElementById("newProdMrp").value.trim();
     const price = document.getElementById("newProdPrice").value.trim();
     const emoji = document.getElementById("newProdEmoji").value.trim() || "💧";
 
-    if(!name || !price){ alert("Name aur Price bharein!"); return; }
-    await supabaseClient.from("products").insert([{ name, price: Number(price), emoji, created_at: new Date().toISOString() }]);
-    alert("✅ Product Published!");
+    if(!name || !price){ alert("Product Name aur Selling Price bharein!"); return; }
+
+    await supabaseClient.from("products").insert([{ 
+        name, 
+        mrp: mrp ? Number(mrp) : null,
+        price: Number(price), 
+        emoji, 
+        created_at: new Date().toISOString() 
+    }]);
+
+    alert("✅ Product Successfully Published!");
     document.getElementById("newProdName").value = "";
+    document.getElementById("newProdMrp").value = "";
     document.getElementById("newProdPrice").value = "";
+    document.getElementById("newProdEmoji").value = "";
     loadDynamicProducts();
 }
 
@@ -577,8 +602,11 @@ async function loadManageProductsList() {
     if(!data || data.length === 0){ list.innerHTML = "<p>Koi product nahi hai.</p>"; return; }
 
     list.innerHTML = data.map(p => `
-        <div style="display:flex; justify-style:space-between; justify-content:space-between; align-items:center; border:1px solid #ccc; padding:8px; margin:5px 0; background:#fff; border-radius:6px;">
-            <div><b>${p.emoji || '💧'} ${p.name}</b> (₹${p.price})</div>
+        <div style="display:flex; justify-content:space-between; align-items:center; border:1px solid #ccc; padding:8px; margin:5px 0; background:#fff; border-radius:6px;">
+            <div>
+                <b>${p.emoji || '💧'} ${p.name}</b><br>
+                Price: ₹${p.price} ${p.mrp ? `<span style="text-decoration:line-through; color:#888; font-size:12px;">(MRP: ₹${p.mrp})</span>` : ''}
+            </div>
             <button onclick="deleteProduct(${p.id})" style="background:#dc2626; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">🗑️ Delete</button>
         </div>
     `).join('');
