@@ -1,118 +1,193 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-    <meta name="google-site-verification" content="vVBDCMt4S3IQUGspcfm3Li4bAsDDq5In5xg_G_8j4tM" />
+<meta name="google-site-verification" content="vVBDCMt4S3IQUGspcfm3Li4bAsDDq5In5xg_G_8j4tM" />
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Jalvigo - Water & Beverages Marketplace</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif;}
-body{background:#f0f9ff;color:#123;}
-header{background:#0284c7;color:white;padding:15px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10;}
-.logo{font-size:24px;font-weight:bold;}
-.header-buttons{display:flex;gap:7px;flex-wrap:wrap;align-items:center;}
-.cart-btn,.admin-btn{border:none;padding:9px 12px;border-radius:20px;font-weight:bold;cursor:pointer;}
-.cart-btn{background:white;color:#0284c7;}
-.admin-btn{background:#082f49;color:white;}
-.sub-badge{background:#eab308; color:#000; padding:4px 10px; border-radius:15px; font-weight:bold; font-size:12px; display:inline-block; margin-left:5px;}
-.hero{text-align:center;padding:25px 15px;background:linear-gradient(135deg,#dff6ff,#fff);}
-.hero h1{color:#0369a1;margin-bottom:8px;}
-.hero p{color:#555;}
-.promo-banner{background:linear-gradient(135deg,#0284c7,#0369a1);color:white;margin:15px 20px;padding:15px;border-radius:15px;text-align:center;box-shadow:0 4px 15px rgba(0,0,0,.15);}
-.vip-card{background:linear-gradient(135deg,#fef08a,#fde047); color:#854d0e; padding:18px; border-radius:12px; border:2px solid #eab308; margin:15px 20px; text-align:center;}
-.plan-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(120px, 1fr)); gap:10px; margin:15px 0;}
-.plan-box{border:2px solid #eab308; background:#fff; padding:12px; border-radius:10px; text-align:center; cursor:pointer;}
-.plan-box.selected{background:#fef08a; border-color:#854d0e;}
-.search-container{padding:10px 20px;text-align:center;background:#e0f2fe;}
-.search-container input{width:100%;max-width:500px;padding:12px 15px;border:1px solid #0284c7;border-radius:25px;font-size:16px;outline:none;}
-.type-box{text-align:center;padding:12px;}
-.type-box button{padding:10px 18px;border:2px solid #0284c7;background:white;color:#0284c7;border-radius:25px;margin:5px;font-weight:bold;cursor:pointer;}
-.type-box button.active{background:#0284c7;color:white;}
-.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:15px;padding:20px;}
-.product{background:white;padding:18px;border-radius:15px;box-shadow:0 3px 12px rgba(0,0,0,.1);text-align:center;position:relative;}
-.product .emoji{font-size:40px;margin-bottom:8px;}
-.product h3{margin-bottom:6px;font-size:16px;}
-.price{color:#0284c7;font-size:18px;font-weight:bold;}
-.old-price{text-decoration:line-through;color:#888;font-size:14px;margin-left:6px;}
-.discount-tag{background:#fee2e2;color:#dc2626;font-size:11px;padding:2px 6px;border-radius:4px;font-weight:bold;display:inline-block;margin-bottom:5px;}
-.product button,.primary-btn{background:#0284c7;color:white;border:none;padding:10px 15px;border-radius:8px;font-weight:bold;cursor:pointer;}
-.form-group{margin:12px 0;text-align:left;}
-.form-group label{display:block;margin-bottom:5px;font-weight:bold;}
-.form-group input,.form-group textarea,.form-group select{width:100%;padding:11px;border:1px solid #bbb;border-radius:8px;font-size:15px;}
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:100;padding:15px;overflow:auto;}
-.modal-box{background:white;max-width:550px;margin:25px auto;padding:20px;border-radius:15px;}
-.close{float:right;font-size:28px;cursor:pointer;}
-.cart-item{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #ddd;padding:10px 0;}
-.dashboard-card{background:#f0f9ff;padding:15px;border-radius:12px;margin:10px 0;}
-.logout-btn{background:#dc2626;color:white;border:none;padding:10px 16px;border-radius:8px;font-weight:bold;cursor:pointer;}
-.tab-btn{background:#e2e8f0; border:none; padding:8px 12px; border-radius:6px; cursor:pointer; font-weight:bold; margin-right:5px; margin-bottom:5px;}
-.tab-btn.active{background:#0284c7; color:white;}
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;}
+body{background:#f1f5f9;color:#0f172a;padding-bottom:70px;}
 
-#notificationToast{display:none; position:fixed; bottom:20px; right:20px; background:#0284c7; color:white; padding:15px 20px; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.3); z-index:1000; font-weight:bold;}
+/* FLIPKART STYLE TOP HEADER */
+.app-header{background:linear-gradient(135deg,#0284c7,#0369a1);color:white;padding:12px 15px;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,0.15);}
+.top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.logo{font-size:22px;font-weight:800;letter-spacing:0.5px;display:flex;align-items:center;gap:5px;}
+.location-btn{background:rgba(255,255,255,0.2);padding:6px 12px;border-radius:20px;font-size:12px;display:flex;align-items:center;gap:6px;cursor:pointer;backdrop-filter:blur(5px);}
 
-footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:30px;}
+/* SEARCH BAR WITH ICONS */
+.search-bar{background:white;border-radius:12px;display:flex;align-items:center;padding:8px 14px;box-shadow:0 2px 8px rgba(0,0,0,0.08);}
+.search-bar input{border:none;outline:none;width:100%;font-size:14px;margin-left:8px;color:#334155;}
+
+/* HORIZONTAL CATEGORIES BAR */
+.category-nav{display:flex;overflow-x:auto;padding:12px 10px;background:white;gap:15px;scrollbar-width:none;}
+.category-nav::-webkit-scrollbar{display:none;}
+.cat-item{display:flex;flex-direction:column;align-items:center;min-width:65px;font-size:11px;font-weight:600;color:#475569;cursor:pointer;}
+.cat-icon{width:48px;height:48px;background:#e0f2fe;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:4px;box-shadow:0 2px 5px rgba(0,0,0,0.05);}
+.cat-item.active .cat-icon{background:#0284c7;color:white;}
+.cat-item.active{color:#0284c7;}
+
+/* BANNER CAROUSEL CARD */
+.banner-container{padding:12px 15px;}
+.promo-card{background:linear-gradient(135deg,#eab308,#ca8a04);color:#fff;padding:18px;border-radius:16px;box-shadow:0 4px 15px rgba(234,179,8,0.3);position:relative;overflow:hidden;}
+.promo-card h3{font-size:18px;font-weight:800;}
+.promo-card p{font-size:12px;margin-top:4px;opacity:0.9;}
+.vip-btn{background:white;color:#854d0e;border:none;padding:8px 14px;border-radius:20px;font-weight:bold;font-size:12px;margin-top:10px;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,0.15);}
+
+/* DEALS SECTION (FLIPKART HORIZONTAL SCROLL) */
+.section-title{font-size:16px;font-weight:700;padding:10px 15px 5px 15px;display:flex;justify-content:space-between;align-items:center;}
+.deals-scroll{display:flex;overflow-x:auto;padding:10px 15px;gap:12px;scrollbar-width:none;}
+.deals-scroll::-webkit-scrollbar{display:none;}
+.deal-card{min-width:140px;background:white;border-radius:14px;padding:12px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.05);position:relative;}
+.badge-discount{position:absolute;top:8px;left:8px;background:#dc2626;color:white;font-size:10px;font-weight:bold;padding:2px 6px;border-radius:6px;}
+
+/* PRODUCTS GRID */
+.products-grid{display:grid;grid-template-columns:repeat(2, 1fr);gap:12px;padding:10px 15px;}
+.product-card{background:white;border-radius:16px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.04);position:relative;display:flex;flex-direction:column;justify-content:space-between;}
+.prod-emoji{font-size:42px;margin:8px 0;}
+.prod-title{font-size:14px;font-weight:600;color:#1e293b;margin-bottom:4px;}
+.prod-price{font-size:16px;font-weight:700;color:#0284c7;}
+.prod-mrp{font-size:12px;color:#94a3b8;text-decoration:line-through;margin-left:4px;}
+.add-btn{background:#0284c7;color:white;border:none;padding:8px;border-radius:10px;font-weight:bold;font-size:13px;width:100%;margin-top:8px;cursor:pointer;}
+
+/* BOTTOM NAVIGATION BAR (FLIPKART STYLE) */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:60px;background:white;display:flex;justify-content:space-around;align-items:center;border-top:1px solid #e2e8f0;z-index:200;}
+.nav-item{display:flex;flex-direction:column;align-items:center;font-size:10px;color:#64748b;font-weight:600;cursor:pointer;background:none;border:none;}
+.nav-icon{font-size:20px;margin-bottom:2px;}
+.nav-item.active{color:#0284c7;}
+.badge-count{position:absolute;top:-2px;right:15px;background:#ef4444;color:white;font-size:10px;padding:2px 6px;border-radius:10px;font-weight:bold;}
+
+/* MODALS */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:300;padding:15px;overflow:auto;}
+.modal-box{background:white;max-width:500px;margin:30px auto;padding:20px;border-radius:20px;box-shadow:0 10px 25px rgba(0,0,0,0.2);}
+.close{float:right;font-size:24px;font-weight:bold;cursor:pointer;}
+.form-group{margin:12px 0;}
+.form-group label{display:block;margin-bottom:5px;font-weight:600;font-size:13px;}
+.form-group input, .form-group select, .form-group textarea{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:10px;outline:none;}
+.primary-btn{background:#0284c7;color:white;border:none;padding:12px;width:100%;border-radius:12px;font-weight:bold;cursor:pointer;}
+
+#notificationToast{display:none;position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#0f172a;color:white;padding:10px 20px;border-radius:25px;font-size:12px;font-weight:bold;z-index:400;box-shadow:0 4px 12px rgba(0,0,0,0.2);}
 </style>
 </head>
 <body>
 
-<header>
-    <div class="logo">💧 Jalvigo <span id="vipBadge" style="display:none;" class="sub-badge">👑 VIP Priority</span></div>
-    <div class="header-buttons">
-        <button class="admin-btn" id="customerLoginBtn" onclick="openCustomerAuth()">👤 Customer Login</button>
-        <button class="admin-btn" id="subBtn" onclick="openSubModal()" style="background:#eab308; color:#000;">👑 VIP Pass</button>
-        <button class="admin-btn" id="nearbyBtn" onclick="openNearbyModal()" style="background:#0ea5e9;">📍 Nearby Stores</button>
-        <button class="admin-btn" id="myOrdersBtn" onclick="openMyOrders()" style="display:none; background:#0284c7;">📦 My Orders</button>
-        <button class="admin-btn" id="b2bLoginBtn" onclick="openB2BAuth()" style="background:#059669;">🏪 Shopkeeper / Dealer Login</button>
-        <button class="admin-btn" id="deliveryBtn" onclick="openDeliveryModal()" style="background:#16a34a;">🚚 Delivery Partner</button>
-        <button class="admin-btn" id="adminMainBtn" onclick="handleAdminButtonClick()" style="background:#082f49;">🔐 Admin Panel</button>
-        <button class="admin-btn" id="userLogoutBtn" onclick="userLogout()" style="display:none; background:#dc2626;">🚪 Logout</button>
-        <button class="cart-btn" onclick="openCart()" id="cartMainBtn">🛒 Cart: <span id="cartCount">0</span></button>
+<!-- TOP HEADER -->
+<header class="app-header">
+    <div class="top-bar">
+        <div class="logo">💧 Jalvigo</div>
+        <div class="location-btn" onclick="openNearbyModal()">
+            📍 <span id="locText">Select Location</span> ▾
+        </div>
+    </div>
+    <div class="search-bar">
+        🔍 <input type="text" id="productSearchInput" placeholder="Search Water Jar, Cold Drink, Beverages..." onkeyup="filterProducts()">
     </div>
 </header>
 
-<section class="hero">
-    <h1 id="heroTitle">Jalvigo Fresh Water & Beverages 💧</h1>
-    <p id="heroDesc">Aapke Ghar aur Business ke liye Fast Water & Drink Delivery!</p>
-</section>
-
-<!-- VIP SUBSCRIPTION BANNER -->
-<div class="vip-card">
-    <h3>👑 Jalvigo VIP Membership Pass</h3>
-    <p style="margin-top:4px;"><b>⚡ Priority Same Day / 1-Day Express Delivery</b></p>
-    <p style="font-size:13px; color:#6b21a8; margin-top:2px;">🚚 Free Delivery on orders ₹250 or above for VIP Members!</p>
-    <button class="primary-btn" onclick="openSubModal()" style="background:#854d0e; margin-top:10px;">Select Plan & Join VIP</button>
-</div>
-
-<div class="promo-banner">
-    <h3 id="promoTitle">📢 Special Offer: VIP Members ke liye Express Priority Delivery!</h3>
-    <p id="promoDesc">Delivery Slot Operating Hours: 7:00 AM - 11:00 PM</p>
-</div>
-
-<div class="search-container">
-    <input type="text" id="productSearchInput" placeholder="🔍 Search Water Jar, Cold Drink..." onkeyup="filterProducts()">
-</div>
-
-<div class="type-box">
-    <button id="retailBtn" class="active" onclick="selectType('Retail')">🛍️ Retail Mode</button>
-    <button id="wholesaleBtn" onclick="selectType('Wholesale')">📦 Wholesale Mode</button>
-    <p style="margin-top:8px; font-size:14px;">Selected Mode: <b id="selectedType">Retail</b></p>
-</div>
-
-<!-- PRODUCTS DISPLAY SECTION -->
-<section>
-    <div class="products" id="dynamicProductsList">
-        <p style="text-align:center; width:100%; grid-column:1 / -1;">💧 Products Load ho rahe hain...</p>
+<!-- CATEGORY NAVIGATION -->
+<div class="category-nav">
+    <div class="cat-item active" onclick="selectCategory('All')">
+        <div class="cat-icon">🛍️</div> For You
     </div>
-</section>
+    <div class="cat-item" onclick="selectCategory('Water')">
+        <div class="cat-icon">💧</div> Water Jars
+    </div>
+    <div class="cat-item" onclick="selectCategory('Drinks')">
+        <div class="cat-icon">🥤</div> Cold Drinks
+    </div>
+    <div class="cat-item" onclick="selectCategory('Wholesale')">
+        <div class="cat-icon">📦</div> Bulk B2B
+    </div>
+</div>
+
+<!-- BANNER CAROUSEL -->
+<div class="banner-container">
+    <div class="promo-card">
+        <h3>👑 Jalvigo VIP Pass</h3>
+        <p>Unlimited FREE Express Delivery & Priority Slot!</p>
+        <button class="vip-btn" onclick="openSubModal()">Get VIP @ ₹99/mo</button>
+    </div>
+</div>
+
+<!-- DEALS SECTION -->
+<div class="section-title">
+    <span>🔥 Top Offers & Deals</span>
+    <span style="font-size:12px;color:#0284c7;cursor:pointer;">View All</span>
+</div>
+
+<div class="deals-scroll">
+    <div class="deal-card">
+        <span class="badge-discount">25% OFF</span>
+        <div style="font-size:32px;margin:10px 0;">💧</div>
+        <div style="font-size:12px;font-weight:bold;">20L Water Jar</div>
+        <div style="color:#0284c7;font-weight:bold;margin-top:4px;">₹60</div>
+    </div>
+    <div class="deal-card">
+        <span class="badge-discount">15% OFF</span>
+        <div style="font-size:32px;margin:10px 0;">🍾</div>
+        <div style="font-size:12px;font-weight:bold;">Soda Bottle 1L</div>
+        <div style="color:#0284c7;font-weight:bold;margin-top:4px;">₹20</div>
+    </div>
+    <div class="deal-card">
+        <span class="badge-discount">20% OFF</span>
+        <div style="font-size:32px;margin:10px 0;">🥤</div>
+        <div style="font-size:12px;font-weight:bold;">Cold Drink Can</div>
+        <div style="color:#0284c7;font-weight:bold;margin-top:4px;">₹35</div>
+    </div>
+</div>
+
+<!-- PRODUCTS GRID -->
+<div class="section-title">
+    <span>⚡ All Products</span>
+</div>
+<div class="products-grid" id="dynamicProductsList">
+    <p style="grid-column:1/-1;text-align:center;padding:20px;color:#64748b;">Loading products...</p>
+</div>
+
+<!-- BOTTOM APP NAVIGATION BAR -->
+<div class="bottom-nav">
+    <button class="nav-item active" onclick="scrollToTop()">
+        <span class="nav-icon">🏠</span> Home
+    </button>
+    <button class="nav-item" onclick="openNearbyModal()">
+        <span class="nav-icon">📍</span> Stores
+    </button>
+    <button class="nav-item" style="position:relative;" onclick="openCart()">
+        <span class="nav-icon">🛒</span> Cart
+        <span class="badge-count" id="cartCount">0</span>
+    </button>
+    <button class="nav-item" onclick="handleAccountClick()">
+        <span class="nav-icon">👤</span> Account
+    </button>
+</div>
+
+<!-- ACCOUNT / LOGIN MODAL -->
+<div class="modal" id="accountModal">
+  <div class="modal-box">
+    <span class="close" onclick="closeModal('accountModal')">×</span>
+    <h2 id="accModalTitle">👤 Account Access</h2>
+    <div id="authButtonsSection" style="margin-top:15px;">
+        <button class="primary-btn" onclick="openCustomerAuth()" style="margin-bottom:10px;">👤 Customer Login / Signup</button>
+        <button class="primary-btn" onclick="openB2BAuth()" style="margin-bottom:10px;background:#059669;">🏪 Shopkeeper / Partner Login</button>
+        <button class="primary-btn" onclick="openDeliveryModal()" style="margin-bottom:10px;background:#16a34a;">🚚 Delivery Partner PIN</button>
+        <button class="primary-btn" onclick="handleAdminButtonClick()" style="background:#082f49;">🔐 Admin Dashboard</button>
+    </div>
+    <div id="loggedInSection" style="display:none;margin-top:15px;">
+        <p id="userEmailText" style="margin-bottom:10px;font-weight:bold;"></p>
+        <button class="primary-btn" onclick="openMyOrders()" style="margin-bottom:10px;">📦 My Orders</button>
+        <button class="primary-btn" onclick="userLogout()" style="background:#dc2626;">🚪 Logout</button>
+    </div>
+  </div>
+</div>
 
 <!-- NEARBY STORES MODAL -->
 <div class="modal" id="nearbyModal">
   <div class="modal-box">
-    <span class="close" onclick="closeNearbyModal()">×</span>
-    <h2>📍 Nearby Verified Stores & Dealers</h2>
+    <span class="close" onclick="closeModal('nearbyModal')">×</span>
+    <h2>📍 Nearby Verified Stores</h2>
     <div class="form-group">
-        <label>Select Distance Radius</label>
+        <label>Distance Radius</label>
         <select id="distanceSelect" onchange="renderPublicNearbyStores()">
             <option value="1">Within 1 KM</option>
             <option value="3">1 KM to 3 KM</option>
@@ -124,232 +199,100 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
   </div>
 </div>
 
-<!-- VIP SUBSCRIPTION MODAL -->
+<!-- CART MODAL -->
+<div class="modal" id="cartModal">
+<div class="modal-box">
+<span class="close" onclick="closeModal('cartModal')">×</span>
+<h2>🛒 Cart Items</h2>
+<div id="cartItems"></div>
+<div style="font-size:15px;margin-top:12px;">
+    <div>Subtotal: ₹<span id="cartSubtotal">0</span></div>
+    <div>Delivery: ₹<span id="deliveryFee">30</span></div>
+</div>
+<div style="font-size:18px;font-weight:bold;margin:10px 0;">Total: ₹<span id="cartTotal">0</span></div>
+<button class="primary-btn" onclick="openOrderForm()">Checkout Now</button>
+</div>
+</div>
+
+<!-- VIP MODAL -->
 <div class="modal" id="subModal">
   <div class="modal-box" style="text-align:center;">
-    <span class="close" onclick="closeSubModal()">×</span>
-    <h2 style="color:#854d0e;">👑 Jalvigo VIP Membership Plans</h2>
-    <p style="font-size:13px; color:#555; margin-top:4px;">Priority Delivery & Free Delivery above ₹250!</p>
-    
-    <div class="plan-grid">
-        <div class="plan-box selected" id="plan1" onclick="selectVipPlan(99, '1 Month', 'plan1')">
-            <b>1 Month</b><br>
-            <span style="font-size:18px; color:#0284c7; font-weight:bold;">₹99</span><br>
-            <small>₹99 / mo</small>
-        </div>
-        <div class="plan-box" id="plan2" onclick="selectVipPlan(499, '6 Months', 'plan2')">
-            <b>6 Months</b><br>
-            <span style="font-size:18px; color:#0284c7; font-weight:bold;">₹499</span><br>
-            <small>₹83 / mo</small>
-        </div>
-        <div class="plan-box" id="plan3" onclick="selectVipPlan(799, '12 Months', 'plan3')">
-            <b>12 Months</b><br>
-            <span style="font-size:18px; color:#0284c7; font-weight:bold;">₹799</span><br>
-            <small>₹66 / mo</small>
-        </div>
+    <span class="close" onclick="closeModal('subModal')">×</span>
+    <h2 style="color:#854d0e;">👑 Jalvigo VIP Pass</h2>
+    <p style="font-size:12px;color:#555;margin:6px 0;">Select Plan & Scan QR to Pay</p>
+    <div style="display:flex;gap:8px;margin:15px 0;">
+        <button onclick="selectVipPlan(99,'1 Month')" style="flex:1;padding:10px;border:1px solid #eab308;border-radius:8px;background:#fef08a;font-weight:bold;">₹99 / 1 Mo</button>
+        <button onclick="selectVipPlan(499,'6 Months')" style="flex:1;padding:10px;border:1px solid #eab308;border-radius:8px;background:#fff;font-weight:bold;">₹499 / 6 Mo</button>
+        <button onclick="selectVipPlan(799,'12 Months')" style="flex:1;padding:10px;border:1px solid #eab308;border-radius:8px;background:#fff;font-weight:bold;">₹799 / 1 Yr</button>
     </div>
-
-    <div style="background:#fef08a; padding:15px; border-radius:10px; margin:15px 0;">
-        <p>Selected Plan Amount: <b style="font-size:18px; color:#854d0e;">₹<span id="selectedPlanAmount">99</span></b> (<span id="selectedPlanDuration">1 Month</span>)</p>
-        <p style="font-size:12px; color:#555; margin-top:4px;">Scan QR & Pay Direct to Activate VIP Access</p>
-        <img id="vipUpiQr" src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi://pay?pa=balramnnagar@okaxis%26pn=Jalvigo%20VIP%26am=99%26cu=INR" alt="UPI QR" style="width:140px; height:140px; border-radius:8px; margin:10px 0; border:2px solid #eab308;">
-        <p style="font-size:12px;">UPI ID: <b>balramnnagar@okaxis</b></p>
-    </div>
-    <button class="primary-btn" onclick="activateVipSubscription()" style="width:100%; background:#eab308; color:#000;">I Have Paid - Activate VIP Access</button>
+    <img id="vipUpiQr" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=balramnnagar@okaxis%26pn=Jalvigo%20VIP%26am=99%26cu=INR" alt="UPI QR" style="width:130px;height:130px;border-radius:8px;">
+    <button class="primary-btn" onclick="activateVipSubscription()" style="margin-top:15px;background:#eab308;color:#000;">I Have Paid - Activate</button>
   </div>
+</div>
+
+<!-- CHECKOUT ORDER MODAL -->
+<div class="modal" id="orderModal">
+<div class="modal-box">
+<span class="close" onclick="closeModal('orderModal')">×</span>
+<h2>📦 Delivery Details</h2>
+<div class="form-group"><label>Full Name</label><input type="text" id="customerName"></div>
+<div class="form-group"><label>Mobile</label><input type="tel" id="customerMobile"></div>
+<div class="form-group"><label>Address</label><input type="text" id="streetArea"></div>
+<div class="form-group"><label>Distance Slot</label>
+    <select id="distanceRange" onchange="calculateDeliveryTimeSlot()">
+        <option value="1">< 1 KM (15-20 Mins Express)</option>
+        <option value="3">1 - 3 KM (30-45 Mins)</option>
+        <option value="5">3 - 5 KM (1-2 Hours)</option>
+        <option value="10">> 10 KM (Scheduled)</option>
+    </select>
+</div>
+<div style="background:#f0f9ff;padding:10px;border-radius:8px;font-size:12px;margin:10px 0;">
+    <b>🕒 Estimated Slot:</b> <span id="estimatedDeliverySlotDisplay">...</span>
+</div>
+<button class="primary-btn" onclick="sendOrder()">Place Order Now</button>
+</div>
 </div>
 
 <!-- CUSTOMER AUTH MODAL -->
 <div class="modal" id="customerAuthModal">
   <div class="modal-box">
-    <span class="close" onclick="closeCustomerAuth()">×</span>
+    <span class="close" onclick="closeModal('customerAuthModal')">×</span>
     <h2>👤 Customer Login / Signup</h2>
-    <div class="form-group"><label>Email</label><input type="email" id="customerEmail" placeholder="Email id dalein"></div>
-    <div class="form-group"><label>Password</label><input type="password" id="customerPassword" placeholder="Password dalein"></div>
-    <button class="primary-btn" onclick="customerSignup()" style="width:100%; margin-bottom:6px;">📝 New Customer Signup</button>
-    <button class="primary-btn" onclick="customerLogin()" style="width:100%; background:#16a34a;">🔐 Customer Login</button>
+    <div class="form-group"><label>Email</label><input type="email" id="customerEmail"></div>
+    <div class="form-group"><label>Password</label><input type="password" id="customerPassword"></div>
+    <button class="primary-btn" onclick="customerSignup()" style="margin-bottom:8px;">New Customer Signup</button>
+    <button class="primary-btn" onclick="customerLogin()" style="background:#16a34a;">Login</button>
   </div>
 </div>
 
-<!-- SHOPKEEPER & DEALER REGISTRATION MODAL -->
+<!-- B2B REGISTRATION MODAL -->
 <div class="modal" id="b2bAuthModal">
   <div class="modal-box">
-    <span class="close" onclick="closeB2BAuth()">×</span>
+    <span class="close" onclick="closeModal('b2bAuthModal')">×</span>
     <h2>🏪 Shopkeeper & Dealer Registration</h2>
-    <p style="font-size:12px; color:#555; margin-bottom:10px;">Apni Dukan, Water Plant, ya Agency ko Jalvigo me jodhein.</p>
-    <div class="form-group"><label>Shop / Business / Agency Name</label><input type="text" id="b2bBizName" placeholder="e.g. Royal Water Supplier / City Kirana"></div>
-    <div class="form-group"><label>Dukandar / Owner Ka Naam</label><input type="text" id="b2bOwnerName" placeholder="Owner Name"></div>
-    <div class="form-group"><label>Mobile Number</label><input type="tel" id="b2bMobile" placeholder="10-digit Mobile Number"></div>
-    <div class="form-group"><label>FSSAI / GST / License No. (If Available)</label><input type="text" id="b2bLicense" placeholder="License Number (Optional)"></div>
-    <div class="form-group"><label>Dukan Ka Pura Address</label><textarea id="b2bAddress" placeholder="Full Address with Landmark & Pincode"></textarea></div>
-    <div class="form-group"><label>Login Email & Password</label>
-        <input type="email" id="b2bEmail" placeholder="Email" style="margin-bottom:6px;">
-        <input type="password" id="b2bPassword" placeholder="Password">
-    </div>
-    <button class="primary-btn" onclick="registerB2BUser()" style="width:100%; background:#059669;">📝 Register My Shop / Business</button>
+    <div class="form-group"><label>Shop Name</label><input type="text" id="b2bBizName"></div>
+    <div class="form-group"><label>Owner Name</label><input type="text" id="b2bOwnerName"></div>
+    <div class="form-group"><label>Mobile</label><input type="tel" id="b2bMobile"></div>
+    <div class="form-group"><label>Email & Password</label><input type="email" id="b2bEmail" style="margin-bottom:6px;"><input type="password" id="b2bPassword"></div>
+    <button class="primary-btn" onclick="registerB2BUser()" style="background:#059669;">Register Shop</button>
   </div>
-</div>
-
-<!-- DELIVERY PARTNER MODAL -->
-<div class="modal" id="deliveryModal">
-  <div class="modal-box">
-    <span class="close" onclick="closeDeliveryModal()">×</span>
-    <h2>🚚 Delivery Partner Access</h2>
-    <div id="deliveryAuthSection">
-        <div class="form-group"><label>Security Secret Key</label><input type="password" id="deliveryPasscode" placeholder="Enter Agent Secret PIN"></div>
-        <button class="primary-btn" onclick="verifyDeliveryPartner()" style="width:100%; background:#16a34a;">🔓 Verify & Access Orders</button>
-    </div>
-    <div id="deliveryContentSection" style="display:none;">
-        <button class="primary-btn" onclick="loadDeliveryOrders()" style="margin-bottom:10px;">🔄 Refresh List</button>
-        <div id="deliveryOrdersList"></div>
-    </div>
-  </div>
-</div>
-
-<!-- CART MODAL -->
-<div class="modal" id="cartModal">
-<div class="modal-box">
-<span class="close" onclick="closeCart()">×</span>
-<h2>🛒 Aapka Cart</h2>
-<div id="cartItems"></div>
-<div style="font-size:15px; margin-top:12px;">
-    <div>Subtotal: ₹<span id="cartSubtotal">0</span></div>
-    <div>Delivery Charge: ₹<span id="deliveryFee">30</span> <span id="vipFreeTag" style="display:none; color:#16a34a; font-weight:bold;">(FREE for VIP)</span></div>
-</div>
-<div style="font-size:18px; font-weight:bold; margin:10px 0;">Final Total: ₹<span id="cartTotal">0</span></div>
-<button class="primary-btn" onclick="openOrderForm()" style="width:100%;">Checkout par Jayein</button>
-</div>
-</div>
-
-<!-- ORDER FORM MODAL -->
-<div class="modal" id="orderModal">
-<div class="modal-box">
-<span class="close" onclick="closeOrderForm()">×</span>
-<h2>📦 Delivery Details & Slot</h2>
-<div class="form-group"><label>Full Name</label><input type="text" id="customerName" placeholder="Aapka Naam"></div>
-<div class="form-group"><label>Mobile Number</label><input type="tel" id="customerMobile" placeholder="10-digit Mobile"></div>
-<div class="form-group"><label>Address Type</label>
-    <select id="addrType">
-        <option value="Home">🏠 Home</option>
-        <option value="Work">🏢 Work / Office</option>
-        <option value="Shop">🏪 Shop / Restaurant</option>
-    </select>
-</div>
-<div class="form-group"><label>House / Flat No / Building</label><input type="text" id="houseNo" placeholder="Flat No. / House Name"></div>
-<div class="form-group"><label>Street / Area / Locality</label><input type="text" id="streetArea" placeholder="Area Name"></div>
-<div class="form-group"><label>Landmark & Distance (KM)</label>
-    <select id="distanceRange" onchange="calculateDeliveryTimeSlot()">
-        <option value="1">Less than 1 KM from Shop</option>
-        <option value="3">1 KM to 3 KM from Shop</option>
-        <option value="5">3 KM to 5 KM from Shop</option>
-        <option value="10">More than 10 KM (Scheduled)</option>
-    </select>
-</div>
-<div class="form-group"><label>Pincode</label><input type="text" id="pincode" placeholder="Pincode"></div>
-
-<div style="background:#e0f2fe; padding:10px; border-radius:8px; border:1px solid #0284c7; margin:10px 0;">
-    <p style="font-size:13px; color:#0369a1;"><b>🕒 Expected Delivery Time:</b></p>
-    <p id="estimatedDeliverySlotDisplay" style="font-size:15px; font-weight:bold; color:#075985;">Calculating...</p>
-    <small style="color:#555;">Delivery Hours: 7:00 AM - 11:00 PM</small>
-</div>
-
-<div class="form-group"><label>Payment Mode</label>
-    <select id="paymentMode" onchange="toggleUpiQrBox()">
-        <option value="Cash on Delivery (COD)">💵 Cash on Delivery (COD)</option>
-        <option value="Online / UPI Pay">📱 Online Pay / UPI (GPay / PhonePe)</option>
-    </select>
-</div>
-<div id="upiQrSection" style="display:none; text-align:center; background:#f0f9ff; padding:10px; border-radius:8px; margin-bottom:10px;">
-    <p style="font-weight:bold; color:#0369a1;">Scan & Pay Direct to Dealer Account:</p>
-    <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi://pay?pa=balramnnagar@okaxis%26pn=Jalvigo%20Store%26cu=INR" alt="UPI QR" style="width:150px; height:150px; border-radius:8px; border:2px solid #0284c7;">
-</div>
-<button class="primary-btn" onclick="sendOrder()" style="width:100%;">📦 Order Confirm Karein</button>
-</div>
-</div>
-
-<!-- CUSTOMER ORDERS MODAL -->
-<div class="modal" id="customerOrdersModal">
-  <div class="modal-box">
-    <span class="close" onclick="document.getElementById('customerOrdersModal').style.display='none'">×</span>
-    <h2>📦 Mere Purane Orders</h2>
-    <div id="customerOrdersList"><p>Loading orders...</p></div>
-  </div>
-</div>
-
-<!-- ADMIN LOGIN MODAL -->
-<div class="modal" id="adminLoginModal">
-<div class="modal-box">
-<span class="close" onclick="closeAdminLogin()">×</span>
-<h2>🔐 Jalvigo Admin Login</h2>
-<div class="form-group"><label>Admin Email</label><input type="email" id="adminEmailInput" placeholder="Admin Email"></div>
-<div class="form-group"><label>Password</label><input type="password" id="adminPasswordInput" placeholder="Password"></div>
-<button class="primary-btn" onclick="adminLogin()" style="width:100%;">🔐 Login as Admin</button>
-</div>
 </div>
 
 <!-- ADMIN DASHBOARD MODAL -->
 <div class="modal" id="adminDashboardModal">
-<div class="modal-box" style="max-width:700px;">
-<span class="close" onclick="closeAdminDashboard()">×</span>
+<div class="modal-box" style="max-width:600px;">
+<span class="close" onclick="closeModal('adminDashboardModal')">×</span>
 <h2>🛠️ Admin Panel Dashboard</h2>
-
-<div style="margin:12px 0;">
-    <button class="tab-btn active" id="tabOrdersBtn" onclick="switchAdminTab('orders')">📦 Manage Orders</button>
-    <button class="tab-btn" id="tabShopsBtn" onclick="switchAdminTab('shops')">🏪 Registered Shopkeepers & Dealers</button>
-    <button class="tab-btn" id="tabCancelledBtn" onclick="switchAdminTab('cancelled')">❌ Cancelled Orders</button>
-    <button class="tab-btn" id="tabAddProductBtn" onclick="switchAdminTab('addProduct')">➕ Add Product</button>
-    <button class="tab-btn" id="tabRemoveProductBtn" onclick="switchAdminTab('removeProduct')">🗑️ Remove Product</button>
+<div style="margin:10px 0;display:flex;gap:5px;overflow-x:auto;">
+    <button class="primary-btn" onclick="loadAdminOrders('active')">Orders</button>
+    <button class="primary-btn" onclick="loadAdminRegisteredShops()" style="background:#059669;">Shops</button>
 </div>
-
-<!-- TAB 1: ORDERS LIST -->
-<div id="adminOrdersTabSection" class="dashboard-card">
-    <h3>📦 Orders List & Auto Commission Breakdown</h3>
-    <button class="primary-btn" onclick="loadAdminOrders('active')" style="margin-bottom:10px;">🔄 Refresh Orders</button>
-    <div id="adminOrdersList"><p>Loading Orders...</p></div>
-</div>
-
-<!-- TAB 2: REGISTERED SHOPKEEPERS & DEALERS DETAILS -->
-<div id="adminShopsTabSection" class="dashboard-card" style="display:none;">
-    <h3 style="color:#059669;">🏪 Registered Shopkeepers & Complete Details</h3>
-    <p style="font-size:12px; color:#555; margin-bottom:10px;">Yeh confidential data sirf Admin Panel me dikhega.</p>
-    <button class="primary-btn" onclick="loadAdminRegisteredShops()" style="margin-bottom:10px; background:#059669;">🔄 Refresh Shops List</button>
-    <div id="adminShopsList"><p>Loading registered shopkeepers...</p></div>
-</div>
-
-<!-- TAB 3: CANCELLED ORDERS -->
-<div id="adminCancelledTabSection" class="dashboard-card" style="display:none;">
-    <h3 style="color:#dc2626;">❌ Radd (Cancelled) Orders</h3>
-    <button class="primary-btn" onclick="loadAdminOrders('cancelled')" style="margin-bottom:10px; background:#dc2626;">🔄 Refresh Cancelled List</button>
-    <div id="adminCancelledOrdersList"><p>Loading Cancelled Orders...</p></div>
-</div>
-
-<!-- TAB 4: ADD PRODUCT -->
-<div id="adminAddProductTabSection" class="dashboard-card" style="display:none;">
-    <h3>➕ Add New Product</h3>
-    <div class="form-group"><label>Product Name</label><input type="text" id="newProdName" placeholder="e.g. Bisleri Water Jar 20L"></div>
-    <div class="form-group"><label>Product Actual Price / MRP (₹)</label><input type="number" id="newProdMrp" placeholder="e.g. 80"></div>
-    <div class="form-group"><label>Price After Discount / Selling Price (₹)</label><input type="number" id="newProdPrice" placeholder="e.g. 60"></div>
-    <div class="form-group"><label>Product Icon / Emoji</label><input type="text" id="newProdEmoji" placeholder="e.g. 💧, 🥤, 🍾"></div>
-    <button class="primary-btn" onclick="addNewProduct()" style="width:100%; background:#16a34a;">Save & Publish Product</button>
-</div>
-
-<!-- TAB 5: REMOVE PRODUCT -->
-<div id="adminRemoveProductTabSection" class="dashboard-card" style="display:none;">
-    <h3>🗑️ Remove / Delete Existing Products</h3>
-    <button class="primary-btn" onclick="loadManageProductsList()" style="margin-bottom:10px; background:#dc2626;">🔄 Refresh Products List</button>
-    <div id="adminProductsRemoveList"><p>Loading products...</p></div>
-</div>
-
-<button class="logout-btn" onclick="adminLogout()" style="width:100%; margin-top:10px;">🚪 Logout Admin</button>
+<div id="adminOrdersList"><p>Select option above...</p></div>
 </div>
 </div>
 
-<!-- LIVE NOTIFICATION TOAST BANNER -->
-<div id="notificationToast">🔔 Notification: Order Updated!</div>
-
-<footer>
-<p>💧 Jalvigo Marketplace - Fresh Water & Beverages</p>
-</footer>
+<!-- TOAST -->
+<div id="notificationToast">🔔 Order Updated!</div>
 
 <script>
 const SUPABASE_URL = "https://zqirmlnbqftzurjzbluv.supabase.co";
@@ -357,274 +300,75 @@ const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_QesFfLaf4IlgNcEJbm3WEw_tq5ISxz1
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
 let cart = [];
-let shoppingType = "Retail";
 let allProductsList = [];
 let isVipMember = false;
 let selectedVipAmount = 99;
 let selectedVipDuration = "1 Month";
-
 const ADMIN_EMAIL = "balramnnagar0077@gmail.com";
 const DELIVERY_AGENT_PIN = "1234";
 
-function showNotification(msg) {
+function closeModal(id){ document.getElementById(id).style.display="none"; }
+function showNotification(msg){
     const toast = document.getElementById("notificationToast");
     toast.innerText = "🔔 " + msg;
     toast.style.display = "block";
-    setTimeout(() => { toast.style.display = "none"; }, 3500);
+    setTimeout(() => { toast.style.display = "none"; }, 3000);
 }
+function scrollToTop(){ window.scrollTo({top:0, behavior:'smooth'}); }
 
-function openNearbyModal(){ document.getElementById("nearbyModal").style.display = "block"; renderPublicNearbyStores(); }
-function closeNearbyModal(){ document.getElementById("nearbyModal").style.display = "none"; }
+function openNearbyModal(){ document.getElementById("nearbyModal").style.display="block"; renderPublicNearbyStores(); }
+function openSubModal(){ document.getElementById("subModal").style.display="block"; }
+function openCart(){ updateCart(); document.getElementById("cartModal").style.display="block"; }
+function openCustomerAuth(){ closeModal('accountModal'); document.getElementById("customerAuthModal").style.display="block"; }
+function openB2BAuth(){ closeModal('accountModal'); document.getElementById("b2bAuthModal").style.display="block"; }
+
+async function handleAccountClick() {
+    const { data } = await supabaseClient.auth.getSession();
+    const user = data.session?.user;
+    if(user){
+        document.getElementById("authButtonsSection").style.display = "none";
+        document.getElementById("loggedInSection").style.display = "block";
+        document.getElementById("userEmailText").innerText = user.email;
+    } else {
+        document.getElementById("authButtonsSection").style.display = "block";
+        document.getElementById("loggedInSection").style.display = "none";
+    }
+    document.getElementById("accountModal").style.display = "block";
+}
 
 async function renderPublicNearbyStores() {
     const dist = document.getElementById("distanceSelect").value;
     const list = document.getElementById("storesList");
-    list.innerHTML = "<p style='padding:10px;'>Stores search ho rahe hain...</p>";
+    const { data: stores } = await supabaseClient.from("business_profiles").select("business_name, address");
 
-    const { data: stores, error } = await supabaseClient
-        .from("business_profiles")
-        .select("business_name, address");
-
-    if (error || !stores || stores.length === 0) {
-        list.innerHTML = `
-            <div style="padding:15px; text-align:center; color:#666;">
-                <p>Is radius (~${dist} KM) me abhi tak koi shopkeeper register nahi hua hai.</p>
-                <p style="font-size:12px; margin-top:5px; color:#0284c7;">Aap Shopkeeper Login par jaakar apni dukan list kar sakte hain!</p>
-            </div>`;
+    if(!stores || stores.length === 0){
+        list.innerHTML = `<p style="padding:15px;text-align:center;color:#64748b;">No registered stores within ~${dist} KM radius.</p>`;
         return;
     }
-
     list.innerHTML = stores.map(s => `
-        <div style="border:1px solid #0284c7; padding:12px; border-radius:8px; margin-top:10px; background:#f0f9ff;">
-            <b>🏪 ${s.business_name}</b><br>
-            <span style="font-size:13px; color:#555;">Area: ${s.address || 'Local Market'}</span><br>
-            Status: <span style="color:#16a34a; font-weight:bold;">● Verified Jalvigo Partner (~${dist} KM)</span>
+        <div style="border:1px solid #e2e8f0;padding:10px;border-radius:10px;margin-top:8px;background:#f8fafc;">
+            <b>🏪 ${s.business_name}</b><br><small style="color:#64748b;">${s.address || 'Local Market'}</small>
         </div>
     `).join('');
 }
 
-function selectVipPlan(amount, duration, planId) {
-    selectedVipAmount = amount;
-    selectedVipDuration = duration;
-
-    document.querySelectorAll('.plan-box').forEach(el => el.classList.remove('selected'));
-    document.getElementById(planId).classList.add('selected');
-
-    document.getElementById("selectedPlanAmount").innerText = amount;
-    document.getElementById("selectedPlanDuration").innerText = duration;
-
-    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi://pay?pa=balramnnagar@okaxis%26pn=Jalvigo%20VIP%26am=${amount}%26cu=INR`;
-    document.getElementById("vipUpiQr").src = qrUrl;
+function selectVipPlan(amt, dur){
+    selectedVipAmount = amt; selectedVipDuration = dur;
+    document.getElementById("vipUpiQr").src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=balramnnagar@okaxis%26pn=Jalvigo%20VIP%26am=${amt}%26cu=INR`;
 }
 
-function calculateDeliveryTimeSlot() {
-    const dist = Number(document.getElementById("distanceRange").value);
-    let subtotal = 0;
-    cart.forEach(item => { subtotal += item.price * item.qty; });
-    const isBulkOrder = subtotal >= 500;
-
-    let slotText = "";
-    if (isVipMember) {
-        slotText = "⚡ Express Same Day Priority Delivery (7 AM - 11 PM)";
-    } else if (dist <= 1) {
-        slotText = isBulkOrder ? "Same Day Delivery (Operating: 7 AM - 11 PM)" : "⚡ Express Delivery in 15 - 20 Mins";
-    } else if (dist <= 3) {
-        slotText = isBulkOrder ? "Same Day Delivery (Operating: 7 AM - 11 PM)" : "⚡ Fast Delivery in 30 - 45 Mins";
-    } else if (dist <= 5) {
-        slotText = isBulkOrder ? "Same Day Delivery (Operating: 7 AM - 11 PM)" : "Standard Delivery in 1 - 2 Hours";
-    } else {
-        slotText = "📅 Scheduled Next Day Order Delivery (Advance Booking)";
-    }
-
-    document.getElementById("estimatedDeliverySlotDisplay").innerText = slotText;
-    return slotText;
-}
-
-function selectType(type){
-    shoppingType = type;
-    document.getElementById("selectedType").innerText = type;
-    document.getElementById("retailBtn").classList.toggle("active", type === "Retail");
-    document.getElementById("wholesaleBtn").classList.toggle("active", type === "Wholesale");
-}
-
-function toggleUpiQrBox() {
-    const payMode = document.getElementById("paymentMode").value;
-    document.getElementById("upiQrSection").style.display = payMode === "Online / UPI Pay" ? "block" : "none";
-}
-
-function openSubModal(){ document.getElementById("subModal").style.display = "block"; }
-function closeSubModal(){ document.getElementById("subModal").style.display = "none"; }
-function openCustomerAuth(){ document.getElementById("customerAuthModal").style.display = "block"; }
-function closeCustomerAuth(){ document.getElementById("customerAuthModal").style.display = "none"; }
-function openB2BAuth(){ document.getElementById("b2bAuthModal").style.display = "block"; }
-function closeB2BAuth(){ document.getElementById("b2bAuthModal").style.display = "none"; }
-function openDeliveryModal(){ 
-    document.getElementById("deliveryModal").style.display = "block"; 
-    document.getElementById("deliveryAuthSection").style.display = "block";
-    document.getElementById("deliveryContentSection").style.display = "none";
-}
-function closeDeliveryModal(){ document.getElementById("deliveryModal").style.display = "none"; }
-function openCart(){ updateCart(); document.getElementById("cartModal").style.display = "block"; }
-function closeCart(){ document.getElementById("cartModal").style.display = "none"; }
-function openOrderForm(){ 
-    if(cart.length===0){alert("Cart khali hai!"); return;} 
-    closeCart(); 
-    calculateDeliveryTimeSlot();
-    document.getElementById("orderModal").style.display="block"; 
-}
-function closeOrderForm(){ document.getElementById("orderModal").style.display = "none"; }
-function closeAdminLogin(){ document.getElementById("adminLoginModal").style.display = "none"; }
-function closeAdminDashboard(){ document.getElementById("adminDashboardModal").style.display = "none"; }
-
-function verifyDeliveryPartner() {
-    const pass = document.getElementById("deliveryPasscode").value;
-    if(pass === DELIVERY_AGENT_PIN){
-        document.getElementById("deliveryAuthSection").style.display = "none";
-        document.getElementById("deliveryContentSection").style.display = "block";
-        loadDeliveryOrders();
-        showNotification("Delivery Agent Access Granted");
-    } else {
-        alert("❌ Galat Delivery PIN!");
-    }
-}
-
-function activateVipSubscription() {
+function activateVipSubscription(){
     isVipMember = true;
-    document.getElementById("vipBadge").style.display = "inline-block";
-    showNotification(`VIP Subscription (${selectedVipDuration}) Activated!`);
-    alert(`🎉 VIP Subscription (${selectedVipDuration}) Activated! Unlimited Free Delivery & Express Priority Same-Day Delivery Active.`);
-    closeSubModal();
+    showNotification(`VIP Activated (${selectedVipDuration})`);
+    closeModal('subModal');
     updateCart();
-}
-
-async function handleAdminButtonClick() {
-    const { data } = await supabaseClient.auth.getSession();
-    const user = data.session?.user;
-    
-    if (user && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
-        document.getElementById("adminDashboardModal").style.display = "block";
-        switchAdminTab('orders');
-    } else {
-        document.getElementById("adminLoginModal").style.display = "block";
-    }
-}
-
-async function updateAuthUI() {
-    const { data } = await supabaseClient.auth.getSession();
-    const user = data.session?.user;
-    const isAdmin = user && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
-
-    if (isAdmin) {
-        document.getElementById("customerLoginBtn").style.display = "none";
-        document.getElementById("b2bLoginBtn").style.display = "none";
-        document.getElementById("subBtn").style.display = "none";
-        document.getElementById("deliveryBtn").style.display = "inline-block";
-        document.getElementById("adminMainBtn").style.display = "inline-block";
-        document.getElementById("myOrdersBtn").style.display = "none";
-        document.getElementById("userLogoutBtn").style.display = "inline-block";
-    } else if (user) {
-        document.getElementById("customerLoginBtn").style.display = "none";
-        document.getElementById("b2bLoginBtn").style.display = "none";
-        document.getElementById("subBtn").style.display = "inline-block";
-        document.getElementById("deliveryBtn").style.display = "none"; 
-        document.getElementById("adminMainBtn").style.display = "none";
-        document.getElementById("myOrdersBtn").style.display = "inline-block";
-        document.getElementById("userLogoutBtn").style.display = "inline-block";
-    } else {
-        document.getElementById("customerLoginBtn").style.display = "inline-block";
-        document.getElementById("b2bLoginBtn").style.display = "inline-block";
-        document.getElementById("subBtn").style.display = "inline-block";
-        document.getElementById("deliveryBtn").style.display = "inline-block";
-        document.getElementById("adminMainBtn").style.display = "inline-block";
-        document.getElementById("myOrdersBtn").style.display = "none";
-        document.getElementById("userLogoutBtn").style.display = "none";
-    }
-}
-
-function switchAdminTab(tabName) {
-    document.getElementById("adminOrdersTabSection").style.display = tabName === 'orders' ? 'block' : 'none';
-    document.getElementById("adminShopsTabSection").style.display = tabName === 'shops' ? 'block' : 'none';
-    document.getElementById("adminCancelledTabSection").style.display = tabName === 'cancelled' ? 'block' : 'none';
-    document.getElementById("adminAddProductTabSection").style.display = tabName === 'addProduct' ? 'block' : 'none';
-    document.getElementById("adminRemoveProductTabSection").style.display = tabName === 'removeProduct' ? 'block' : 'none';
-
-    document.getElementById("tabOrdersBtn").classList.toggle('active', tabName === 'orders');
-    document.getElementById("tabShopsBtn").classList.toggle('active', tabName === 'shops');
-    document.getElementById("tabCancelledBtn").classList.toggle('active', tabName === 'cancelled');
-    document.getElementById("tabAddProductBtn").classList.toggle('active', tabName === 'addProduct');
-    document.getElementById("tabRemoveProductBtn").classList.toggle('active', tabName === 'removeProduct');
-
-    if(tabName === 'orders') loadAdminOrders('active');
-    if(tabName === 'shops') loadAdminRegisteredShops();
-    if(tabName === 'cancelled') loadAdminOrders('cancelled');
-    if(tabName === 'removeProduct') loadManageProductsList();
-}
-
-async function customerSignup(){
-    const email = document.getElementById("customerEmail").value.trim();
-    const password = document.getElementById("customerPassword").value;
-    if(!email || !password){ alert("Email aur Password dalein!"); return; }
-    const { error } = await supabaseClient.auth.signUp({ email, password });
-    if(error){ alert("Signup Error: " + error.message); return; }
-    showNotification("Customer Signup Successful!");
-    alert("Signup Successful! Ab Login Karein.");
-}
-
-async function customerLogin(){
-    const email = document.getElementById("customerEmail").value.trim();
-    const password = document.getElementById("customerPassword").value;
-    if(!email || !password){ alert("Email aur Password dalein!"); return; }
-    const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-    if(error){ alert("Login Error: " + error.message); return; }
-    showNotification("Welcome back! Login Successful.");
-    closeCustomerAuth();
-    updateAuthUI();
-}
-
-async function registerB2BUser() {
-    const business_name = document.getElementById("b2bBizName").value.trim();
-    const owner_name = document.getElementById("b2bOwnerName").value.trim();
-    const mobile = document.getElementById("b2bMobile").value.trim();
-    const license_number = document.getElementById("b2bLicense").value.trim();
-    const address = document.getElementById("b2bAddress").value.trim();
-    const email = document.getElementById("b2bEmail").value.trim();
-    const password = document.getElementById("b2bPassword").value;
-
-    if(!business_name || !mobile || !email || !password){ alert("Kripya sabhi fields bharein!"); return; }
-    
-    const { data, error } = await supabaseClient.auth.signUp({ email, password });
-    if(error){ alert("Signup Error: " + error.message); return; }
-
-    if(data.user){
-        await supabaseClient.from("business_profiles").insert([{
-            user_id: data.user.id, 
-            business_name, 
-            owner_name, 
-            mobile, 
-            license_number, 
-            address,
-            business_type: 'Shop / Dealer'
-        }]);
-    }
-    showNotification("Shop Registration Successful!");
-    alert("✅ Registration Successful! Aapki Shop Jalvigo Nearby Stores me add ho gayi hai.");
-    closeB2BAuth();
-    updateAuthUI();
-}
-
-async function userLogout() {
-    await supabaseClient.auth.signOut();
-    isVipMember = false;
-    document.getElementById("vipBadge").style.display = "none";
-    updateAuthUI();
-    showNotification("Logged out successfully.");
 }
 
 async function loadDynamicProducts() {
     const container = document.getElementById("dynamicProductsList");
     const { data: products } = await supabaseClient.from("products").select("*").order("created_at", { ascending: false });
     if (!products || products.length === 0) {
-        container.innerHTML = "<p style='text-align:center; grid-column:1/-1;'>Abhi koi product uplabdh nahi hai.</p>";
+        container.innerHTML = "<p style='grid-column:1/-1;text-align:center;'>No products available.</p>";
         return;
     }
     allProductsList = products;
@@ -633,275 +377,169 @@ async function loadDynamicProducts() {
 
 function renderProducts(prods) {
     const container = document.getElementById("dynamicProductsList");
-    container.innerHTML = prods.map(prod => {
-        let discountHtml = "";
-        if(prod.mrp && Number(prod.mrp) > Number(prod.price)){
-            let discountPercent = Math.round(((prod.mrp - prod.price) / prod.mrp) * 100);
-            discountHtml = `<div class="discount-tag">${discountPercent}% OFF</div> <span class="old-price">₹${prod.mrp}</span>`;
-        }
-        return `
-            <div class="product">
-                <div class="emoji">${prod.emoji || '💧'}</div>
-                <h3>${prod.name}</h3>
-                ${discountHtml}
-                <div class="price">₹${prod.price}</div>
-                <button onclick="addToCart('${prod.name}', ${prod.price})" style="margin-top:8px;">Add to Cart</button>
+    container.innerHTML = prods.map(p => `
+        <div class="product-card">
+            <div class="prod-emoji">${p.emoji || '💧'}</div>
+            <div class="prod-title">${p.name}</div>
+            <div>
+                <span class="prod-price">₹${p.price}</span>
+                ${p.mrp ? `<span class="prod-mrp">₹${p.mrp}</span>` : ''}
             </div>
-        `;
-    }).join('');
+            <button class="add-btn" onclick="addToCart('${p.name}', ${p.price})">ADD TO CART</button>
+        </div>
+    `).join('');
 }
 
-function filterProducts() {
+function filterProducts(){
     const query = document.getElementById("productSearchInput").value.toLowerCase();
     renderProducts(allProductsList.filter(p => p.name.toLowerCase().includes(query)));
 }
 
-function addToCart(name, price) {
+function addToCart(name, price){
     let item = cart.find(p => p.name === name);
-    if (item) { item.qty++; } else { cart.push({ name, price, qty: 1 }); }
+    if(item) item.qty++; else cart.push({name, price, qty:1});
     updateCart();
-    showNotification(name + " added to Cart!");
+    showNotification(name + " added!");
 }
 
 function updateCart(){
     let count = 0, subtotal = 0;
     cart.forEach(item => { count += item.qty; subtotal += item.price * item.qty; });
-    
-    let deliveryFee = 30;
-    if ((isVipMember && subtotal >= 250) || subtotal >= 250 || subtotal === 0) {
-        deliveryFee = 0;
-    }
+    let deliveryFee = (isVipMember || subtotal >= 250 || subtotal === 0) ? 0 : 30;
 
     document.getElementById("cartCount").innerText = count;
     document.getElementById("cartSubtotal").innerText = subtotal;
     document.getElementById("deliveryFee").innerText = deliveryFee;
-    document.getElementById("vipFreeTag").style.display = (isVipMember && subtotal >= 250) ? "inline" : "none";
     document.getElementById("cartTotal").innerText = subtotal + deliveryFee;
 
-    let html = cart.length === 0 ? "<p>Cart khali hai.</p>" : "";
+    let html = cart.length === 0 ? "<p>Cart is empty.</p>" : "";
     cart.forEach((item,index) => {
-        html += `<div class="cart-item"><div><b>${item.name}</b><br>₹${item.price} × ${item.qty}</div><div><button onclick="changeQty(${index},-1)">−</button> ${item.qty} <button onclick="changeQty(${index},1)">+</button></div></div>`;
+        html += `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee;">
+            <div><b>${item.name}</b><br>₹${item.price} × ${item.qty}</div>
+            <div><button onclick="changeQty(${index},-1)">−</button> ${item.qty} <button onclick="changeQty(${index},1)">+</button></div>
+        </div>`;
     });
     document.getElementById("cartItems").innerHTML = html;
 }
 
-function changeQty(index,value){
-    cart[index].qty += value;
-    if(cart[index].qty <= 0){ cart.splice(index,1); }
+function changeQty(index, val){
+    cart[index].qty += val;
+    if(cart[index].qty <= 0) cart.splice(index,1);
     updateCart();
+}
+
+function openOrderForm(){
+    if(cart.length===0){alert("Cart is empty!"); return;}
+    closeModal('cartModal');
+    calculateDeliveryTimeSlot();
+    document.getElementById("orderModal").style.display="block";
+}
+
+function calculateDeliveryTimeSlot(){
+    const dist = Number(document.getElementById("distanceRange").value);
+    let slot = isVipMember ? "⚡ Express VIP Same Day" : (dist <= 1 ? "15-20 Mins Express" : "1-2 Hours Delivery");
+    document.getElementById("estimatedDeliverySlotDisplay").innerText = slot;
+    return slot;
 }
 
 async function sendOrder(){
     const { data: { user } } = await supabaseClient.auth.getUser();
-    if(!user){ alert("Pehle Customer Login karein!"); openCustomerAuth(); return; }
+    if(!user){ alert("Please Login First!"); openCustomerAuth(); return; }
     
-    const name = document.getElementById("customerName").value.trim();
-    const mobile = document.getElementById("customerMobile").value.trim();
-    const house = document.getElementById("houseNo").value.trim();
-    const street = document.getElementById("streetArea").value.trim();
-    const landmark = document.getElementById("landmark").value.trim();
-    const pincode = document.getElementById("pincode").value.trim();
-    const addrType = document.getElementById("addrType").value;
+    const name = document.getElementById("customerName").value;
+    const mobile = document.getElementById("customerMobile").value;
+    const address = document.getElementById("streetArea").value;
+    if(!name || !mobile || !address){ alert("Fill all details!"); return; }
 
-    if(!name || !mobile || !house || !street || !pincode){ alert("Sahi name, mobile aur pura address bharein!"); return; }
-
-    const slotText = calculateDeliveryTimeSlot();
-    const fullAddress = `[${addrType}] ${house}, ${street}, Landmark: ${landmark || 'N/A'}, Pincode: ${pincode} | Slot: ${slotText}`;
     const orderId = "JAL" + Date.now();
-    let subtotal = 0;
-    cart.forEach(item => { subtotal += item.price * item.qty; });
-    let deliveryFee = (subtotal >= 250) ? 0 : 30;
-    let grandTotal = subtotal + deliveryFee;
+    let subtotal = 0; cart.forEach(i => subtotal += i.price * i.qty);
+    let grandTotal = subtotal + ((subtotal>=250 || isVipMember)?0:30);
 
-    const { error } = await supabaseClient.from("orders").insert([{
-        order_id: orderId, customer_name: name + (isVipMember ? " (VIP)" : ""), mobile, address: fullAddress,
-        items: JSON.stringify(cart), total: grandTotal, order_date: new Date().toISOString(),
-        status: "Confirmed", user_id: user.id
+    await supabaseClient.from("orders").insert([{
+        order_id: orderId, customer_name: name, mobile, address, items: JSON.stringify(cart),
+        total: grandTotal, order_date: new Date().toISOString(), status: "Confirmed", user_id: user.id
     }]);
 
-    if(error){ alert("Order Error: " + error.message); return; }
-    showNotification("Order Confirmed! ID: " + orderId);
-    alert("✅ Order Placed Successfully!\n\n" + slotText);
-    cart = [];
-    updateCart();
-    closeOrderForm();
+    showNotification("Order Confirmed!");
+    cart = []; updateCart(); closeModal('orderModal');
 }
 
-async function openMyOrders() {
-    document.getElementById("customerOrdersModal").style.display = "block";
-    const list = document.getElementById("customerOrdersList");
-    const { data: { user } } = await supabaseClient.auth.getUser();
-    if(!user) return;
-
-    const { data } = await supabaseClient.from("orders").select("*").eq("user_id", user.id).order("order_date", { ascending: false });
-    if(!data || data.length === 0){ list.innerHTML = "<p>Aapne koi order nahi kiya hai.</p>"; return; }
-
-    list.innerHTML = data.map(o => `
-        <div style="border:1px solid #ccc; padding:10px; margin:6px 0; border-radius:6px;">
-            <b>Order #${o.order_id}</b><br>
-            Total: ₹${o.total} | Status: <b style="color:#0284c7;">${o.status}</b>
-        </div>
-    `).join('');
+async function customerSignup(){
+    const email = document.getElementById("customerEmail").value;
+    const password = document.getElementById("customerPassword").value;
+    await supabaseClient.auth.signUp({ email, password });
+    showNotification("Signup Successful!");
 }
 
-async function adminLogin(){
-    const email = document.getElementById("adminEmailInput").value.trim();
-    const password = document.getElementById("adminPasswordInput").value;
-    
+async function customerLogin(){
+    const email = document.getElementById("customerEmail").value;
+    const password = document.getElementById("customerPassword").value;
+    await supabaseClient.auth.signInWithPassword({ email, password });
+    showNotification("Login Successful!");
+    closeModal('customerAuthModal');
+}
+
+async function registerB2BUser(){
+    const business_name = document.getElementById("b2bBizName").value;
+    const owner_name = document.getElementById("b2bOwnerName").value;
+    const mobile = document.getElementById("b2bMobile").value;
+    const email = document.getElementById("b2bEmail").value;
+    const password = document.getElementById("b2bPassword").value;
+
+    const { data } = await supabaseClient.auth.signUp({ email, password });
+    if(data.user){
+        await supabaseClient.from("business_profiles").insert([{
+            user_id: data.user.id, business_name, owner_name, mobile
+        }]);
+    }
+    showNotification("Shop Registered!");
+    closeModal('b2bAuthModal');
+}
+
+async function handleAdminButtonClick(){
+    closeModal('accountModal');
+    const email = prompt("Enter Admin Email:");
+    const password = prompt("Enter Admin Password:");
     const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-    if(error || !data.user){ alert("❌ Login Failed!"); return; }
-
-    if(data.user.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()){
-        alert("❌ Yeh account Admin nahi hai!");
-        await supabaseClient.auth.signOut();
-        return;
+    if(!error && data.user && data.user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()){
+        document.getElementById("adminDashboardModal").style.display="block";
+        loadAdminOrders('active');
+    } else {
+        alert("Unauthorized Admin!");
     }
-
-    closeAdminLogin();
-    updateAuthUI();
-    document.getElementById("adminDashboardModal").style.display = "block";
-    switchAdminTab('orders');
-    showNotification("Admin Panel Unlocked");
 }
 
-async function loadAdminOrders(type) {
-    const list = type === 'cancelled' ? document.getElementById("adminCancelledOrdersList") : document.getElementById("adminOrdersList");
-    const { data } = await supabaseClient.from("orders").select("*").order("order_date", { ascending: false });
-    
-    if(!data || data.length === 0){ list.innerHTML = "<p>Koi order nahi hai.</p>"; return; }
-
-    let filtered = data.filter(o => type === 'cancelled' ? o.status === 'Cancelled' : o.status !== 'Cancelled');
-    if(filtered.length === 0){ list.innerHTML = `<p>Koi ${type} order nahi hai.</p>`; return; }
-
-    list.innerHTML = filtered.map(o => {
-        let comm = Math.round(o.total * 0.05); // 5% Jalvigo Platform Commission
-        let shopPayout = o.total - comm; // 95% Direct Shopkeeper / Dealer Payout
-        return `
-            <div style="border:1px solid #ccc; padding:10px; margin:6px 0; background:#fff; border-radius:6px;">
-                <p><b>#${o.order_id}</b> - ${o.customer_name} (${o.mobile})</p>
-                <p style="font-size:12px; color:#555;">${o.address}</p>
-                <p>Total Order: <b>₹${o.total}</b></p>
-                <p style="font-size:13px; color:#16a34a; font-weight:bold;">
-                    💰 Dealer/Shop Payout (95%): ₹${shopPayout} | Jalvigo Commission (5%): ₹${comm}
-                </p>
-                <p>Status: <b>${o.status}</b></p>
-                <select onchange="updateOrderStatus('${o.order_id}', this.value)" style="margin-top:5px; padding:4px;">
-                    <option value="Confirmed" ${o.status==='Confirmed'?'selected':''}>Confirmed</option>
-                    <option value="Out for Delivery" ${o.status==='Out for Delivery'?'selected':''}>Out for Delivery</option>
-                    <option value="Delivered" ${o.status==='Delivered'?'selected':''}>Delivered</option>
-                    <option value="Cancelled" ${o.status==='Cancelled'?'selected':''}>Cancelled</option>
-                </select>
-            </div>
-        `;
-    }).join('');
-}
-
-async function loadAdminRegisteredShops() {
-    const list = document.getElementById("adminShopsList");
-    const { data: shops, error } = await supabaseClient.from("business_profiles").select("*");
-
-    if (error || !shops || shops.length === 0) {
-        list.innerHTML = "<p>Abhi tak koi Shopkeeper / Dealer register nahi hua hai.</p>";
-        return;
-    }
-
-    list.innerHTML = shops.map(s => `
-        <div style="border:1px solid #059669; padding:12px; margin:8px 0; background:#f0fdf4; border-radius:8px;">
-            <p style="font-size:16px; color:#065f46;"><b>🏪 Shop / Business: ${s.business_name}</b></p>
-            <p>👤 <b>Owner Name:</b> ${s.owner_name || 'N/A'}</p>
-            <p>📞 <b>Mobile Number:</b> <a href="tel:${s.mobile}" style="color:#0284c7; font-weight:bold;">${s.mobile || 'N/A'}</a></p>
-            <p>📜 <b>FSSAI / GST License:</b> ${s.license_number || 'N/A'}</p>
-            <p>📍 <b>Address:</b> ${s.address || 'N/A'}</p>
-        </div>
-    `).join('');
-}
-
-async function updateOrderStatus(orderId, newStatus) {
-    await supabaseClient.from("orders").update({ status: newStatus }).eq("order_id", orderId);
-    showNotification("Order status changed to " + newStatus);
-    alert("✅ Order Status Updated!");
-    loadAdminOrders('active');
-}
-
-async function addNewProduct() {
-    const name = document.getElementById("newProdName").value.trim();
-    const mrp = document.getElementById("newProdMrp").value.trim();
-    const price = document.getElementById("newProdPrice").value.trim();
-    const emoji = document.getElementById("newProdEmoji").value.trim() || "💧";
-
-    if(!name || !price){ alert("Product Name aur Selling Price bharein!"); return; }
-
-    await supabaseClient.from("products").insert([{ 
-        name, mrp: mrp ? Number(mrp) : null, price: Number(price), emoji, created_at: new Date().toISOString() 
-    }]);
-
-    showNotification("New Product Published!");
-    alert("✅ Product Successfully Published!");
-    document.getElementById("newProdName").value = "";
-    document.getElementById("newProdMrp").value = "";
-    document.getElementById("newProdPrice").value = "";
-    document.getElementById("newProdEmoji").value = "";
-    loadDynamicProducts();
-}
-
-async function loadManageProductsList() {
-    const list = document.getElementById("adminProductsRemoveList");
-    const { data } = await supabaseClient.from("products").select("*").order("created_at", { ascending: false });
-    if(!data || data.length === 0){ list.innerHTML = "<p>Koi product nahi hai.</p>"; return; }
-
-    list.innerHTML = data.map(p => `
-        <div style="display:flex; justify-content:space-between; align-items:center; border:1px solid #ccc; padding:8px; margin:5px 0; background:#fff; border-radius:6px;">
-            <div>
-                <b>${p.emoji || '💧'} ${p.name}</b><br>
-                Price: ₹${p.price} ${p.mrp ? `<span style="text-decoration:line-through; color:#888; font-size:12px;">(MRP: ₹${p.mrp})</span>` : ''}
-            </div>
-            <button onclick="deleteProduct(${p.id})" style="background:#dc2626; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">🗑️ Delete</button>
-        </div>
-    `).join('');
-}
-
-async function deleteProduct(id) {
-    if(!confirm("Kya aap is product ko remove karna chahte hain?")) return;
-    await supabaseClient.from("products").delete().eq("id", id);
-    showNotification("Product deleted successfully");
-    loadManageProductsList();
-    loadDynamicProducts();
-}
-
-async function loadDeliveryOrders() {
-    const list = document.getElementById("deliveryOrdersList");
-    const { data } = await supabaseClient.from("orders").select("*").neq("status", "Cancelled").order("order_date", { ascending: false });
-    if(!data || data.length === 0){ list.innerHTML = "<p>Koi delivery order nahi hai.</p>"; return; }
-
+async function loadAdminOrders(type){
+    const list = document.getElementById("adminOrdersList");
+    const { data } = await supabaseClient.from("orders").select("*");
+    if(!data) return;
     list.innerHTML = data.map(o => `
-        <div style="border:1px solid #ccc; padding:10px; margin:5px 0; background:#fff; border-radius:6px;">
-            <b>Order #${o.order_id}</b> - ${o.customer_name} (${o.mobile})<br>
-            Address: ${o.address}<br>
-            Status: <b>${o.status}</b>
-            <div style="margin-top:6px;">
-                <button onclick="updateDeliveryStatus('${o.order_id}', 'Out for Delivery')" style="background:#0284c7; color:white; border:none; padding:4px 8px; border-radius:4px;">Out for Delivery</button>
-                <button onclick="updateDeliveryStatus('${o.order_id}', 'Delivered')" style="background:#16a34a; color:white; border:none; padding:4px 8px; border-radius:4px;">Delivered</button>
-            </div>
+        <div style="border:1px solid #ccc;padding:10px;margin:5px 0;background:#fff;border-radius:8px;">
+            <b>#${o.order_id}</b> - ${o.customer_name} (₹${o.total})<br>
+            <small>Commission (5%): ₹${Math.round(o.total*0.05)}</small>
         </div>
     `).join('');
 }
 
-async function updateDeliveryStatus(orderId, status) {
-    await supabaseClient.from("orders").update({ status }).eq("order_id", orderId);
-    showNotification("Delivery Status: " + status);
-    loadDeliveryOrders();
+async function loadAdminRegisteredShops(){
+    const list = document.getElementById("adminOrdersList");
+    const { data } = await supabaseClient.from("business_profiles").select("*");
+    if(!data) return;
+    list.innerHTML = data.map(s => `
+        <div style="border:1px solid #059669;padding:10px;margin:5px 0;background:#f0fdf4;border-radius:8px;">
+            <b>🏪 ${s.business_name}</b> (${s.owner_name})<br>
+            Mobile: ${s.mobile}
+        </div>
+    `).join('');
 }
 
-async function adminLogout() {
+async function userLogout(){
     await supabaseClient.auth.signOut();
-    closeAdminDashboard();
-    updateAuthUI();
-    showNotification("Admin Logged Out.");
+    closeModal('accountModal');
+    showNotification("Logged Out");
 }
 
-updateAuthUI();
 loadDynamicProducts();
 </script>
-
 </body>
 </html>
