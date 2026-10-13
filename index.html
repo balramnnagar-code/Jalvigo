@@ -169,7 +169,7 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
   </div>
 </div>
 
-<!-- ACCOUNT MODAL (SMART ADMIN DETECTOR FIXED) -->
+<!-- ACCOUNT MODAL (WITH RESTORED DELIVERY PARTNER OPTION) -->
 <div class="modal" id="accountModal">
   <div class="modal-box">
     <span class="close" onclick="closeModal('accountModal')">×</span>
@@ -179,6 +179,7 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
     <div id="authButtonsSection" style="margin-top:15px;">
         <button class="primary-btn" onclick="openCustomerAuth()" style="margin-bottom:10px;">👤 Customer Login / Signup</button>
         <button class="primary-btn" onclick="openB2BAuth()" style="margin-bottom:10px;background:#059669;">🏪 Add / Register Your Shop</button>
+        <button class="primary-btn" onclick="openDeliveryModal()" style="margin-bottom:10px;background:#16a34a;">🚚 Delivery Partner Portal</button>
         <button class="primary-btn" onclick="handleAdminButtonClick()" style="background:#082f49;">🔐 Admin Login / Dashboard</button>
     </div>
 
@@ -192,6 +193,20 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
         <button id="myOrdersBtn" class="primary-btn" onclick="openMyOrders()" style="margin-bottom:10px;">📦 My Orders</button>
         <button class="primary-btn" onclick="userLogout()" style="background:#dc2626;">🚪 Logout</button>
     </div>
+  </div>
+</div>
+
+<!-- DELIVERY PARTNER MODAL -->
+<div class="modal" id="deliveryModal">
+  <div class="modal-box">
+    <span class="close" onclick="closeModal('deliveryModal')">×</span>
+    <h2>🚚 Delivery Partner Portal</h2>
+    <div class="form-group">
+        <label>Enter 4-Digit Security PIN (Default: 1234)</label>
+        <input type="password" id="deliveryPinInput" placeholder="Enter PIN" maxlength="4">
+    </div>
+    <button class="primary-btn" onclick="verifyDeliveryPin()" style="background:#16a34a;">Access Delivery Orders</button>
+    <div id="deliveryOrdersContainer" style="margin-top:15px;"></div>
   </div>
 </div>
 
@@ -273,7 +288,7 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
   </div>
 </div>
 
-<!-- ADMIN DASHBOARD MODAL (WITH FULL MANAGEMENT OPTIONS) -->
+<!-- ADMIN DASHBOARD MODAL -->
 <div class="modal" id="adminDashboardModal">
 <div class="modal-box" style="max-width:600px;">
 <span class="close" onclick="closeModal('adminDashboardModal')">×</span>
@@ -338,6 +353,7 @@ let calculatedDistanceKM = 1.2;
 const SHOP_LAT = 28.6139; 
 const SHOP_LNG = 77.2090; 
 const ADMIN_EMAIL = "balramnnagar0077@gmail.com";
+const DELIVERY_AGENT_PIN = "1234";
 
 // SERVICE WORKER & PUSH NOTIFICATION REGISTRATION
 if ('serviceWorker' in navigator && 'Notification' in window) {
@@ -451,7 +467,33 @@ function openCart(){ updateCart(); document.getElementById("cartModal").style.di
 function openCustomerAuth(){ closeModal('accountModal'); document.getElementById("customerAuthModal").style.display="block"; }
 function openB2BAuth(){ closeModal('accountModal'); document.getElementById("b2bAuthModal").style.display="block"; }
 
-// FIXED ACCOUNT & SMART ADMIN LOGIN LOGIC
+function openDeliveryModal() {
+    closeModal('accountModal');
+    document.getElementById("deliveryModal").style.display = "block";
+}
+
+async function verifyDeliveryPin() {
+    const pin = document.getElementById("deliveryPinInput").value;
+    const container = document.getElementById("deliveryOrdersContainer");
+    if(pin === DELIVERY_AGENT_PIN) {
+        showNotification("Delivery Portal Unlocked!");
+        const { data: orders } = await supabaseClient.from("orders").select("*").order("order_date", { ascending: false });
+        if(!orders || orders.length === 0) {
+            container.innerHTML = "<p style='margin-top:10px;text-align:center;'>No orders assigned yet.</p>";
+            return;
+        }
+        container.innerHTML = "<h3 style='margin-top:10px;font-size:14px;color:#16a34a;'>Assigned Deliveries:</h3>" + orders.map(o => `
+            <div style="border:1px solid #16a34a;padding:10px;margin-top:6px;background:#f0fdf4;border-radius:8px;">
+                <b>#${o.order_id}</b> - ${o.customer_name} (${o.mobile})<br>
+                <small>📍 ${o.address}</small><br>
+                <b style="color:#0284c7;">Total: ₹${o.total}</b>
+            </div>
+        `).join('');
+    } else {
+        alert("Invalid Delivery PIN! Default is 1234");
+    }
+}
+
 async function handleAccountClick() {
     const { data } = await supabaseClient.auth.getSession();
     const user = data.session?.user;
@@ -460,10 +502,9 @@ async function handleAccountClick() {
         document.getElementById("loggedInSection").style.display = "block";
         document.getElementById("userEmailText").innerText = user.email;
 
-        // Check if user is Admin
         if(user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
             document.getElementById("adminDashboardBtn").style.display = "block";
-            document.getElementById("myOrdersBtn").style.display = "none"; // Hide customer orders for Admin
+            document.getElementById("myOrdersBtn").style.display = "none";
         } else {
             document.getElementById("adminDashboardBtn").style.display = "none";
             document.getElementById("myOrdersBtn").style.display = "block";
