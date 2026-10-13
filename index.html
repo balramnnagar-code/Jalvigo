@@ -10,52 +10,42 @@
 *{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;}
 body{background:#f1f5f9;color:#0f172a;padding-bottom:70px;}
 
-/* FLIPKART STYLE TOP HEADER */
+/* TOP HEADER */
 .app-header{background:linear-gradient(135deg,#0284c7,#0369a1);color:white;padding:12px 15px;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,0.15);}
 .top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
 .logo{font-size:22px;font-weight:800;letter-spacing:0.5px;display:flex;align-items:center;gap:5px;}
 .location-btn{background:rgba(255,255,255,0.2);padding:6px 12px;border-radius:20px;font-size:12px;display:flex;align-items:center;gap:6px;cursor:pointer;backdrop-filter:blur(5px);}
 
-/* SEARCH BAR WITH ICONS */
+/* SEARCH BAR */
 .search-bar{background:white;border-radius:12px;display:flex;align-items:center;padding:8px 14px;box-shadow:0 2px 8px rgba(0,0,0,0.08);}
 .search-bar input{border:none;outline:none;width:100%;font-size:14px;margin-left:8px;color:#334155;}
 
-/* HORIZONTAL CATEGORIES BAR */
+/* CATEGORIES NAV */
 .category-nav{display:flex;overflow-x:auto;padding:12px 10px;background:white;gap:15px;scrollbar-width:none;}
 .category-nav::-webkit-scrollbar{display:none;}
 .cat-item{display:flex;flex-direction:column;align-items:center;min-width:65px;font-size:11px;font-weight:600;color:#475569;cursor:pointer;}
-.cat-icon{width:48px;height:48px;background:#e0f2fe;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:4px;box-shadow:0 2px 5px rgba(0,0,0,0.05);}
-.cat-item.active .cat-icon{background:#0284c7;color:white;}
-.cat-item.active{color:#0284c7;}
+.cat-icon{width:48px;height:48px;background:#e0f2fe;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:4px;}
 
-/* BANNER CAROUSEL CARD */
+/* BANNER */
 .banner-container{padding:12px 15px;}
-.promo-card{background:linear-gradient(135deg,#eab308,#ca8a04);color:#fff;padding:18px;border-radius:16px;box-shadow:0 4px 15px rgba(234,179,8,0.3);position:relative;overflow:hidden;}
+.promo-card{background:linear-gradient(135deg,#eab308,#ca8a04);color:#fff;padding:18px;border-radius:16px;box-shadow:0 4px 15px rgba(234,179,8,0.3);}
 .promo-card h3{font-size:18px;font-weight:800;}
-.promo-card p{font-size:12px;margin-top:4px;opacity:0.9;}
-.vip-btn{background:white;color:#854d0e;border:none;padding:8px 14px;border-radius:20px;font-weight:bold;font-size:12px;margin-top:10px;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,0.15);}
-
-/* DEALS SECTION (FLIPKART HORIZONTAL SCROLL) */
-.section-title{font-size:16px;font-weight:700;padding:10px 15px 5px 15px;display:flex;justify-content:space-between;align-items:center;}
-.deals-scroll{display:flex;overflow-x:auto;padding:10px 15px;gap:12px;scrollbar-width:none;}
-.deals-scroll::-webkit-scrollbar{display:none;}
-.deal-card{min-width:140px;background:white;border-radius:14px;padding:12px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.05);position:relative;}
-.badge-discount{position:absolute;top:8px;left:8px;background:#dc2626;color:white;font-size:10px;font-weight:bold;padding:2px 6px;border-radius:6px;}
+.vip-btn{background:white;color:#854d0e;border:none;padding:8px 14px;border-radius:20px;font-weight:bold;font-size:12px;margin-top:10px;cursor:pointer;}
 
 /* PRODUCTS GRID */
+.section-title{font-size:16px;font-weight:700;padding:10px 15px 5px 15px;display:flex;justify-content:space-between;align-items:center;}
 .products-grid{display:grid;grid-template-columns:repeat(2, 1fr);gap:12px;padding:10px 15px;}
-.product-card{background:white;border-radius:16px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.04);position:relative;display:flex;flex-direction:column;justify-content:space-between;}
+.product-card{background:white;border-radius:16px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.04);display:flex;flex-direction:column;justify-style:space-between;align-items:center;}
+.prod-img{width:90px;height:90px;object-fit:contain;margin:8px 0;border-radius:10px;}
 .prod-emoji{font-size:42px;margin:8px 0;}
 .prod-title{font-size:14px;font-weight:600;color:#1e293b;margin-bottom:4px;}
 .prod-price{font-size:16px;font-weight:700;color:#0284c7;}
-.prod-mrp{font-size:12px;color:#94a3b8;text-decoration:line-through;margin-left:4px;}
 .add-btn{background:#0284c7;color:white;border:none;padding:8px;border-radius:10px;font-weight:bold;font-size:13px;width:100%;margin-top:8px;cursor:pointer;}
 
-/* BOTTOM NAVIGATION BAR (FLIPKART STYLE) */
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:60px;background:white;display:flex;justify-content:space-around;align-items:center;border-top:1px solid #e2e8f0;z-index:200;}
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:60px;background:white;display:flex;justify-around:space-around;align-items:center;border-top:1px solid #e2e8f0;z-index:200;}
 .nav-item{display:flex;flex-direction:column;align-items:center;font-size:10px;color:#64748b;font-weight:600;cursor:pointer;background:none;border:none;}
 .nav-icon{font-size:20px;margin-bottom:2px;}
-.nav-item.active{color:#0284c7;}
 .badge-count{position:absolute;top:-2px;right:15px;background:#ef4444;color:white;font-size:10px;padding:2px 6px;border-radius:10px;font-weight:bold;}
 
 /* MODALS */
@@ -67,7 +57,7 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:70px;}
 .form-group input, .form-group select, .form-group textarea{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:10px;outline:none;}
 .primary-btn{background:#0284c7;color:white;border:none;padding:12px;width:100%;border-radius:12px;font-weight:bold;cursor:pointer;}
 
-#notificationToast{display:none;position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#0f172a;color:white;padding:10px 20px;border-radius:25px;font-size:12px;font-weight:bold;z-index:400;box-shadow:0 4px 12px rgba(0,0,0,0.2);}
+#notificationToast{display:none;position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#0f172a;color:white;padding:10px 20px;border-radius:25px;font-size:12px;font-weight:bold;z-index:400;}
 </style>
 </head>
 <body>
@@ -76,8 +66,8 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:70px;}
 <header class="app-header">
     <div class="top-bar">
         <div class="logo">💧 Jalvigo</div>
-        <div class="location-btn" onclick="openNearbyModal()">
-            📍 <span id="locText">Select Location</span> ▾
+        <div class="location-btn" onclick="getGPSLocation()">
+            🎯 <span id="locText">Detect My Location</span>
         </div>
     </div>
     <div class="search-bar">
@@ -85,55 +75,20 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:70px;}
     </div>
 </header>
 
-<!-- CATEGORY NAVIGATION -->
+<!-- CATEGORY NAV -->
 <div class="category-nav">
-    <div class="cat-item active" onclick="selectCategory('All')">
-        <div class="cat-icon">🛍️</div> For You
-    </div>
-    <div class="cat-item" onclick="selectCategory('Water')">
-        <div class="cat-icon">💧</div> Water Jars
-    </div>
-    <div class="cat-item" onclick="selectCategory('Drinks')">
-        <div class="cat-icon">🥤</div> Cold Drinks
-    </div>
-    <div class="cat-item" onclick="selectCategory('Wholesale')">
-        <div class="cat-icon">📦</div> Bulk B2B
-    </div>
+    <div class="cat-item" onclick="selectCategory('All')"><div class="cat-icon">🛍️</div> For You</div>
+    <div class="cat-item" onclick="selectCategory('Water')"><div class="cat-icon">💧</div> Water Jars</div>
+    <div class="cat-item" onclick="selectCategory('Drinks')"><div class="cat-icon">🥤</div> Cold Drinks</div>
+    <div class="cat-item" onclick="selectCategory('Wholesale')"><div class="cat-icon">📦</div> Bulk B2B</div>
 </div>
 
-<!-- BANNER CAROUSEL -->
+<!-- BANNER -->
 <div class="banner-container">
     <div class="promo-card">
         <h3>👑 Jalvigo VIP Pass</h3>
         <p>Unlimited FREE Express Delivery & Priority Slot!</p>
         <button class="vip-btn" onclick="openSubModal()">Get VIP @ ₹99/mo</button>
-    </div>
-</div>
-
-<!-- DEALS SECTION -->
-<div class="section-title">
-    <span>🔥 Top Offers & Deals</span>
-    <span style="font-size:12px;color:#0284c7;cursor:pointer;">View All</span>
-</div>
-
-<div class="deals-scroll">
-    <div class="deal-card">
-        <span class="badge-discount">25% OFF</span>
-        <div style="font-size:32px;margin:10px 0;">💧</div>
-        <div style="font-size:12px;font-weight:bold;">20L Water Jar</div>
-        <div style="color:#0284c7;font-weight:bold;margin-top:4px;">₹60</div>
-    </div>
-    <div class="deal-card">
-        <span class="badge-discount">15% OFF</span>
-        <div style="font-size:32px;margin:10px 0;">🍾</div>
-        <div style="font-size:12px;font-weight:bold;">Soda Bottle 1L</div>
-        <div style="color:#0284c7;font-weight:bold;margin-top:4px;">₹20</div>
-    </div>
-    <div class="deal-card">
-        <span class="badge-discount">20% OFF</span>
-        <div style="font-size:32px;margin:10px 0;">🥤</div>
-        <div style="font-size:12px;font-weight:bold;">Cold Drink Can</div>
-        <div style="color:#0284c7;font-weight:bold;margin-top:4px;">₹35</div>
     </div>
 </div>
 
@@ -145,28 +100,23 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:70px;}
     <p style="grid-column:1/-1;text-align:center;padding:20px;color:#64748b;">Loading products...</p>
 </div>
 
-<!-- BOTTOM APP NAVIGATION BAR -->
+<!-- BOTTOM NAV BAR -->
 <div class="bottom-nav">
-    <button class="nav-item active" onclick="scrollToTop()">
-        <span class="nav-icon">🏠</span> Home
-    </button>
-    <button class="nav-item" onclick="openNearbyModal()">
-        <span class="nav-icon">📍</span> Stores
-    </button>
+    <button class="nav-item" onclick="scrollToTop()"><span class="nav-icon">🏠</span> Home</button>
+    <button class="nav-item" onclick="openNearbyModal()"><span class="nav-icon">📍</span> Stores</button>
     <button class="nav-item" style="position:relative;" onclick="openCart()">
         <span class="nav-icon">🛒</span> Cart
         <span class="badge-count" id="cartCount">0</span>
     </button>
-    <button class="nav-item" onclick="handleAccountClick()">
-        <span class="nav-icon">👤</span> Account
-    </button>
+    <button class="nav-item" onclick="handleAccountClick()"><span class="nav-icon">👤</span> Account</button>
 </div>
 
-<!-- ACCOUNT / LOGIN MODAL -->
+<!-- MODALS -->
+<!-- ACCOUNT MODAL -->
 <div class="modal" id="accountModal">
   <div class="modal-box">
     <span class="close" onclick="closeModal('accountModal')">×</span>
-    <h2 id="accModalTitle">👤 Account Access</h2>
+    <h2>👤 Account Access</h2>
     <div id="authButtonsSection" style="margin-top:15px;">
         <button class="primary-btn" onclick="openCustomerAuth()" style="margin-bottom:10px;">👤 Customer Login / Signup</button>
         <button class="primary-btn" onclick="openB2BAuth()" style="margin-bottom:10px;background:#059669;">🏪 Shopkeeper / Partner Login</button>
@@ -181,20 +131,40 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:70px;}
   </div>
 </div>
 
+<!-- CHECKOUT ORDER MODAL -->
+<div class="modal" id="orderModal">
+<div class="modal-box">
+<span class="close" onclick="closeModal('orderModal')">×</span>
+<h2>📦 Delivery Details</h2>
+<div class="form-group"><label>Full Name</label><input type="text" id="customerName"></div>
+<div class="form-group"><label>Mobile</label><input type="tel" id="customerMobile"></div>
+<div class="form-group">
+    <label>Delivery Address</label>
+    <input type="text" id="streetArea" placeholder="Full Address">
+    <button type="button" onclick="getGPSLocation()" style="margin-top:5px;background:#e0f2fe;color:#0284c7;border:1px solid #0284c7;padding:6px 12px;border-radius:8px;font-weight:bold;font-size:12px;cursor:pointer;">
+        🎯 Auto-Fill Current Live GPS Location
+    </button>
+</div>
+
+<div id="mapContainer" style="margin:10px 0;border-radius:12px;overflow:hidden;height:140px;border:1px solid #cbd5e1;display:none;">
+    <iframe id="googleMapIframe" width="100%" height="140" frameborder="0" style="border:0;" src="" allowfullscreen></iframe>
+</div>
+
+<div style="background:#f0f9ff;padding:12px;border-radius:10px;font-size:13px;border:1px solid #0284c7;margin:10px 0;">
+    <div style="color:#0369a1;font-weight:bold;">📍 Detected Distance: <span id="detectedDistanceText">Detecting GPS...</span></div>
+    <div style="color:#075985;font-weight:bold;margin-top:4px;">🕒 Auto-Scheduled Slot: <span id="estimatedDeliverySlotDisplay">...</span></div>
+    <small style="color:#64748b;display:block;margin-top:2px;">Delivery Hours: 7:00 AM - 11:00 PM</small>
+</div>
+
+<button class="primary-btn" onclick="sendOrder()">Place Order Now</button>
+</div>
+</div>
+
 <!-- NEARBY STORES MODAL -->
 <div class="modal" id="nearbyModal">
   <div class="modal-box">
     <span class="close" onclick="closeModal('nearbyModal')">×</span>
     <h2>📍 Nearby Verified Stores</h2>
-    <div class="form-group">
-        <label>Distance Radius</label>
-        <select id="distanceSelect" onchange="renderPublicNearbyStores()">
-            <option value="1">Within 1 KM</option>
-            <option value="3">1 KM to 3 KM</option>
-            <option value="5">3 KM to 5 KM</option>
-            <option value="10">More than 10 KM</option>
-        </select>
-    </div>
     <div id="storesList"></div>
   </div>
 </div>
@@ -219,38 +189,10 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:70px;}
   <div class="modal-box" style="text-align:center;">
     <span class="close" onclick="closeModal('subModal')">×</span>
     <h2 style="color:#854d0e;">👑 Jalvigo VIP Pass</h2>
-    <p style="font-size:12px;color:#555;margin:6px 0;">Select Plan & Scan QR to Pay</p>
-    <div style="display:flex;gap:8px;margin:15px 0;">
-        <button onclick="selectVipPlan(99,'1 Month')" style="flex:1;padding:10px;border:1px solid #eab308;border-radius:8px;background:#fef08a;font-weight:bold;">₹99 / 1 Mo</button>
-        <button onclick="selectVipPlan(499,'6 Months')" style="flex:1;padding:10px;border:1px solid #eab308;border-radius:8px;background:#fff;font-weight:bold;">₹499 / 6 Mo</button>
-        <button onclick="selectVipPlan(799,'12 Months')" style="flex:1;padding:10px;border:1px solid #eab308;border-radius:8px;background:#fff;font-weight:bold;">₹799 / 1 Yr</button>
-    </div>
+    <p style="font-size:12px;color:#555;margin:6px 0;">Scan QR to Pay</p>
     <img id="vipUpiQr" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=balramnnagar@okaxis%26pn=Jalvigo%20VIP%26am=99%26cu=INR" alt="UPI QR" style="width:130px;height:130px;border-radius:8px;">
-    <button class="primary-btn" onclick="activateVipSubscription()" style="margin-top:15px;background:#eab308;color:#000;">I Have Paid - Activate</button>
+    <button class="primary-btn" onclick="activateVipSubscription()" style="margin-top:15px;background:#eab308;color:#000;">I Have Paid - Activate VIP</button>
   </div>
-</div>
-
-<!-- CHECKOUT ORDER MODAL -->
-<div class="modal" id="orderModal">
-<div class="modal-box">
-<span class="close" onclick="closeModal('orderModal')">×</span>
-<h2>📦 Delivery Details</h2>
-<div class="form-group"><label>Full Name</label><input type="text" id="customerName"></div>
-<div class="form-group"><label>Mobile</label><input type="tel" id="customerMobile"></div>
-<div class="form-group"><label>Address</label><input type="text" id="streetArea"></div>
-<div class="form-group"><label>Distance Slot</label>
-    <select id="distanceRange" onchange="calculateDeliveryTimeSlot()">
-        <option value="1">< 1 KM (15-20 Mins Express)</option>
-        <option value="3">1 - 3 KM (30-45 Mins)</option>
-        <option value="5">3 - 5 KM (1-2 Hours)</option>
-        <option value="10">> 10 KM (Scheduled)</option>
-    </select>
-</div>
-<div style="background:#f0f9ff;padding:10px;border-radius:8px;font-size:12px;margin:10px 0;">
-    <b>🕒 Estimated Slot:</b> <span id="estimatedDeliverySlotDisplay">...</span>
-</div>
-<button class="primary-btn" onclick="sendOrder()">Place Order Now</button>
-</div>
 </div>
 
 <!-- CUSTOMER AUTH MODAL -->
@@ -278,16 +220,41 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:70px;}
   </div>
 </div>
 
-<!-- ADMIN DASHBOARD MODAL -->
+<!-- ADMIN DASHBOARD MODAL WITH PHOTO UPLOAD FEATURE -->
 <div class="modal" id="adminDashboardModal">
 <div class="modal-box" style="max-width:600px;">
 <span class="close" onclick="closeModal('adminDashboardModal')">×</span>
 <h2>🛠️ Admin Panel Dashboard</h2>
 <div style="margin:10px 0;display:flex;gap:5px;overflow-x:auto;">
-    <button class="primary-btn" onclick="loadAdminOrders('active')">Orders</button>
-    <button class="primary-btn" onclick="loadAdminRegisteredShops()" style="background:#059669;">Shops</button>
+    <button class="primary-btn" onclick="switchAdminTab('orders')">Orders</button>
+    <button class="primary-btn" onclick="switchAdminTab('addProduct')" style="background:#16a34a;">➕ Add Product with Photo</button>
+    <button class="primary-btn" onclick="switchAdminTab('shops')" style="background:#059669;">Shops</button>
 </div>
-<div id="adminOrdersList"><p>Select option above...</p></div>
+
+<!-- ORDERS TAB -->
+<div id="adminTabOrders">
+    <div id="adminOrdersList"><p>Loading Orders...</p></div>
+</div>
+
+<!-- ADD PRODUCT WITH PHOTO TAB -->
+<div id="adminTabAddProduct" style="display:none;background:#f8fafc;padding:12px;border-radius:12px;border:1px solid #e2e8f0;">
+    <h3>📸 Add Product with Photo</h3>
+    <div class="form-group"><label>Product Name</label><input type="text" id="newProdName" placeholder="e.g. Bisleri 20L Water Jar"></div>
+    <div class="form-group"><label>Selling Price (₹)</label><input type="number" id="newProdPrice" placeholder="e.g. 60"></div>
+    <div class="form-group"><label>MRP / Old Price (₹)</label><input type="number" id="newProdMrp" placeholder="e.g. 80"></div>
+    <div class="form-group"><label>Product Emoji / Icon (Optional)</label><input type="text" id="newProdEmoji" placeholder="💧"></div>
+    <div class="form-group">
+        <label>📸 Select Product Photo (Image File)</label>
+        <input type="file" id="newProdImageFile" accept="image/*">
+    </div>
+    <button class="primary-btn" onclick="addNewProductWithImage()" style="background:#16a34a;margin-top:10px;">Upload Photo & Save Product</button>
+</div>
+
+<!-- SHOPS TAB -->
+<div id="adminTabShops" style="display:none;">
+    <div id="adminShopsList"><p>Loading shops...</p></div>
+</div>
+
 </div>
 </div>
 
@@ -302,10 +269,13 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_
 let cart = [];
 let allProductsList = [];
 let isVipMember = false;
-let selectedVipAmount = 99;
-let selectedVipDuration = "1 Month";
+let userLat = null;
+let userLng = null;
+let calculatedDistanceKM = 1.2;
+
+const SHOP_LAT = 28.6139; 
+const SHOP_LNG = 77.2090; 
 const ADMIN_EMAIL = "balramnnagar0077@gmail.com";
-const DELIVERY_AGENT_PIN = "1234";
 
 function closeModal(id){ document.getElementById(id).style.display="none"; }
 function showNotification(msg){
@@ -315,6 +285,57 @@ function showNotification(msg){
     setTimeout(() => { toast.style.display = "none"; }, 3000);
 }
 function scrollToTop(){ window.scrollTo({top:0, behavior:'smooth'}); }
+
+function getGPSLocation() {
+    if (navigator.geolocation) {
+        showNotification("Detecting GPS Location...");
+        navigator.geolocation.getCurrentPosition(position => {
+            userLat = position.coords.latitude;
+            userLng = position.coords.longitude;
+            calculatedDistanceKM = calculateHaversineDistance(SHOP_LAT, SHOP_LNG, userLat, userLng);
+            
+            document.getElementById("locText").innerText = `${userLat.toFixed(2)}, ${userLng.toFixed(2)} (${calculatedDistanceKM.toFixed(1)} KM)`;
+            const streetAreaInput = document.getElementById("streetArea");
+            if(streetAreaInput) streetAreaInput.value = `GPS Pin: ${userLat.toFixed(4)}, ${userLng.toFixed(4)}`;
+
+            const mapContainer = document.getElementById("mapContainer");
+            const mapIframe = document.getElementById("googleMapIframe");
+            if(mapContainer && mapIframe) {
+                mapIframe.src = `https://maps.google.com/maps?q=${userLat},${userLng}&z=15&output=embed`;
+                mapContainer.style.display = "block";
+            }
+
+            autoDecideDeliverySlot(calculatedDistanceKM);
+            showNotification(`Location Detected: ~${calculatedDistanceKM.toFixed(1)} KM away`);
+        }, () => {
+            autoDecideDeliverySlot(1.0);
+        });
+    }
+}
+
+function calculateHaversineDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+}
+
+function autoDecideDeliverySlot(distKM) {
+    let subtotal = 0; cart.forEach(i => subtotal += i.price * i.qty);
+    const isBulk = subtotal >= 500;
+    let slotText = isVipMember ? "⚡ VIP Express Same-Day" : (distKM <= 1 ? "15-20 Mins Express" : "1-2 Hours Delivery");
+
+    const distElem = document.getElementById("detectedDistanceText");
+    const slotElem = document.getElementById("estimatedDeliverySlotDisplay");
+    if(distElem) distElem.innerText = `~${distKM.toFixed(1)} KM from Store`;
+    if(slotElem) slotElem.innerText = slotText;
+
+    return slotText;
+}
 
 function openNearbyModal(){ document.getElementById("nearbyModal").style.display="block"; renderPublicNearbyStores(); }
 function openSubModal(){ document.getElementById("subModal").style.display="block"; }
@@ -337,12 +358,11 @@ async function handleAccountClick() {
 }
 
 async function renderPublicNearbyStores() {
-    const dist = document.getElementById("distanceSelect").value;
     const list = document.getElementById("storesList");
     const { data: stores } = await supabaseClient.from("business_profiles").select("business_name, address");
 
     if(!stores || stores.length === 0){
-        list.innerHTML = `<p style="padding:15px;text-align:center;color:#64748b;">No registered stores within ~${dist} KM radius.</p>`;
+        list.innerHTML = `<p style="padding:15px;text-align:center;color:#64748b;">No registered stores found nearby.</p>`;
         return;
     }
     list.innerHTML = stores.map(s => `
@@ -352,14 +372,9 @@ async function renderPublicNearbyStores() {
     `).join('');
 }
 
-function selectVipPlan(amt, dur){
-    selectedVipAmount = amt; selectedVipDuration = dur;
-    document.getElementById("vipUpiQr").src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=balramnnagar@okaxis%26pn=Jalvigo%20VIP%26am=${amt}%26cu=INR`;
-}
-
 function activateVipSubscription(){
     isVipMember = true;
-    showNotification(`VIP Activated (${selectedVipDuration})`);
+    showNotification("VIP Activated!");
     closeModal('subModal');
     updateCart();
 }
@@ -375,15 +390,15 @@ async function loadDynamicProducts() {
     renderProducts(allProductsList);
 }
 
+// RENDER PRODUCTS WITH PHOTO IF AVAILABLE
 function renderProducts(prods) {
     const container = document.getElementById("dynamicProductsList");
     container.innerHTML = prods.map(p => `
         <div class="product-card">
-            <div class="prod-emoji">${p.emoji || '💧'}</div>
+            ${p.image_url ? `<img src="${p.image_url}" class="prod-img" alt="${p.name}">` : `<div class="prod-emoji">${p.emoji || '💧'}</div>`}
             <div class="prod-title">${p.name}</div>
             <div>
                 <span class="prod-price">₹${p.price}</span>
-                ${p.mrp ? `<span class="prod-mrp">₹${p.mrp}</span>` : ''}
             </div>
             <button class="add-btn" onclick="addToCart('${p.name}', ${p.price})">ADD TO CART</button>
         </div>
@@ -431,15 +446,8 @@ function changeQty(index, val){
 function openOrderForm(){
     if(cart.length===0){alert("Cart is empty!"); return;}
     closeModal('cartModal');
-    calculateDeliveryTimeSlot();
     document.getElementById("orderModal").style.display="block";
-}
-
-function calculateDeliveryTimeSlot(){
-    const dist = Number(document.getElementById("distanceRange").value);
-    let slot = isVipMember ? "⚡ Express VIP Same Day" : (dist <= 1 ? "15-20 Mins Express" : "1-2 Hours Delivery");
-    document.getElementById("estimatedDeliverySlotDisplay").innerText = slot;
-    return slot;
+    getGPSLocation();
 }
 
 async function sendOrder(){
@@ -451,12 +459,14 @@ async function sendOrder(){
     const address = document.getElementById("streetArea").value;
     if(!name || !mobile || !address){ alert("Fill all details!"); return; }
 
+    const slotText = autoDecideDeliverySlot(calculatedDistanceKM);
+    const fullAddress = `${address} | Distance: ~${calculatedDistanceKM.toFixed(1)} KM | Slot: ${slotText}`;
     const orderId = "JAL" + Date.now();
     let subtotal = 0; cart.forEach(i => subtotal += i.price * i.qty);
     let grandTotal = subtotal + ((subtotal>=250 || isVipMember)?0:30);
 
     await supabaseClient.from("orders").insert([{
-        order_id: orderId, customer_name: name, mobile, address, items: JSON.stringify(cart),
+        order_id: orderId, customer_name: name, mobile, address: fullAddress, items: JSON.stringify(cart),
         total: grandTotal, order_date: new Date().toISOString(), status: "Confirmed", user_id: user.id
     }]);
 
@@ -503,10 +513,68 @@ async function handleAdminButtonClick(){
     const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
     if(!error && data.user && data.user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()){
         document.getElementById("adminDashboardModal").style.display="block";
-        loadAdminOrders('active');
+        switchAdminTab('orders');
     } else {
         alert("Unauthorized Admin!");
     }
+}
+
+function switchAdminTab(tabName) {
+    document.getElementById("adminTabOrders").style.display = tabName === 'orders' ? 'block' : 'none';
+    document.getElementById("adminTabAddProduct").style.display = tabName === 'addProduct' ? 'block' : 'none';
+    document.getElementById("adminTabShops").style.display = tabName === 'shops' ? 'block' : 'none';
+
+    if(tabName === 'orders') loadAdminOrders('active');
+    if(tabName === 'shops') loadAdminRegisteredShops();
+}
+
+// UPLOAD IMAGE FILE TO SUPABASE STORAGE & SAVE PRODUCT
+async function addNewProductWithImage() {
+    const name = document.getElementById("newProdName").value.trim();
+    const price = document.getElementById("newProdPrice").value.trim();
+    const mrp = document.getElementById("newProdMrp").value.trim();
+    const emoji = document.getElementById("newProdEmoji").value.trim() || "💧";
+    const imageFile = document.getElementById("newProdImageFile").files[0];
+
+    if(!name || !price){ alert("Product Name aur Price required hain!"); return; }
+
+    let imageUrl = null;
+
+    if (imageFile) {
+        showNotification("Uploading product photo...");
+        const fileExt = imageFile.name.split('.').pop();
+        const fileName = `prod_${Date.now()}.${fileExt}`;
+        
+        const { data: uploadData, error: uploadError } = await supabaseClient.storage
+            .from('products')
+            .upload(fileName, imageFile);
+
+        if (uploadError) {
+            alert("Image Upload Error: " + uploadError.message + "\n\nTip: Make sure 'products' bucket is created in Supabase Storage!");
+        } else {
+            const { data: urlData } = supabaseClient.storage
+                .from('products')
+                .getPublicUrl(fileName);
+            imageUrl = urlData.publicUrl;
+        }
+    }
+
+    await supabaseClient.from("products").insert([{ 
+        name, 
+        price: Number(price), 
+        mrp: mrp ? Number(mrp) : null, 
+        emoji, 
+        image_url: imageUrl, 
+        created_at: new Date().toISOString() 
+    }]);
+
+    showNotification("Product Added Successfully!");
+    alert("✅ Product Added with Photo!");
+    document.getElementById("newProdName").value = "";
+    document.getElementById("newProdPrice").value = "";
+    document.getElementById("newProdMrp").value = "";
+    document.getElementById("newProdImageFile").value = "";
+    loadDynamicProducts();
 }
 
 async function loadAdminOrders(type){
@@ -516,13 +584,14 @@ async function loadAdminOrders(type){
     list.innerHTML = data.map(o => `
         <div style="border:1px solid #ccc;padding:10px;margin:5px 0;background:#fff;border-radius:8px;">
             <b>#${o.order_id}</b> - ${o.customer_name} (₹${o.total})<br>
-            <small>Commission (5%): ₹${Math.round(o.total*0.05)}</small>
+            <small>${o.address}</small><br>
+            <small style="color:#16a34a;font-weight:bold;">Commission (5%): ₹${Math.round(o.total*0.05)}</small>
         </div>
     `).join('');
 }
 
 async function loadAdminRegisteredShops(){
-    const list = document.getElementById("adminOrdersList");
+    const list = document.getElementById("adminShopsList");
     const { data } = await supabaseClient.from("business_profiles").select("*");
     if(!data) return;
     list.innerHTML = data.map(s => `
