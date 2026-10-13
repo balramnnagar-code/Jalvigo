@@ -35,18 +35,18 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:70px;}
 /* PRODUCTS GRID */
 .section-title{font-size:16px;font-weight:700;padding:10px 15px 5px 15px;display:flex;justify-content:space-between;align-items:center;}
 .products-grid{display:grid;grid-template-columns:repeat(2, 1fr);gap:12px;padding:10px 15px;}
-.product-card{background:white;border-radius:16px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.04);display:flex;flex-direction:column;justify-style:space-between;align-items:center;}
+.product-card{background:white;border-radius:16px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.04);display:flex;flex-direction:column;justify-content:space-between;align-items:center;}
 .prod-img{width:90px;height:90px;object-fit:contain;margin:8px 0;border-radius:10px;}
 .prod-emoji{font-size:42px;margin:8px 0;}
 .prod-title{font-size:14px;font-weight:600;color:#1e293b;margin-bottom:4px;}
 .prod-price{font-size:16px;font-weight:700;color:#0284c7;}
 .add-btn{background:#0284c7;color:white;border:none;padding:8px;border-radius:10px;font-weight:bold;font-size:13px;width:100%;margin-top:8px;cursor:pointer;}
 
-/* BOTTOM NAV */
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:60px;background:white;display:flex;justify-around:space-around;align-items:center;border-top:1px solid #e2e8f0;z-index:200;}
-.nav-item{display:flex;flex-direction:column;align-items:center;font-size:10px;color:#64748b;font-weight:600;cursor:pointer;background:none;border:none;}
+/* FIXED BOTTOM APP NAVIGATION BAR */
+.bottom-nav{position:fixed;bottom:0;left:0;width:100%;height:60px;background:#ffffff;display:flex;justify-content:space-around;align-items:center;border-top:1px solid #e2e8f0;z-index:200;}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;color:#64748b;font-weight:600;cursor:pointer;background:none;border:none;position:relative;}
 .nav-icon{font-size:20px;margin-bottom:2px;}
-.badge-count{position:absolute;top:-2px;right:15px;background:#ef4444;color:white;font-size:10px;padding:2px 6px;border-radius:10px;font-weight:bold;}
+.badge-count{position:absolute;top:2px;right:calc(50% - 18px);background:#ef4444;color:white;font-size:10px;padding:2px 6px;border-radius:10px;font-weight:bold;}
 
 /* MODALS */
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:300;padding:15px;overflow:auto;}
@@ -100,11 +100,11 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:70px;}
     <p style="grid-column:1/-1;text-align:center;padding:20px;color:#64748b;">Loading products...</p>
 </div>
 
-<!-- BOTTOM NAV BAR -->
+<!-- BOTTOM NAV BAR (CORRECTED FLEXBOX) -->
 <div class="bottom-nav">
     <button class="nav-item" onclick="scrollToTop()"><span class="nav-icon">🏠</span> Home</button>
     <button class="nav-item" onclick="openNearbyModal()"><span class="nav-icon">📍</span> Stores</button>
-    <button class="nav-item" style="position:relative;" onclick="openCart()">
+    <button class="nav-item" onclick="openCart()">
         <span class="nav-icon">🛒</span> Cart
         <span class="badge-count" id="cartCount">0</span>
     </button>
@@ -220,7 +220,7 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:70px;}
   </div>
 </div>
 
-<!-- ADMIN DASHBOARD MODAL WITH PHOTO UPLOAD FEATURE -->
+<!-- ADMIN DASHBOARD MODAL -->
 <div class="modal" id="adminDashboardModal">
 <div class="modal-box" style="max-width:600px;">
 <span class="close" onclick="closeModal('adminDashboardModal')">×</span>
@@ -326,7 +326,6 @@ function calculateHaversineDistance(lat1, lon1, lat2, lon2) {
 
 function autoDecideDeliverySlot(distKM) {
     let subtotal = 0; cart.forEach(i => subtotal += i.price * i.qty);
-    const isBulk = subtotal >= 500;
     let slotText = isVipMember ? "⚡ VIP Express Same-Day" : (distKM <= 1 ? "15-20 Mins Express" : "1-2 Hours Delivery");
 
     const distElem = document.getElementById("detectedDistanceText");
@@ -390,7 +389,6 @@ async function loadDynamicProducts() {
     renderProducts(allProductsList);
 }
 
-// RENDER PRODUCTS WITH PHOTO IF AVAILABLE
 function renderProducts(prods) {
     const container = document.getElementById("dynamicProductsList");
     container.innerHTML = prods.map(p => `
@@ -528,7 +526,6 @@ function switchAdminTab(tabName) {
     if(tabName === 'shops') loadAdminRegisteredShops();
 }
 
-// UPLOAD IMAGE FILE TO SUPABASE STORAGE & SAVE PRODUCT
 async function addNewProductWithImage() {
     const name = document.getElementById("newProdName").value.trim();
     const price = document.getElementById("newProdPrice").value.trim();
@@ -550,7 +547,7 @@ async function addNewProductWithImage() {
             .upload(fileName, imageFile);
 
         if (uploadError) {
-            alert("Image Upload Error: " + uploadError.message + "\n\nTip: Make sure 'products' bucket is created in Supabase Storage!");
+            alert("Image Upload Error: " + uploadError.message);
         } else {
             const { data: urlData } = supabaseClient.storage
                 .from('products')
