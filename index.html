@@ -21,7 +21,7 @@ header{background:#0284c7;color:white;padding:15px;display:flex;justify-content:
 .hero p{color:#555;}
 .promo-banner{background:linear-gradient(135deg,#0284c7,#0369a1);color:white;margin:15px 20px;padding:15px;border-radius:15px;text-align:center;box-shadow:0 4px 15px rgba(0,0,0,.15);}
 .vip-card{background:linear-gradient(135deg,#fef08a,#fde047); color:#854d0e; padding:18px; border-radius:12px; border:2px solid #eab308; margin:15px 20px; text-align:center;}
-.plan-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:10px; margin:15px 0;}
+.plan-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(120px, 1fr)); gap:10px; margin:15px 0;}
 .plan-box{border:2px solid #eab308; background:#fff; padding:12px; border-radius:10px; text-align:center; cursor:pointer;}
 .plan-box.selected{background:#fef08a; border-color:#854d0e;}
 .search-container{padding:10px 20px;text-align:center;background:#e0f2fe;}
@@ -48,6 +48,9 @@ header{background:#0284c7;color:white;padding:15px;display:flex;justify-content:
 .logout-btn{background:#dc2626;color:white;border:none;padding:10px 16px;border-radius:8px;font-weight:bold;cursor:pointer;}
 .tab-btn{background:#e2e8f0; border:none; padding:8px 12px; border-radius:6px; cursor:pointer; font-weight:bold; margin-right:5px; margin-bottom:5px;}
 .tab-btn.active{background:#0284c7; color:white;}
+
+#notificationToast{display:none; position:fixed; bottom:20px; right:20px; background:#0284c7; color:white; padding:15px 20px; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.3); z-index:1000; font-weight:bold;}
+
 footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:30px;}
 </style>
 </head>
@@ -56,15 +59,15 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
 <header>
     <div class="logo">💧 Jalvigo <span id="vipBadge" style="display:none;" class="sub-badge">👑 VIP Priority</span></div>
     <div class="header-buttons">
-        <button class="admin-btn" id="customerLoginBtn" onclick="openCustomerAuth()">👤 <span data-hi="Customer Login / Signup" data-en="Customer Login / Signup">Customer Login / Signup</span></button>
+        <button class="admin-btn" id="customerLoginBtn" onclick="openCustomerAuth()">👤 Customer Login</button>
         <button class="admin-btn" id="subBtn" onclick="openSubModal()" style="background:#eab308; color:#000;">👑 VIP Pass Pass</button>
-        <button class="admin-btn" id="myOrdersBtn" onclick="openMyOrders()" style="display:none; background:#0284c7;">📦 <span data-hi="Mere Orders" data-en="My Orders">Mere Orders</span></button>
-        <button class="admin-btn" id="b2bLoginBtn" onclick="openB2BAuth()" style="background:#059669;">🏢 <span data-hi="B2B Login" data-en="B2B Login">B2B Login</span></button>
-        <button class="admin-btn" id="deliveryBtn" onclick="openDeliveryModal()" style="background:#16a34a;">🚚 <span data-hi="Delivery Partner" data-en="Delivery Partner">Delivery Partner</span></button>
-        <button class="admin-btn" id="adminMainBtn" onclick="handleAdminButtonClick()" style="background:#082f49;">🔐 <span data-hi="Admin Panel" data-en="Admin Panel">Admin Panel</span></button>
-        <button class="admin-btn" id="userLogoutBtn" onclick="userLogout()" style="display:none; background:#dc2626;">🚪 <span data-hi="Logout" data-en="Logout">Logout</span></button>
-        <button class="cart-btn" onclick="openCart()" id="cartMainBtn">🛒 <span data-hi="Cart" data-en="Cart">Cart</span>: <span id="cartCount">0</span></button>
-        <button class="admin-btn" id="langToggleBtn" onclick="toggleLanguage()" style="background:#0ea5e9;">🌐 <span id="langText">English</span></button>
+        <button class="admin-btn" id="nearbyBtn" onclick="openNearbyModal()" style="background:#0ea5e9;">📍 Nearby Stores</button>
+        <button class="admin-btn" id="myOrdersBtn" onclick="openMyOrders()" style="display:none; background:#0284c7;">📦 My Orders</button>
+        <button class="admin-btn" id="b2bLoginBtn" onclick="openB2BAuth()" style="background:#059669;">🏢 B2B Login</button>
+        <button class="admin-btn" id="deliveryBtn" onclick="openDeliveryModal()" style="background:#16a34a;">🚚 Delivery Partner</button>
+        <button class="admin-btn" id="adminMainBtn" onclick="handleAdminButtonClick()" style="background:#082f49;">🔐 Admin Panel</button>
+        <button class="admin-btn" id="userLogoutBtn" onclick="userLogout()" style="display:none; background:#dc2626;">🚪 Logout</button>
+        <button class="cart-btn" onclick="openCart()" id="cartMainBtn">🛒 Cart: <span id="cartCount">0</span></button>
     </div>
 </header>
 
@@ -83,7 +86,7 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
 
 <div class="promo-banner">
     <h3 id="promoTitle">📢 Special Offer: VIP Members ke liye Express Priority Delivery!</h3>
-    <p id="promoDesc">Standard delivery fee ₹30 for orders under ₹250.</p>
+    <p id="promoDesc">Delivery Slot Operating Hours: 7:00 AM - 11:00 PM</p>
 </div>
 
 <div class="search-container">
@@ -91,8 +94,8 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
 </div>
 
 <div class="type-box">
-    <button id="retailBtn" class="active" onclick="selectType('Retail')">🛍️ Retail (Ghar ke liye)</button>
-    <button id="wholesaleBtn" onclick="selectType('Wholesale')">📦 Wholesale (B2B Bulk)</button>
+    <button id="retailBtn" class="active" onclick="selectType('Retail')">🛍️ Retail Mode</button>
+    <button id="wholesaleBtn" onclick="selectType('Wholesale')">📦 Wholesale Mode</button>
     <p style="margin-top:8px; font-size:14px;">Selected Mode: <b id="selectedType">Retail</b></p>
 </div>
 
@@ -103,12 +106,30 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
     </div>
 </section>
 
-<!-- VIP SUBSCRIPTION MODAL WITH MULTIPLE PLANS -->
+<!-- NEARBY STORES MODAL -->
+<div class="modal" id="nearbyModal">
+  <div class="modal-box">
+    <span class="close" onclick="closeNearbyModal()">×</span>
+    <h2>📍 Nearby Jalvigo Stores & Dealers</h2>
+    <div class="form-group">
+        <label>Select Distance Radius</label>
+        <select id="distanceSelect" onchange="renderNearbyStores()">
+            <option value="1">Within 1 KM (15 Min Delivery)</option>
+            <option value="3">1 KM to 3 KM (30-45 Min Delivery)</option>
+            <option value="5">3 KM to 5 KM (1-2 Hrs Delivery)</option>
+            <option value="10">More than 10 KM (Scheduled Delivery)</option>
+        </select>
+    </div>
+    <div id="storesList"></div>
+  </div>
+</div>
+
+<!-- VIP SUBSCRIPTION MODAL -->
 <div class="modal" id="subModal">
   <div class="modal-box" style="text-align:center;">
     <span class="close" onclick="closeSubModal()">×</span>
     <h2 style="color:#854d0e;">👑 Jalvigo VIP Membership Plans</h2>
-    <p style="font-size:13px; color:#555; margin-top:4px;">Priority Same Day/Next Day Delivery & Free Delivery above ₹250!</p>
+    <p style="font-size:13px; color:#555; margin-top:4px;">Priority Delivery & Free Delivery above ₹250!</p>
     
     <div class="plan-grid">
         <div class="plan-box selected" id="plan1" onclick="selectVipPlan(99, '1 Month', 'plan1')">
@@ -116,13 +137,13 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
             <span style="font-size:18px; color:#0284c7; font-weight:bold;">₹99</span><br>
             <small>₹99 / mo</small>
         </div>
-        <div class="plan-box" id="plan2" onclick="selectVipPlan(399, '6 Months', 'plan2')">
+        <div class="plan-box" id="plan2" onclick="selectVipPlan(499, '6 Months', 'plan2')">
             <b>6 Months</b><br>
-            <span style="font-size:18px; color:#0284c7; font-weight:bold;">₹399</span><br>
-            <small>₹66 / mo</small>
+            <span style="font-size:18px; color:#0284c7; font-weight:bold;">₹499</span><br>
+            <small>₹83 / mo</small>
         </div>
-        <div class="plan-box" id="plan3" onclick="selectVipPlan(799, '1 Year', 'plan3')">
-            <b>1 Year</b><br>
+        <div class="plan-box" id="plan3" onclick="selectVipPlan(799, '12 Months', 'plan3')">
+            <b>12 Months</b><br>
             <span style="font-size:18px; color:#0284c7; font-weight:bold;">₹799</span><br>
             <small>₹66 / mo</small>
         </div>
@@ -130,7 +151,7 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
 
     <div style="background:#fef08a; padding:15px; border-radius:10px; margin:15px 0;">
         <p>Selected Plan Amount: <b style="font-size:18px; color:#854d0e;">₹<span id="selectedPlanAmount">99</span></b> (<span id="selectedPlanDuration">1 Month</span>)</p>
-        <p style="font-size:12px; color:#555; margin-top:4px;">Scan QR & Pay via UPI to Activate VIP Pass</p>
+        <p style="font-size:12px; color:#555; margin-top:4px;">Scan QR & Pay Direct to Shopkeeper / Company</p>
         <img id="vipUpiQr" src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi://pay?pa=balramnnagar@okaxis%26pn=Jalvigo%20VIP%26am=99%26cu=INR" alt="UPI QR" style="width:140px; height:140px; border-radius:8px; margin:10px 0; border:2px solid #eab308;">
         <p style="font-size:12px;">UPI ID: <b>balramnnagar@okaxis</b></p>
     </div>
@@ -202,7 +223,7 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
 <div class="modal" id="orderModal">
 <div class="modal-box">
 <span class="close" onclick="closeOrderForm()">×</span>
-<h2>📦 Delivery Details</h2>
+<h2>📦 Delivery Details & Slot</h2>
 <div class="form-group"><label>Full Name</label><input type="text" id="customerName" placeholder="Aapka Naam"></div>
 <div class="form-group"><label>Mobile Number</label><input type="tel" id="customerMobile" placeholder="10-digit Mobile"></div>
 <div class="form-group"><label>Address Type</label>
@@ -214,8 +235,22 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
 </div>
 <div class="form-group"><label>House / Flat No / Building</label><input type="text" id="houseNo" placeholder="Flat No. / House Name"></div>
 <div class="form-group"><label>Street / Area / Locality</label><input type="text" id="streetArea" placeholder="Area Name"></div>
-<div class="form-group"><label>Landmark</label><input type="text" id="landmark" placeholder="Near Landmark"></div>
+<div class="form-group"><label>Landmark & Distance (KM)</label>
+    <select id="distanceRange" onchange="calculateDeliveryTimeSlot()">
+        <option value="1">Less than 1 KM from Shop</option>
+        <option value="3">1 KM to 3 KM from Shop</option>
+        <option value="5">3 KM to 5 KM from Shop</option>
+        <option value="10">More than 10 KM (Scheduled)</option>
+    </select>
+</div>
 <div class="form-group"><label>Pincode</label><input type="text" id="pincode" placeholder="Pincode"></div>
+
+<div style="background:#e0f2fe; padding:10px; border-radius:8px; border:1px solid #0284c7; margin:10px 0;">
+    <p style="font-size:13px; color:#0369a1;"><b>🕒 Expected Delivery Time:</b></p>
+    <p id="estimatedDeliverySlotDisplay" style="font-size:15px; font-weight:bold; color:#075985;">Calculating...</p>
+    <small style="color:#555;">Delivery Hours: 7:00 AM - 11:00 PM</small>
+</div>
+
 <div class="form-group"><label>Payment Mode</label>
     <select id="paymentMode" onchange="toggleUpiQrBox()">
         <option value="Cash on Delivery (COD)">💵 Cash on Delivery (COD)</option>
@@ -223,8 +258,8 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
     </select>
 </div>
 <div id="upiQrSection" style="display:none; text-align:center; background:#f0f9ff; padding:10px; border-radius:8px; margin-bottom:10px;">
-    <p style="font-weight:bold; color:#0369a1;">Scan & Pay via UPI:</p>
-    <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi://pay?pa=balramnnagar@okaxis%26pn=Jalvigo%26cu=INR" alt="UPI QR" style="width:150px; height:150px; border-radius:8px; border:2px solid #0284c7;">
+    <p style="font-weight:bold; color:#0369a1;">Scan & Pay Direct to Dealer Account:</p>
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi://pay?pa=balramnnagar@okaxis%26pn=Jalvigo%20Store%26cu=INR" alt="UPI QR" style="width:150px; height:150px; border-radius:8px; border:2px solid #0284c7;">
 </div>
 <button class="primary-btn" onclick="sendOrder()" style="width:100%;">📦 Order Confirm Karein</button>
 </div>
@@ -264,7 +299,7 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
 </div>
 
 <div id="adminOrdersTabSection" class="dashboard-card">
-    <h3>📦 Orders List & Status Controller</h3>
+    <h3>📦 Orders List & Auto Commission Breakdown</h3>
     <button class="primary-btn" onclick="loadAdminOrders('active')" style="margin-bottom:10px;">🔄 Refresh Orders</button>
     <div id="adminOrdersList"><p>Loading Orders...</p></div>
 </div>
@@ -294,6 +329,9 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
 </div>
 </div>
 
+<!-- LIVE NOTIFICATION TOAST BANNER -->
+<div id="notificationToast">🔔 Notification: Order Updated!</div>
+
 <footer>
 <p>💧 Jalvigo Marketplace - Fresh Water & Beverages</p>
 </footer>
@@ -306,13 +344,35 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_
 let cart = [];
 let shoppingType = "Retail";
 let allProductsList = [];
-let currentLang = "hi";
 let isVipMember = false;
 let selectedVipAmount = 99;
 let selectedVipDuration = "1 Month";
 
 const ADMIN_EMAIL = "balramnnagar0077@gmail.com";
 const DELIVERY_AGENT_PIN = "1234";
+
+function showNotification(msg) {
+    const toast = document.getElementById("notificationToast");
+    toast.innerText = "🔔 " + msg;
+    toast.style.display = "block";
+    setTimeout(() => { toast.style.display = "none"; }, 3500);
+}
+
+function openNearbyModal(){ document.getElementById("nearbyModal").style.display = "block"; renderNearbyStores(); }
+function closeNearbyModal(){ document.getElementById("nearbyModal").style.display = "none"; }
+
+function renderNearbyStores() {
+    const dist = document.getElementById("distanceSelect").value;
+    const list = document.getElementById("storesList");
+    list.innerHTML = `
+        <div style="border:1px solid #0284c7; padding:10px; border-radius:8px; margin-top:10px; background:#f0f9ff;">
+            <b>💧 Balram Water Plant & Distributors</b><br>
+            Distance: ~${dist} KM away<br>
+            Delivery Window: 7:00 AM - 11:00 PM<br>
+            Status: <span style="color:#16a34a; font-weight:bold;">● Verified Dealer</span>
+        </div>
+    `;
+}
 
 function selectVipPlan(amount, duration, planId) {
     selectedVipAmount = amount;
@@ -328,23 +388,27 @@ function selectVipPlan(amount, duration, planId) {
     document.getElementById("vipUpiQr").src = qrUrl;
 }
 
-function toggleLanguage() {
-    currentLang = currentLang === "hi" ? "en" : "hi";
-    document.getElementById("langText").innerText = currentLang === "hi" ? "English" : "हिंदी";
-    
-    if(currentLang === "en") {
-        document.getElementById("heroTitle").innerText = "Jalvigo Fresh Water & Beverages 💧";
-        document.getElementById("heroDesc").innerText = "Fast Water & Drink Delivery for your Home and Business!";
-        document.getElementById("promoTitle").innerText = "📢 Special Offer: Express Priority Delivery for VIP Members!";
-        document.getElementById("promoDesc").innerText = "Free Delivery on orders ₹250 or above for VIPs.";
-        document.getElementById("productSearchInput").placeholder = "🔍 Search Water Jar, Cold Drink...";
+function calculateDeliveryTimeSlot() {
+    const dist = Number(document.getElementById("distanceRange").value);
+    let subtotal = 0;
+    cart.forEach(item => { subtotal += item.price * item.qty; });
+    const isBulkOrder = subtotal >= 500;
+
+    let slotText = "";
+    if (isVipMember) {
+        slotText = "⚡ Express Same Day Priority Delivery (7 AM - 11 PM)";
+    } else if (dist <= 1) {
+        slotText = isBulkOrder ? "Same Day Delivery (Operating: 7 AM - 11 PM)" : "⚡ Express Delivery in 15 - 20 Mins";
+    } else if (dist <= 3) {
+        slotText = isBulkOrder ? "Same Day Delivery (Operating: 7 AM - 11 PM)" : "⚡ Fast Delivery in 30 - 45 Mins";
+    } else if (dist <= 5) {
+        slotText = isBulkOrder ? "Same Day Delivery (Operating: 7 AM - 11 PM)" : "Standard Delivery in 1 - 2 Hours";
     } else {
-        document.getElementById("heroTitle").innerText = "Jalvigo Fresh Water & Beverages 💧";
-        document.getElementById("heroDesc").innerText = "Aapke Ghar aur Business ke liye Fast Water & Drink Delivery!";
-        document.getElementById("promoTitle").innerText = "📢 Special Offer: VIP Members ke liye Express Priority Delivery!";
-        document.getElementById("promoDesc").innerText = "VIP members ke liye ₹250 se upar par Free Delivery.";
-        document.getElementById("productSearchInput").placeholder = "🔍 Search Water Jar, Cold Drink...";
+        slotText = "📅 Scheduled Next Day Order Delivery (Advance Booking)";
     }
+
+    document.getElementById("estimatedDeliverySlotDisplay").innerText = slotText;
+    return slotText;
 }
 
 function selectType(type){
@@ -373,7 +437,12 @@ function openDeliveryModal(){
 function closeDeliveryModal(){ document.getElementById("deliveryModal").style.display = "none"; }
 function openCart(){ updateCart(); document.getElementById("cartModal").style.display = "block"; }
 function closeCart(){ document.getElementById("cartModal").style.display = "none"; }
-function openOrderForm(){ if(cart.length===0){alert("Cart khali hai!"); return;} closeCart(); document.getElementById("orderModal").style.display="block"; }
+function openOrderForm(){ 
+    if(cart.length===0){alert("Cart khali hai!"); return;} 
+    closeCart(); 
+    calculateDeliveryTimeSlot();
+    document.getElementById("orderModal").style.display="block"; 
+}
 function closeOrderForm(){ document.getElementById("orderModal").style.display = "none"; }
 function closeAdminLogin(){ document.getElementById("adminLoginModal").style.display = "none"; }
 function closeAdminDashboard(){ document.getElementById("adminDashboardModal").style.display = "none"; }
@@ -384,6 +453,7 @@ function verifyDeliveryPartner() {
         document.getElementById("deliveryAuthSection").style.display = "none";
         document.getElementById("deliveryContentSection").style.display = "block";
         loadDeliveryOrders();
+        showNotification("Delivery Agent Access Granted");
     } else {
         alert("❌ Galat Delivery PIN!");
     }
@@ -392,7 +462,8 @@ function verifyDeliveryPartner() {
 function activateVipSubscription() {
     isVipMember = true;
     document.getElementById("vipBadge").style.display = "inline-block";
-    alert(`🎉 VIP Subscription (${selectedVipDuration}) Activated! Aapko ab Express Priority Same-Day Delivery aur ₹250+ par Free Delivery milegi.`);
+    showNotification(`VIP Subscription (${selectedVipDuration}) Activated!`);
+    alert(`🎉 VIP Subscription (${selectedVipDuration}) Activated! Unlimited Free Delivery & Express Priority Same-Day Delivery Active.`);
     closeSubModal();
     updateCart();
 }
@@ -463,6 +534,7 @@ async function customerSignup(){
     if(!email || !password){ alert("Email aur Password dalein!"); return; }
     const { error } = await supabaseClient.auth.signUp({ email, password });
     if(error){ alert("Signup Error: " + error.message); return; }
+    showNotification("Customer Signup Successful!");
     alert("Signup Successful! Ab Login Karein.");
 }
 
@@ -472,7 +544,7 @@ async function customerLogin(){
     if(!email || !password){ alert("Email aur Password dalein!"); return; }
     const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
     if(error){ alert("Login Error: " + error.message); return; }
-    alert("Login Successful! ✅");
+    showNotification("Welcome back! Login Successful.");
     closeCustomerAuth();
     updateAuthUI();
 }
@@ -494,7 +566,7 @@ async function registerB2BUser() {
             user_id: data.user.id, business_name, owner_name, mobile, license_number, business_type: 'Restaurant'
         }]);
     }
-    alert("✅ Business Registered!");
+    showNotification("B2B Business Registered!");
     closeB2BAuth();
     updateAuthUI();
 }
@@ -504,7 +576,7 @@ async function userLogout() {
     isVipMember = false;
     document.getElementById("vipBadge").style.display = "none";
     updateAuthUI();
-    alert("Logged out successfully.");
+    showNotification("Logged out successfully.");
 }
 
 async function loadDynamicProducts() {
@@ -547,14 +619,13 @@ function addToCart(name, price) {
     let item = cart.find(p => p.name === name);
     if (item) { item.qty++; } else { cart.push({ name, price, qty: 1 }); }
     updateCart();
-    alert(name + " Cart me add ho gaya!");
+    showNotification(name + " added to Cart!");
 }
 
 function updateCart(){
     let count = 0, subtotal = 0;
     cart.forEach(item => { count += item.qty; subtotal += item.price * item.qty; });
     
-    // FREE Delivery Rules: VIP Members OR orders ₹250 & above
     let deliveryFee = 30;
     if ((isVipMember && subtotal >= 250) || subtotal >= 250 || subtotal === 0) {
         deliveryFee = 0;
@@ -593,8 +664,8 @@ async function sendOrder(){
 
     if(!name || !mobile || !house || !street || !pincode){ alert("Sahi name, mobile aur pura address bharein!"); return; }
 
-    const vipPriorityTag = isVipMember ? " [⚡ VIP Priority Express Delivery]" : "";
-    const fullAddress = `[${addrType}] ${house}, ${street}, Landmark: ${landmark || 'N/A'}, Pincode: ${pincode}${vipPriorityTag}`;
+    const slotText = calculateDeliveryTimeSlot();
+    const fullAddress = `[${addrType}] ${house}, ${street}, Landmark: ${landmark || 'N/A'}, Pincode: ${pincode} | Slot: ${slotText}`;
     const orderId = "JAL" + Date.now();
     let subtotal = 0;
     cart.forEach(item => { subtotal += item.price * item.qty; });
@@ -608,7 +679,8 @@ async function sendOrder(){
     }]);
 
     if(error){ alert("Order Error: " + error.message); return; }
-    alert("✅ Order Successfully Placed!\nOrder ID: " + orderId);
+    showNotification("Order Confirmed! ID: " + orderId);
+    alert("✅ Order Placed Successfully!\n\n" + slotText);
     cart = [];
     updateCart();
     closeOrderForm();
@@ -625,7 +697,8 @@ async function openMyOrders() {
 
     list.innerHTML = data.map(o => `
         <div style="border:1px solid #ccc; padding:10px; margin:6px 0; border-radius:6px;">
-            <b>Order #${o.order_id}</b><br>Total: ₹${o.total} | Status: <b style="color:#0284c7;">${o.status}</b>
+            <b>Order #${o.order_id}</b><br>
+            Total: ₹${o.total} | Status: <b style="color:#0284c7;">${o.status}</b>
         </div>
     `).join('');
 }
@@ -647,6 +720,7 @@ async function adminLogin(){
     updateAuthUI();
     document.getElementById("adminDashboardModal").style.display = "block";
     switchAdminTab('orders');
+    showNotification("Admin Panel Unlocked");
 }
 
 async function loadAdminOrders(type) {
@@ -655,32 +729,35 @@ async function loadAdminOrders(type) {
     
     if(!data || data.length === 0){ list.innerHTML = "<p>Koi order nahi hai.</p>"; return; }
 
-    let filtered = data;
-    if(type === 'cancelled') {
-        filtered = data.filter(o => o.status === 'Cancelled');
-    } else {
-        filtered = data.filter(o => o.status !== 'Cancelled');
-    }
-
+    let filtered = data.filter(o => type === 'cancelled' ? o.status === 'Cancelled' : o.status !== 'Cancelled');
     if(filtered.length === 0){ list.innerHTML = `<p>Koi ${type} order nahi hai.</p>`; return; }
 
-    list.innerHTML = filtered.map(o => `
-        <div style="border:1px solid #ccc; padding:10px; margin:6px 0; background:#fff; border-radius:6px;">
-            <p><b>#${o.order_id}</b> - ${o.customer_name} (${o.mobile})</p>
-            <p style="font-size:13px;">Address: ${o.address}</p>
-            <p>Total: <b>₹${o.total}</b> | Status: <b>${o.status}</b></p>
-            <select onchange="updateOrderStatus('${o.order_id}', this.value)" style="margin-top:5px; padding:4px;">
-                <option value="Confirmed" ${o.status==='Confirmed'?'selected':''}>Confirmed</option>
-                <option value="Out for Delivery" ${o.status==='Out for Delivery'?'selected':''}>Out for Delivery</option>
-                <option value="Delivered" ${o.status==='Delivered'?'selected':''}>Delivered</option>
-                <option value="Cancelled" ${o.status==='Cancelled'?'selected':''}>Cancelled</option>
-            </select>
-        </div>
-    `).join('');
+    list.innerHTML = filtered.map(o => {
+        let comm = Math.round(o.total * 0.05); // 5% Jalvigo Platform Commission
+        let shopPayout = o.total - comm; // 95% Direct Shopkeeper / Dealer Payout
+        return `
+            <div style="border:1px solid #ccc; padding:10px; margin:6px 0; background:#fff; border-radius:6px;">
+                <p><b>#${o.order_id}</b> - ${o.customer_name} (${o.mobile})</p>
+                <p style="font-size:12px; color:#555;">${o.address}</p>
+                <p>Total Order: <b>₹${o.total}</b></p>
+                <p style="font-size:13px; color:#16a34a; font-weight:bold;">
+                    💰 Dealer/Shop Payout (95%): ₹${shopPayout} | Jalvigo Commission (5%): ₹${comm}
+                </p>
+                <p>Status: <b>${o.status}</b></p>
+                <select onchange="updateOrderStatus('${o.order_id}', this.value)" style="margin-top:5px; padding:4px;">
+                    <option value="Confirmed" ${o.status==='Confirmed'?'selected':''}>Confirmed</option>
+                    <option value="Out for Delivery" ${o.status==='Out for Delivery'?'selected':''}>Out for Delivery</option>
+                    <option value="Delivered" ${o.status==='Delivered'?'selected':''}>Delivered</option>
+                    <option value="Cancelled" ${o.status==='Cancelled'?'selected':''}>Cancelled</option>
+                </select>
+            </div>
+        `;
+    }).join('');
 }
 
 async function updateOrderStatus(orderId, newStatus) {
     await supabaseClient.from("orders").update({ status: newStatus }).eq("order_id", orderId);
+    showNotification("Order status changed to " + newStatus);
     alert("✅ Order Status Updated!");
     loadAdminOrders('active');
 }
@@ -694,13 +771,10 @@ async function addNewProduct() {
     if(!name || !price){ alert("Product Name aur Selling Price bharein!"); return; }
 
     await supabaseClient.from("products").insert([{ 
-        name, 
-        mrp: mrp ? Number(mrp) : null,
-        price: Number(price), 
-        emoji, 
-        created_at: new Date().toISOString() 
+        name, mrp: mrp ? Number(mrp) : null, price: Number(price), emoji, created_at: new Date().toISOString() 
     }]);
 
+    showNotification("New Product Published!");
     alert("✅ Product Successfully Published!");
     document.getElementById("newProdName").value = "";
     document.getElementById("newProdMrp").value = "";
@@ -715,7 +789,7 @@ async function loadManageProductsList() {
     if(!data || data.length === 0){ list.innerHTML = "<p>Koi product nahi hai.</p>"; return; }
 
     list.innerHTML = data.map(p => `
-        <div style="display:flex; justify-style:space-between; justify-content:space-between; align-items:center; border:1px solid #ccc; padding:8px; margin:5px 0; background:#fff; border-radius:6px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; border:1px solid #ccc; padding:8px; margin:5px 0; background:#fff; border-radius:6px;">
             <div>
                 <b>${p.emoji || '💧'} ${p.name}</b><br>
                 Price: ₹${p.price} ${p.mrp ? `<span style="text-decoration:line-through; color:#888; font-size:12px;">(MRP: ₹${p.mrp})</span>` : ''}
@@ -728,7 +802,7 @@ async function loadManageProductsList() {
 async function deleteProduct(id) {
     if(!confirm("Kya aap is product ko remove karna chahte hain?")) return;
     await supabaseClient.from("products").delete().eq("id", id);
-    alert("✅ Product Removed!");
+    showNotification("Product deleted successfully");
     loadManageProductsList();
     loadDynamicProducts();
 }
@@ -753,7 +827,7 @@ async function loadDeliveryOrders() {
 
 async function updateDeliveryStatus(orderId, status) {
     await supabaseClient.from("orders").update({ status }).eq("order_id", orderId);
-    alert("✅ Delivery Status Updated!");
+    showNotification("Delivery Status: " + status);
     loadDeliveryOrders();
 }
 
@@ -761,7 +835,7 @@ async function adminLogout() {
     await supabaseClient.auth.signOut();
     closeAdminDashboard();
     updateAuthUI();
-    alert("Admin Logged Out.");
+    showNotification("Admin Logged Out.");
 }
 
 updateAuthUI();
