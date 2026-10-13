@@ -195,7 +195,58 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
   </div>
 </div>
 
-<!-- ADMIN LOGIN MODAL (WITH PASSWORD MASKING & TOGGLE EYE ICON) -->
+<!-- CUSTOMER/USER AUTH MODAL (MOBILE OR EMAIL LOGIN WITH FORGOT PASSWORD) -->
+<div class="modal" id="customerAuthModal">
+  <div class="modal-box">
+    <span class="close" onclick="closeModal('customerAuthModal')">×</span>
+    <h2>👤 Login / Signup</h2>
+    <p style="font-size:12px;color:#64748b;margin-bottom:12px;">Apna Mobile Number ya Email ID aur Password use karein.</p>
+    
+    <div class="form-group">
+        <label>Mobile Number OR Email ID</label>
+        <input type="text" id="customerAuthInput" placeholder="Enter Mobile Number (10 digit) or Email">
+    </div>
+    
+    <div class="form-group">
+        <label>Password</label>
+        <div class="password-box">
+            <input type="password" id="customerPassword" placeholder="Enter secret password">
+            <button type="button" class="eye-btn" onclick="togglePasswordVisibility('customerPassword', this)">👁️</button>
+        </div>
+    </div>
+
+    <div style="text-align:right;margin-bottom:12px;">
+        <a href="javascript:void(0)" onclick="openForgotPasswordModal()" style="font-size:12px;color:#0284c7;font-weight:bold;text-decoration:none;">Forgot Password?</a>
+    </div>
+
+    <button class="primary-btn" onclick="customerLogin()" style="background:#16a34a;margin-bottom:8px;">Login Now</button>
+    <button class="primary-btn" onclick="customerSignup()" style="background:#0284c7;">Create New Account (Signup)</button>
+  </div>
+</div>
+
+<!-- FORGOT PASSWORD MODAL -->
+<div class="modal" id="forgotPasswordModal">
+  <div class="modal-box">
+    <span class="close" onclick="closeModal('forgotPasswordModal')">×</span>
+    <h2>🔑 Forgot / Reset Password</h2>
+    <p style="font-size:12px;color:#64748b;margin-bottom:12px;">Enter your registered Mobile Number or Email to set a new password.</p>
+    
+    <div class="form-group">
+        <label>Mobile Number or Email</label>
+        <input type="text" id="forgotAuthInput" placeholder="Registered Mobile or Email">
+    </div>
+    <div class="form-group">
+        <label>New Password</label>
+        <div class="password-box">
+            <input type="password" id="forgotNewPassword" placeholder="Enter New Password">
+            <button type="button" class="eye-btn" onclick="togglePasswordVisibility('forgotNewPassword', this)">👁️</button>
+        </div>
+    </div>
+    <button class="primary-btn" onclick="executePasswordReset()" style="background:#ca8a04;margin-top:10px;">Reset Password Now</button>
+  </div>
+</div>
+
+<!-- ADMIN LOGIN MODAL -->
 <div class="modal" id="adminAuthModal">
   <div class="modal-box">
     <span class="close" onclick="closeModal('adminAuthModal')">×</span>
@@ -288,43 +339,25 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 </div>
 </div>
 
-<!-- CUSTOMER AUTH MODAL (WITH MASKED PASSWORD & EYE TOGGLE) -->
-<div class="modal" id="customerAuthModal">
-  <div class="modal-box">
-    <span class="close" onclick="closeModal('customerAuthModal')">×</span>
-    <h2>👤 Customer Login / Signup</h2>
-    <div class="form-group"><label>Email</label><input type="email" id="customerEmail" placeholder="customer@email.com"></div>
-    <div class="form-group">
-        <label>Password</label>
-        <div class="password-box">
-            <input type="password" id="customerPassword" placeholder="Password">
-            <button type="button" class="eye-btn" onclick="togglePasswordVisibility('customerPassword', this)">👁️</button>
-        </div>
-    </div>
-    <button class="primary-btn" onclick="customerSignup()" style="margin-bottom:8px;">New Customer Signup</button>
-    <button class="primary-btn" onclick="customerLogin()" style="background:#16a34a;">Login</button>
-  </div>
-</div>
-
-<!-- B2B ADD YOUR SHOP MODAL (WITH OPTIONAL GST & AUTO ADDRESS/PIN) -->
+<!-- B2B ADD YOUR SHOP MODAL -->
 <div class="modal" id="b2bAuthModal">
   <div class="modal-box">
     <span class="close" onclick="closeModal('b2bAuthModal')">×</span>
     <h2>🏪 Add & Register Your Shop</h2>
     <div class="form-group"><label>Shop / Business Name</label><input type="text" id="b2bBizName" placeholder="e.g. Laxmi Water Supplier"></div>
     <div class="form-group"><label>Owner Full Name</label><input type="text" id="b2bOwnerName" placeholder="Owner Name"></div>
-    <div class="form-group"><label>Mobile Number</label><input type="tel" id="b2bMobile" placeholder="10 Digit Mobile"></div>
+    <div class="form-group"><label>Mobile Number (For Login)</label><input type="tel" id="b2bMobile" placeholder="10 Digit Mobile"></div>
     <div class="form-group"><label>Full Shop Address & Area</label><input type="text" id="b2bAddress" placeholder="Street, Locality, City"></div>
     <div class="form-group"><label>Pincode</label><input type="text" id="b2bPincode" placeholder="6-digit Pincode"></div>
     <div class="form-group"><label>GST Number (Optional)</label><input type="text" id="b2bGst" placeholder="Optional GSTIN"></div>
     <div class="form-group">
-        <label>Password</label>
+        <label>Password (Secret Key for Login)</label>
         <div class="password-box">
             <input type="password" id="b2bPassword" placeholder="Create Password">
             <button type="button" class="eye-btn" onclick="togglePasswordVisibility('b2bPassword', this)">👁️</button>
         </div>
     </div>
-    <div class="form-group"><label>Email</label><input type="email" id="b2bEmail" placeholder="Shop Email"></div>
+    <div class="form-group"><label>Email (Optional)</label><input type="email" id="b2bEmail" placeholder="Shop Email (Optional)"></div>
     <button class="primary-btn" onclick="registerB2BUser()" style="background:#059669;margin-top:10px;">Register My Shop Now</button>
   </div>
 </div>
@@ -395,6 +428,15 @@ const SHOP_LAT = 28.6139;
 const SHOP_LNG = 77.2090; 
 const ADMIN_EMAIL = "balramnnagar0077@gmail.com";
 const DELIVERY_AGENT_PIN = "1234";
+
+// HELPER TO CONVERT MOBILE OR INPUT TO SUPABASE COMPATIBLE EMAIL
+function formatAuthEmail(inputVal) {
+    const cleanVal = inputVal.trim();
+    if (/^\d{10}$/.test(cleanVal)) {
+        return `user_${cleanVal}@jalvigo.app`;
+    }
+    return cleanVal;
+}
 
 // PASSWORD VISIBILITY TOGGLE (EYE ICON)
 function togglePasswordVisibility(fieldId, btnElem) {
@@ -518,6 +560,11 @@ function openCart(){ updateCart(); document.getElementById("cartModal").style.di
 function openCustomerAuth(){ closeModal('accountModal'); document.getElementById("customerAuthModal").style.display="block"; }
 function openB2BAuth(){ closeModal('accountModal'); document.getElementById("b2bAuthModal").style.display="block"; }
 
+function openForgotPasswordModal() {
+    closeModal('customerAuthModal');
+    document.getElementById("forgotPasswordModal").style.display = "block";
+}
+
 function openDeliveryModal() {
     closeModal('accountModal');
     document.getElementById("deliveryModal").style.display = "block";
@@ -573,7 +620,7 @@ async function handleAccountClick() {
     if(user){
         document.getElementById("authButtonsSection").style.display = "none";
         document.getElementById("loggedInSection").style.display = "block";
-        document.getElementById("userEmailText").innerText = user.email;
+        document.getElementById("userEmailText").innerText = user.email.includes("@jalvigo.app") ? `Mobile: ${user.email.split('@')[0].replace('user_','')}` : user.email;
 
         if(user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
             document.getElementById("adminDashboardBtn").style.display = "block";
@@ -595,7 +642,7 @@ function openAdminDashboardModalDirect() {
     switchAdminTab('orders');
 }
 
-// FIXED MY ORDERS VIEW FOR CUSTOMERS
+// MY ORDERS VIEW
 async function openMyOrders() {
     closeModal('accountModal');
     const { data: { user } } = await supabaseClient.auth.getUser();
@@ -744,26 +791,49 @@ async function sendOrder(){
     cart = []; updateCart(); closeModal('orderModal');
 }
 
+// DUAL LOGIN/SIGNUP LOGIC (MOBILE OR EMAIL WITH CUSTOM PASSWORD)
 async function customerSignup(){
-    const email = document.getElementById("customerEmail").value;
+    const rawInput = document.getElementById("customerAuthInput").value;
     const password = document.getElementById("customerPassword").value;
-    if(!email || !password) { alert("Enter email and password!"); return; }
-    await supabaseClient.auth.signUp({ email, password });
-    triggerBothNotifications("Jalvigo Account", "Customer Account Created Successfully!");
-    alert("✅ Signup Successful! You can now login.");
+    if(!rawInput || !password) { alert("Enter Mobile Number or Email and Password!"); return; }
+    
+    const emailFormatted = formatAuthEmail(rawInput);
+
+    const { data, error } = await supabaseClient.auth.signUp({ email: emailFormatted, password: password });
+    if(error) { alert("Signup Error: " + error.message); return; }
+
+    triggerBothNotifications("Jalvigo Account", "Account Created Successfully! You can now login.");
+    alert("✅ Account Created Successfully! Please click Login to continue.");
 }
 
 async function customerLogin(){
-    const email = document.getElementById("customerEmail").value;
+    const rawInput = document.getElementById("customerAuthInput").value;
     const password = document.getElementById("customerPassword").value;
-    if(!email || !password) { alert("Enter email and password!"); return; }
+    if(!rawInput || !password) { alert("Enter Mobile Number or Email and Password!"); return; }
     
-    const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-    if(error) { alert("Login Error: " + error.message); return; }
+    const emailFormatted = formatAuthEmail(rawInput);
+
+    const { error } = await supabaseClient.auth.signInWithPassword({ email: emailFormatted, password: password });
+    if(error) { alert("Login Error: Password galat hai ya account nahi bana hai!"); return; }
 
     triggerBothNotifications("Welcome Back", "Logged in successfully!");
     closeModal('customerAuthModal');
     handleAccountClick();
+}
+
+async function executePasswordReset() {
+    const rawInput = document.getElementById("forgotAuthInput").value.trim();
+    const newPassword = document.getElementById("forgotNewPassword").value.trim();
+
+    if(!rawInput || !newPassword) { alert("Please enter Mobile/Email and New Password!"); return; }
+
+    const emailFormatted = formatAuthEmail(rawInput);
+
+    const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
+    showNotification("Password Reset Successful! Try login now.");
+    alert("✅ Password updated successfully! Log in with your new password.");
+    closeModal('forgotPasswordModal');
+    openCustomerAuth();
 }
 
 // B2B SHOP REGISTRATION WITH OPTIONAL GST & ADDRESS/PINCODE
@@ -774,15 +844,17 @@ async function registerB2BUser(){
     const address = document.getElementById("b2bAddress").value.trim();
     const pincode = document.getElementById("b2bPincode").value.trim();
     const gst_number = document.getElementById("b2bGst").value.trim() || "Not Provided";
-    const email = document.getElementById("b2bEmail").value.trim();
     const password = document.getElementById("b2bPassword").value.trim();
+    const emailRaw = document.getElementById("b2bEmail").value.trim() || mobile;
 
-    if(!business_name || !owner_name || !mobile || !address || !pincode || !email || !password){ 
+    if(!business_name || !owner_name || !mobile || !address || !pincode || !password){ 
         alert("Please fill all required shop details!"); 
         return; 
     }
 
-    const { data, error } = await supabaseClient.auth.signUp({ email, password });
+    const formattedEmail = formatAuthEmail(emailRaw);
+
+    const { data, error } = await supabaseClient.auth.signUp({ email: formattedEmail, password: password });
     if(error) { alert("Registration Error: " + error.message); return; }
 
     if(data.user){
@@ -797,7 +869,7 @@ async function registerB2BUser(){
         }]);
     }
     triggerBothNotifications("Partner Registered", "Shop Registered on Jalvigo Network!");
-    alert("✅ Shop Registered Successfully!");
+    alert("✅ Shop Registered Successfully! You can now log in using your Mobile Number & Password.");
     closeModal('b2bAuthModal');
 }
 
