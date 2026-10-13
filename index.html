@@ -48,6 +48,10 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:70px;}
 .nav-icon{font-size:20px;margin-bottom:2px;}
 .badge-count{position:absolute;top:2px;right:calc(50% - 18px);background:#ef4444;color:white;font-size:10px;padding:2px 6px;border-radius:10px;font-weight:bold;}
 
+/* VIP PLAN BOX STYLES */
+.plan-btn-card{flex:1;padding:12px 6px;border:2px solid #eab308;border-radius:12px;background:#fff;cursor:pointer;text-align:center;transition:all 0.2s;}
+.plan-btn-card.active{background:#fef08a;border-color:#854d0e;transform:scale(1.02);}
+
 /* MODALS */
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:300;padding:15px;overflow:auto;}
 .modal-box{background:white;max-width:500px;margin:30px auto;padding:20px;border-radius:20px;box-shadow:0 10px 25px rgba(0,0,0,0.2);}
@@ -83,12 +87,13 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:70px;}
     <div class="cat-item" onclick="selectCategory('Wholesale')"><div class="cat-icon">📦</div> Bulk B2B</div>
 </div>
 
-<!-- BANNER -->
+<!-- BANNER CAROUSEL WITH ALL 3 PLANS HIGHLIGHT -->
 <div class="banner-container">
     <div class="promo-card">
-        <h3>👑 Jalvigo VIP Pass</h3>
-        <p>Unlimited FREE Express Delivery & Priority Slot!</p>
-        <button class="vip-btn" onclick="openSubModal()">Get VIP @ ₹99/mo</button>
+        <h3>👑 Jalvigo VIP Membership Pass</h3>
+        <p>Unlimited FREE Delivery & Priority Same-Day Slot!</p>
+        <p style="font-size:11px; margin-top:4px; opacity:0.95;">Choose Plan: <b>₹99</b> / 1 Mo • <b>₹499</b> / 6 Mo • <b>₹799</b> / 1 Yr</p>
+        <button class="vip-btn" onclick="openSubModal()">View Plans & Join VIP</button>
     </div>
 </div>
 
@@ -100,7 +105,7 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:70px;}
     <p style="grid-column:1/-1;text-align:center;padding:20px;color:#64748b;">Loading products...</p>
 </div>
 
-<!-- BOTTOM NAV BAR (CORRECTED FLEXBOX) -->
+<!-- BOTTOM NAV BAR -->
 <div class="bottom-nav">
     <button class="nav-item" onclick="scrollToTop()"><span class="nav-icon">🏠</span> Home</button>
     <button class="nav-item" onclick="openNearbyModal()"><span class="nav-icon">📍</span> Stores</button>
@@ -111,7 +116,46 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:70px;}
     <button class="nav-item" onclick="handleAccountClick()"><span class="nav-icon">👤</span> Account</button>
 </div>
 
-<!-- MODALS -->
+<!-- VIP MODAL WITH ALL 3 PLANS DISPLAYED CLEARLY -->
+<div class="modal" id="subModal">
+  <div class="modal-box" style="text-align:center;">
+    <span class="close" onclick="closeModal('subModal')">×</span>
+    <h2 style="color:#854d0e;">👑 Choose Jalvigo VIP Pass Plan</h2>
+    <p style="font-size:12px;color:#555;margin:6px 0;">Select a plan below to view UPI QR code</p>
+    
+    <!-- 3 PLANS SELECTION CARDS -->
+    <div style="display:flex;gap:8px;margin:15px 0;">
+        <div class="plan-btn-card active" id="vipPlanCard1" onclick="selectVipPlan(99, '1 Month', 'vipPlanCard1')">
+            <div style="font-weight:800;color:#0284c7;font-size:16px;">₹99</div>
+            <div style="font-size:11px;font-weight:bold;margin-top:2px;">1 Month</div>
+            <div style="font-size:9px;color:#64748b;">₹99/mo</div>
+        </div>
+        <div class="plan-btn-card" id="vipPlanCard2" onclick="selectVipPlan(499, '6 Months', 'vipPlanCard2')">
+            <div style="font-weight:800;color:#0284c7;font-size:16px;">₹499</div>
+            <div style="font-size:11px;font-weight:bold;margin-top:2px;">6 Months</div>
+            <div style="font-size:9px;color:#16a34a;font-weight:bold;">Save 16%</div>
+        </div>
+        <div class="plan-btn-card" id="vipPlanCard3" onclick="selectVipPlan(799, '12 Months', 'vipPlanCard3')">
+            <div style="font-weight:800;color:#0284c7;font-size:16px;">₹799</div>
+            <div style="font-size:11px;font-weight:bold;margin-top:2px;">1 Year</div>
+            <div style="font-size:9px;color:#16a34a;font-weight:bold;">Save 33%</div>
+        </div>
+    </div>
+
+    <div style="background:#fef08a;padding:12px;border-radius:12px;margin-bottom:12px;border:1px solid #eab308;">
+        <p style="font-size:13px;font-weight:bold;color:#854d0e;">
+            Selected Plan: <span id="selectedVipText">₹99 (1 Month Access)</span>
+        </p>
+        <small style="color:#555;font-size:11px;">Scan & Pay to activate Express Priority Delivery</small>
+    </div>
+
+    <img id="vipUpiQr" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=balramnnagar@okaxis%26pn=Jalvigo%20VIP%26am=99%26cu=INR" alt="UPI QR" style="width:140px;height:140px;border-radius:10px;border:2px solid #eab308;">
+    <p style="font-size:12px;margin-top:4px;">UPI ID: <b>balramnnagar@okaxis</b></p>
+    
+    <button class="primary-btn" onclick="activateVipSubscription()" style="margin-top:15px;background:#eab308;color:#000;">I Have Paid - Activate VIP Access</button>
+  </div>
+</div>
+
 <!-- ACCOUNT MODAL -->
 <div class="modal" id="accountModal">
   <div class="modal-box">
@@ -182,17 +226,6 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:70px;}
 <div style="font-size:18px;font-weight:bold;margin:10px 0;">Total: ₹<span id="cartTotal">0</span></div>
 <button class="primary-btn" onclick="openOrderForm()">Checkout Now</button>
 </div>
-</div>
-
-<!-- VIP MODAL -->
-<div class="modal" id="subModal">
-  <div class="modal-box" style="text-align:center;">
-    <span class="close" onclick="closeModal('subModal')">×</span>
-    <h2 style="color:#854d0e;">👑 Jalvigo VIP Pass</h2>
-    <p style="font-size:12px;color:#555;margin:6px 0;">Scan QR to Pay</p>
-    <img id="vipUpiQr" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=balramnnagar@okaxis%26pn=Jalvigo%20VIP%26am=99%26cu=INR" alt="UPI QR" style="width:130px;height:130px;border-radius:8px;">
-    <button class="primary-btn" onclick="activateVipSubscription()" style="margin-top:15px;background:#eab308;color:#000;">I Have Paid - Activate VIP</button>
-  </div>
 </div>
 
 <!-- CUSTOMER AUTH MODAL -->
@@ -269,6 +302,8 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_
 let cart = [];
 let allProductsList = [];
 let isVipMember = false;
+let selectedVipAmount = 99;
+let selectedVipDuration = "1 Month";
 let userLat = null;
 let userLng = null;
 let calculatedDistanceKM = 1.2;
@@ -285,6 +320,17 @@ function showNotification(msg){
     setTimeout(() => { toast.style.display = "none"; }, 3000);
 }
 function scrollToTop(){ window.scrollTo({top:0, behavior:'smooth'}); }
+
+function selectVipPlan(amt, dur, cardId) {
+    selectedVipAmount = amt;
+    selectedVipDuration = dur;
+
+    document.querySelectorAll('.plan-btn-card').forEach(c => c.classList.remove('active'));
+    document.getElementById(cardId).classList.add('active');
+
+    document.getElementById("selectedVipText").innerText = `₹${amt} (${dur} Access)`;
+    document.getElementById("vipUpiQr").src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=balramnnagar@okaxis%26pn=Jalvigo%20VIP%26am=${amt}%26cu=INR`;
+}
 
 function getGPSLocation() {
     if (navigator.geolocation) {
@@ -373,7 +419,7 @@ async function renderPublicNearbyStores() {
 
 function activateVipSubscription(){
     isVipMember = true;
-    showNotification("VIP Activated!");
+    showNotification(`VIP (${selectedVipDuration}) Activated!`);
     closeModal('subModal');
     updateCart();
 }
