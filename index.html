@@ -63,7 +63,7 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
         <button class="admin-btn" id="subBtn" onclick="openSubModal()" style="background:#eab308; color:#000;">👑 VIP Pass</button>
         <button class="admin-btn" id="nearbyBtn" onclick="openNearbyModal()" style="background:#0ea5e9;">📍 Nearby Stores</button>
         <button class="admin-btn" id="myOrdersBtn" onclick="openMyOrders()" style="display:none; background:#0284c7;">📦 My Orders</button>
-        <button class="admin-btn" id="b2bLoginBtn" onclick="openB2BAuth()" style="background:#059669;">🏢 B2B Login</button>
+        <button class="admin-btn" id="b2bLoginBtn" onclick="openB2BAuth()" style="background:#059669;">🏪 Shopkeeper / Dealer Login</button>
         <button class="admin-btn" id="deliveryBtn" onclick="openDeliveryModal()" style="background:#16a34a;">🚚 Delivery Partner</button>
         <button class="admin-btn" id="adminMainBtn" onclick="handleAdminButtonClick()" style="background:#082f49;">🔐 Admin Panel</button>
         <button class="admin-btn" id="userLogoutBtn" onclick="userLogout()" style="display:none; background:#dc2626;">🚪 Logout</button>
@@ -106,11 +106,11 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
     </div>
 </section>
 
-<!-- NEARBY STORES MODAL (PUBLIC VIEW - SENSITIVE DATA HIDDEN) -->
+<!-- NEARBY STORES MODAL -->
 <div class="modal" id="nearbyModal">
   <div class="modal-box">
     <span class="close" onclick="closeNearbyModal()">×</span>
-    <h2>📍 Nearby Verified Jalvigo Dealers</h2>
+    <h2>📍 Nearby Verified Stores & Dealers</h2>
     <div class="form-group">
         <label>Select Distance Radius</label>
         <select id="distanceSelect" onchange="renderPublicNearbyStores()">
@@ -171,22 +171,22 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
   </div>
 </div>
 
-<!-- B2B AUTH MODAL (REGISTRATION FORM) -->
+<!-- SHOPKEEPER & DEALER REGISTRATION MODAL -->
 <div class="modal" id="b2bAuthModal">
   <div class="modal-box">
     <span class="close" onclick="closeB2BAuth()">×</span>
-    <h2>🏢 Restaurant & Shop Registration</h2>
-    <p style="font-size:12px; color:#555; margin-bottom:10px;">Register your shop to start bulk orders & supply.</p>
-    <div class="form-group"><label>Shop / Business Name</label><input type="text" id="b2bBizName" placeholder="e.g. Royal Water Supplier"></div>
-    <div class="form-group"><label>Owner / Manager Name</label><input type="text" id="b2bOwnerName" placeholder="Owner Name"></div>
-    <div class="form-group"><label>Mobile Number</label><input type="tel" id="b2bMobile" placeholder="10-digit Mobile"></div>
-    <div class="form-group"><label>FSSAI / GST License No.</label><input type="text" id="b2bLicense" placeholder="License Number"></div>
-    <div class="form-group"><label>Full Shop Address</label><textarea id="b2bAddress" placeholder="Full Address with Pincode"></textarea></div>
-    <div class="form-group"><label>Email & Password</label>
+    <h2>🏪 Shopkeeper & Dealer Registration</h2>
+    <p style="font-size:12px; color:#555; margin-bottom:10px;">Apni Dukan, Water Plant, ya Agency ko Jalvigo me jodhein.</p>
+    <div class="form-group"><label>Shop / Business / Agency Name</label><input type="text" id="b2bBizName" placeholder="e.g. Royal Water Supplier / City Kirana"></div>
+    <div class="form-group"><label>Dukandar / Owner Ka Naam</label><input type="text" id="b2bOwnerName" placeholder="Owner Name"></div>
+    <div class="form-group"><label>Mobile Number</label><input type="tel" id="b2bMobile" placeholder="10-digit Mobile Number"></div>
+    <div class="form-group"><label>FSSAI / GST / License No. (If Available)</label><input type="text" id="b2bLicense" placeholder="License Number (Optional)"></div>
+    <div class="form-group"><label>Dukan Ka Pura Address</label><textarea id="b2bAddress" placeholder="Full Address with Landmark & Pincode"></textarea></div>
+    <div class="form-group"><label>Login Email & Password</label>
         <input type="email" id="b2bEmail" placeholder="Email" style="margin-bottom:6px;">
         <input type="password" id="b2bPassword" placeholder="Password">
     </div>
-    <button class="primary-btn" onclick="registerB2BUser()" style="width:100%; background:#059669;">📝 Register Business Profile</button>
+    <button class="primary-btn" onclick="registerB2BUser()" style="width:100%; background:#059669;">📝 Register My Shop / Business</button>
   </div>
 </div>
 
@@ -287,7 +287,7 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
 </div>
 </div>
 
-<!-- ADMIN DASHBOARD MODAL (WITH SHOPKEEPERS DATA TAB) -->
+<!-- ADMIN DASHBOARD MODAL -->
 <div class="modal" id="adminDashboardModal">
 <div class="modal-box" style="max-width:700px;">
 <span class="close" onclick="closeAdminDashboard()">×</span>
@@ -295,7 +295,7 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
 
 <div style="margin:12px 0;">
     <button class="tab-btn active" id="tabOrdersBtn" onclick="switchAdminTab('orders')">📦 Manage Orders</button>
-    <button class="tab-btn" id="tabShopsBtn" onclick="switchAdminTab('shops')">🏢 B2B Shops & Dealers</button>
+    <button class="tab-btn" id="tabShopsBtn" onclick="switchAdminTab('shops')">🏪 Registered Shopkeepers & Dealers</button>
     <button class="tab-btn" id="tabCancelledBtn" onclick="switchAdminTab('cancelled')">❌ Cancelled Orders</button>
     <button class="tab-btn" id="tabAddProductBtn" onclick="switchAdminTab('addProduct')">➕ Add Product</button>
     <button class="tab-btn" id="tabRemoveProductBtn" onclick="switchAdminTab('removeProduct')">🗑️ Remove Product</button>
@@ -308,12 +308,12 @@ footer{background:#075985;color:white;text-align:center;padding:20px;margin-top:
     <div id="adminOrdersList"><p>Loading Orders...</p></div>
 </div>
 
-<!-- TAB 2: REGISTERED B2B SHOPS & DEALERS DETAILS (ADMIN ONLY VIEW) -->
+<!-- TAB 2: REGISTERED SHOPKEEPERS & DEALERS DETAILS -->
 <div id="adminShopsTabSection" class="dashboard-card" style="display:none;">
-    <h3 style="color:#059669;">🏢 Registered Shopkeepers & Complete Details</h3>
-    <p style="font-size:12px; color:#555; margin-bottom:10px;">Yeh sensitive data sirf aapko (Admin ko) dikhega.</p>
+    <h3 style="color:#059669;">🏪 Registered Shopkeepers & Complete Details</h3>
+    <p style="font-size:12px; color:#555; margin-bottom:10px;">Yeh confidential data sirf Admin Panel me dikhega.</p>
     <button class="primary-btn" onclick="loadAdminRegisteredShops()" style="margin-bottom:10px; background:#059669;">🔄 Refresh Shops List</button>
-    <div id="adminShopsList"><p>Loading registered shops...</p></div>
+    <div id="adminShopsList"><p>Loading registered shopkeepers...</p></div>
 </div>
 
 <!-- TAB 3: CANCELLED ORDERS -->
@@ -376,26 +376,29 @@ function showNotification(msg) {
 function openNearbyModal(){ document.getElementById("nearbyModal").style.display = "block"; renderPublicNearbyStores(); }
 function closeNearbyModal(){ document.getElementById("nearbyModal").style.display = "none"; }
 
-// PUBLIC VIEW: SHOWS ONLY SHOP NAME & DISTANCE (CONTACT DETAILS HIDDEN)
 async function renderPublicNearbyStores() {
     const dist = document.getElementById("distanceSelect").value;
     const list = document.getElementById("storesList");
-    
-    const { data: stores } = await supabaseClient.from("business_profiles").select("business_name");
+    list.innerHTML = "<p style='padding:10px;'>Stores search ho rahe hain...</p>";
 
-    if (!stores || stores.length === 0) {
+    const { data: stores, error } = await supabaseClient
+        .from("business_profiles")
+        .select("business_name, address");
+
+    if (error || !stores || stores.length === 0) {
         list.innerHTML = `
-            <div style="border:1px solid #0284c7; padding:10px; border-radius:8px; margin-top:10px; background:#f0f9ff;">
-                <b>💧 Balram Water Plant & Distributors</b><br>
-                Status: <span style="color:#16a34a; font-weight:bold;">● Verified Partner Store (~${dist} KM)</span>
+            <div style="padding:15px; text-align:center; color:#666;">
+                <p>Is radius (~${dist} KM) me abhi tak koi shopkeeper register nahi hua hai.</p>
+                <p style="font-size:12px; margin-top:5px; color:#0284c7;">Aap Shopkeeper Login par jaakar apni dukan list kar sakte hain!</p>
             </div>`;
         return;
     }
 
     list.innerHTML = stores.map(s => `
-        <div style="border:1px solid #0284c7; padding:10px; border-radius:8px; margin-top:10px; background:#f0f9ff;">
-            <b>💧 ${s.business_name}</b><br>
-            Status: <span style="color:#16a34a; font-weight:bold;">● Verified Partner Store (~${dist} KM)</span>
+        <div style="border:1px solid #0284c7; padding:12px; border-radius:8px; margin-top:10px; background:#f0f9ff;">
+            <b>🏪 ${s.business_name}</b><br>
+            <span style="font-size:13px; color:#555;">Area: ${s.address || 'Local Market'}</span><br>
+            Status: <span style="color:#16a34a; font-weight:bold;">● Verified Jalvigo Partner (~${dist} KM)</span>
         </div>
     `).join('');
 }
@@ -578,7 +581,6 @@ async function customerLogin(){
     updateAuthUI();
 }
 
-// B2B REGISTRATION (SAVING FULL SHOPKEEPER DATA IN DATABASE)
 async function registerB2BUser() {
     const business_name = document.getElementById("b2bBizName").value.trim();
     const owner_name = document.getElementById("b2bOwnerName").value.trim();
@@ -604,8 +606,8 @@ async function registerB2BUser() {
             business_type: 'Shop / Dealer'
         }]);
     }
-    showNotification("Business Registration Successful!");
-    alert("✅ Registration Successful! Aapki Shop details Admin Panel me save ho gayi hain.");
+    showNotification("Shop Registration Successful!");
+    alert("✅ Registration Successful! Aapki Shop Jalvigo Nearby Stores me add ho gayi hai.");
     closeB2BAuth();
     updateAuthUI();
 }
@@ -794,19 +796,18 @@ async function loadAdminOrders(type) {
     }).join('');
 }
 
-// ADMIN ONLY FUNCTION: FETCHES FULL DETAILS OF ALL REGISTERED B2B SHOPS & DEALERS
 async function loadAdminRegisteredShops() {
     const list = document.getElementById("adminShopsList");
     const { data: shops, error } = await supabaseClient.from("business_profiles").select("*");
 
     if (error || !shops || shops.length === 0) {
-        list.innerHTML = "<p>Abhi tak koi B2B Shop / Dealer register nahi hua hai.</p>";
+        list.innerHTML = "<p>Abhi tak koi Shopkeeper / Dealer register nahi hua hai.</p>";
         return;
     }
 
     list.innerHTML = shops.map(s => `
         <div style="border:1px solid #059669; padding:12px; margin:8px 0; background:#f0fdf4; border-radius:8px;">
-            <p style="font-size:16px; color:#065f46;"><b>🏬 Shop Name: ${s.business_name}</b></p>
+            <p style="font-size:16px; color:#065f46;"><b>🏪 Shop / Business: ${s.business_name}</b></p>
             <p>👤 <b>Owner Name:</b> ${s.owner_name || 'N/A'}</p>
             <p>📞 <b>Mobile Number:</b> <a href="tel:${s.mobile}" style="color:#0284c7; font-weight:bold;">${s.mobile || 'N/A'}</a></p>
             <p>📜 <b>FSSAI / GST License:</b> ${s.license_number || 'N/A'}</p>
