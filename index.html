@@ -73,6 +73,10 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 .form-group{margin:12px 0;}
 .form-group label{display:block;margin-bottom:5px;font-weight:600;font-size:13px;}
 .form-group input, .form-group select, .form-group textarea{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:10px;outline:none;}
+.password-box{position:relative;display:flex;align-items:center;}
+.password-box input{width:100%;padding-right:40px;}
+.eye-btn{position:absolute;right:10px;background:none;border:none;cursor:pointer;font-size:16px;}
+
 .primary-btn{background:#0284c7;color:white;border:none;padding:12px;width:100%;border-radius:12px;font-weight:bold;cursor:pointer;}
 
 #notificationToast{display:none;position:fixed;bottom:75px;left:50%;transform:translateX(-50%);background:#0f172a;color:white;padding:10px 20px;border-radius:25px;font-size:12px;font-weight:bold;z-index:400;}
@@ -169,30 +173,51 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
   </div>
 </div>
 
-<!-- ACCOUNT MODAL (WITH RESTORED DELIVERY PARTNER OPTION) -->
+<!-- ACCOUNT MODAL -->
 <div class="modal" id="accountModal">
   <div class="modal-box">
     <span class="close" onclick="closeModal('accountModal')">×</span>
     <h2>👤 Account Access</h2>
     
-    <!-- NOT LOGGED IN BUTTONS -->
     <div id="authButtonsSection" style="margin-top:15px;">
         <button class="primary-btn" onclick="openCustomerAuth()" style="margin-bottom:10px;">👤 Customer Login / Signup</button>
         <button class="primary-btn" onclick="openB2BAuth()" style="margin-bottom:10px;background:#059669;">🏪 Add / Register Your Shop</button>
         <button class="primary-btn" onclick="openDeliveryModal()" style="margin-bottom:10px;background:#16a34a;">🚚 Delivery Partner Portal</button>
-        <button class="primary-btn" onclick="handleAdminButtonClick()" style="background:#082f49;">🔐 Admin Login / Dashboard</button>
+        <button class="primary-btn" onclick="openAdminAuthModal()" style="background:#082f49;">🔐 Admin Login / Dashboard</button>
     </div>
 
-    <!-- LOGGED IN SECTION -->
     <div id="loggedInSection" style="display:none;margin-top:15px;">
         <p id="userEmailText" style="margin-bottom:12px;font-weight:bold;color:#0369a1;background:#e0f2fe;padding:8px;border-radius:8px;text-align:center;"></p>
-        
-        <!-- ADMIN SPECIFIC DASHBOARD BUTTON -->
         <button id="adminDashboardBtn" class="primary-btn" onclick="openAdminDashboardModalDirect()" style="display:none;margin-bottom:10px;background:#082f49;">🛠️ Open Admin Dashboard</button>
-        
         <button id="myOrdersBtn" class="primary-btn" onclick="openMyOrders()" style="margin-bottom:10px;">📦 My Orders</button>
         <button class="primary-btn" onclick="userLogout()" style="background:#dc2626;">🚪 Logout</button>
     </div>
+  </div>
+</div>
+
+<!-- ADMIN LOGIN MODAL (WITH PASSWORD MASKING & TOGGLE EYE ICON) -->
+<div class="modal" id="adminAuthModal">
+  <div class="modal-box">
+    <span class="close" onclick="closeModal('adminAuthModal')">×</span>
+    <h2>🔐 Admin Secure Login</h2>
+    <div class="form-group"><label>Admin Email</label><input type="email" id="adminEmailInput" placeholder="admin@jalvigo.com"></div>
+    <div class="form-group">
+        <label>Password</label>
+        <div class="password-box">
+            <input type="password" id="adminPasswordInput" placeholder="Enter password">
+            <button type="button" class="eye-btn" onclick="togglePasswordVisibility('adminPasswordInput', this)">👁️</button>
+        </div>
+    </div>
+    <button class="primary-btn" onclick="executeAdminLogin()" style="background:#082f49;margin-top:10px;">Login to Admin Panel</button>
+  </div>
+</div>
+
+<!-- MY ORDERS MODAL -->
+<div class="modal" id="myOrdersModal">
+  <div class="modal-box">
+    <span class="close" onclick="closeModal('myOrdersModal')">×</span>
+    <h2>📦 My Placed Orders</h2>
+    <div id="myOrdersListContainer" style="margin-top:10px;"><p>Loading your orders...</p></div>
   </div>
 </div>
 
@@ -263,19 +288,25 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 </div>
 </div>
 
-<!-- CUSTOMER AUTH MODAL -->
+<!-- CUSTOMER AUTH MODAL (WITH MASKED PASSWORD & EYE TOGGLE) -->
 <div class="modal" id="customerAuthModal">
   <div class="modal-box">
     <span class="close" onclick="closeModal('customerAuthModal')">×</span>
     <h2>👤 Customer Login / Signup</h2>
-    <div class="form-group"><label>Email</label><input type="email" id="customerEmail"></div>
-    <div class="form-group"><label>Password</label><input type="password" id="customerPassword"></div>
+    <div class="form-group"><label>Email</label><input type="email" id="customerEmail" placeholder="customer@email.com"></div>
+    <div class="form-group">
+        <label>Password</label>
+        <div class="password-box">
+            <input type="password" id="customerPassword" placeholder="Password">
+            <button type="button" class="eye-btn" onclick="togglePasswordVisibility('customerPassword', this)">👁️</button>
+        </div>
+    </div>
     <button class="primary-btn" onclick="customerSignup()" style="margin-bottom:8px;">New Customer Signup</button>
     <button class="primary-btn" onclick="customerLogin()" style="background:#16a34a;">Login</button>
   </div>
 </div>
 
-<!-- B2B ADD YOUR SHOP MODAL -->
+<!-- B2B ADD YOUR SHOP MODAL (WITH OPTIONAL GST & AUTO ADDRESS/PIN) -->
 <div class="modal" id="b2bAuthModal">
   <div class="modal-box">
     <span class="close" onclick="closeModal('b2bAuthModal')">×</span>
@@ -283,8 +314,18 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
     <div class="form-group"><label>Shop / Business Name</label><input type="text" id="b2bBizName" placeholder="e.g. Laxmi Water Supplier"></div>
     <div class="form-group"><label>Owner Full Name</label><input type="text" id="b2bOwnerName" placeholder="Owner Name"></div>
     <div class="form-group"><label>Mobile Number</label><input type="tel" id="b2bMobile" placeholder="10 Digit Mobile"></div>
-    <div class="form-group"><label>Email & Password</label><input type="email" id="b2bEmail" placeholder="Shop Email" style="margin-bottom:6px;"><input type="password" id="b2bPassword" placeholder="Create Password"></div>
-    <button class="primary-btn" onclick="registerB2BUser()" style="background:#059669;">Register My Shop Now</button>
+    <div class="form-group"><label>Full Shop Address & Area</label><input type="text" id="b2bAddress" placeholder="Street, Locality, City"></div>
+    <div class="form-group"><label>Pincode</label><input type="text" id="b2bPincode" placeholder="6-digit Pincode"></div>
+    <div class="form-group"><label>GST Number (Optional)</label><input type="text" id="b2bGst" placeholder="Optional GSTIN"></div>
+    <div class="form-group">
+        <label>Password</label>
+        <div class="password-box">
+            <input type="password" id="b2bPassword" placeholder="Create Password">
+            <button type="button" class="eye-btn" onclick="togglePasswordVisibility('b2bPassword', this)">👁️</button>
+        </div>
+    </div>
+    <div class="form-group"><label>Email</label><input type="email" id="b2bEmail" placeholder="Shop Email"></div>
+    <button class="primary-btn" onclick="registerB2BUser()" style="background:#059669;margin-top:10px;">Register My Shop Now</button>
   </div>
 </div>
 
@@ -355,6 +396,18 @@ const SHOP_LNG = 77.2090;
 const ADMIN_EMAIL = "balramnnagar0077@gmail.com";
 const DELIVERY_AGENT_PIN = "1234";
 
+// PASSWORD VISIBILITY TOGGLE (EYE ICON)
+function togglePasswordVisibility(fieldId, btnElem) {
+    const input = document.getElementById(fieldId);
+    if(input.type === "password") {
+        input.type = "text";
+        btnElem.innerText = "🙈";
+    } else {
+        input.type = "password";
+        btnElem.innerText = "👁️";
+    }
+}
+
 // SERVICE WORKER & PUSH NOTIFICATION REGISTRATION
 if ('serviceWorker' in navigator && 'Notification' in window) {
     navigator.serviceWorker.register('sw.js').then(reg => {
@@ -366,7 +419,7 @@ if ('serviceWorker' in navigator && 'Notification' in window) {
             setTimeout(() => {
                 Notification.requestPermission().then(permission => {
                     if (permission === 'granted') {
-                        sendNativePushNotification("Welcome to Jalvigo! 💧", "Notifications are active. You will get live order updates!");
+                        sendNativePushNotification("Welcome to Jalvigo! 💧", "Notifications are active.");
                     }
                 });
             }, 3000);
@@ -403,10 +456,8 @@ function scrollToTop(){ window.scrollTo({top:0, behavior:'smooth'}); }
 function selectVipPlan(amt, dur, cardId) {
     selectedVipAmount = amt;
     selectedVipDuration = dur;
-
     document.querySelectorAll('.plan-btn-card').forEach(c => c.classList.remove('active'));
     document.getElementById(cardId).classList.add('active');
-
     document.getElementById("selectedVipText").innerText = `₹${amt} (${dur} Access)`;
     document.getElementById("vipUpiQr").src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=balramnnagar@okaxis%26pn=Jalvigo%20VIP%26am=${amt}%26cu=INR`;
 }
@@ -472,6 +523,28 @@ function openDeliveryModal() {
     document.getElementById("deliveryModal").style.display = "block";
 }
 
+function openAdminAuthModal() {
+    closeModal('accountModal');
+    document.getElementById("adminAuthModal").style.display = "block";
+}
+
+async function executeAdminLogin() {
+    const email = document.getElementById("adminEmailInput").value.trim();
+    const password = document.getElementById("adminPasswordInput").value.trim();
+
+    if(!email || !password) { alert("Please enter email and password!"); return; }
+
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+    if(!error && data.user && data.user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()){
+        closeModal('adminAuthModal');
+        document.getElementById("adminDashboardModal").style.display="block";
+        switchAdminTab('orders');
+        triggerBothNotifications("Admin Access", "Logged in to Admin Dashboard successfully!");
+    } else {
+        alert("Unauthorized Admin Credentials!");
+    }
+}
+
 async function verifyDeliveryPin() {
     const pin = document.getElementById("deliveryPinInput").value;
     const container = document.getElementById("deliveryOrdersContainer");
@@ -522,17 +595,50 @@ function openAdminDashboardModalDirect() {
     switchAdminTab('orders');
 }
 
+// FIXED MY ORDERS VIEW FOR CUSTOMERS
+async function openMyOrders() {
+    closeModal('accountModal');
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    if(!user) { alert("Please login first!"); openCustomerAuth(); return; }
+
+    document.getElementById("myOrdersModal").style.display = "block";
+    const container = document.getElementById("myOrdersListContainer");
+    container.innerHTML = "<p>Loading your orders...</p>";
+
+    const { data: orders, error } = await supabaseClient.from("orders").select("*").eq("user_id", user.id).order("order_date", { ascending: false });
+    
+    if(error || !orders || orders.length === 0) {
+        container.innerHTML = `<p style="text-align:center;color:#64748b;padding:15px;">You have not placed any orders yet.</p>`;
+        return;
+    }
+
+    container.innerHTML = orders.map(o => `
+        <div style="border:1px solid #cbd5e1;padding:12px;margin-top:8px;background:#f8fafc;border-radius:10px;">
+            <div style="display:flex;justify-content:space-between;font-weight:bold;color:#0284c7;">
+                <span>#${o.order_id}</span>
+                <span style="color:#16a34a;">₹${o.total}</span>
+            </div>
+            <div style="font-size:12px;color:#475569;margin-top:4px;">📍 ${o.address}</div>
+            <div style="font-size:11px;color:#64748b;margin-top:2px;">Status: <b>${o.status || 'Confirmed'}</b></div>
+        </div>
+    `).join('');
+}
+
 async function renderPublicNearbyStores() {
     const list = document.getElementById("storesList");
-    const { data: stores } = await supabaseClient.from("business_profiles").select("business_name, address");
+    list.innerHTML = `<p style="padding:15px;text-align:center;color:#64748b;">Loading nearby stores...</p>`;
+    
+    const { data: stores, error } = await supabaseClient.from("business_profiles").select("*");
 
-    if(!stores || stores.length === 0){
-        list.innerHTML = `<p style="padding:15px;text-align:center;color:#64748b;">No registered stores found nearby.</p>`;
+    if(error || !stores || stores.length === 0){
+        list.innerHTML = `<p style="padding:15px;text-align:center;color:#64748b;">No registered stores found nearby yet.</p>`;
         return;
     }
     list.innerHTML = stores.map(s => `
-        <div style="border:1px solid #e2e8f0;padding:10px;border-radius:10px;margin-top:8px;background:#f8fafc;">
-            <b>🏪 ${s.business_name}</b><br><small style="color:#64748b;">${s.address || 'Local Market'}</small>
+        <div style="border:1px solid #e2e8f0;padding:12px;border-radius:10px;margin-top:8px;background:#f8fafc;">
+            <b>🏪 ${s.business_name}</b> (${s.owner_name})<br>
+            <small style="color:#475569;">📍 ${s.address || 'Local Market'} - Pincode: ${s.pincode || 'N/A'}</small><br>
+            <small style="color:#059669;font-weight:bold;">📞 ${s.mobile}</small>
         </div>
     `).join('');
 }
@@ -641,52 +747,58 @@ async function sendOrder(){
 async function customerSignup(){
     const email = document.getElementById("customerEmail").value;
     const password = document.getElementById("customerPassword").value;
+    if(!email || !password) { alert("Enter email and password!"); return; }
     await supabaseClient.auth.signUp({ email, password });
     triggerBothNotifications("Jalvigo Account", "Customer Account Created Successfully!");
+    alert("✅ Signup Successful! You can now login.");
 }
 
 async function customerLogin(){
     const email = document.getElementById("customerEmail").value;
     const password = document.getElementById("customerPassword").value;
-    await supabaseClient.auth.signInWithPassword({ email, password });
+    if(!email || !password) { alert("Enter email and password!"); return; }
+    
+    const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+    if(error) { alert("Login Error: " + error.message); return; }
+
     triggerBothNotifications("Welcome Back", "Logged in successfully!");
     closeModal('customerAuthModal');
     handleAccountClick();
 }
 
+// B2B SHOP REGISTRATION WITH OPTIONAL GST & ADDRESS/PINCODE
 async function registerB2BUser(){
-    const business_name = document.getElementById("b2bBizName").value;
-    const owner_name = document.getElementById("b2bOwnerName").value;
-    const mobile = document.getElementById("b2bMobile").value;
-    const email = document.getElementById("b2bEmail").value;
-    const password = document.getElementById("b2bPassword").value;
+    const business_name = document.getElementById("b2bBizName").value.trim();
+    const owner_name = document.getElementById("b2bOwnerName").value.trim();
+    const mobile = document.getElementById("b2bMobile").value.trim();
+    const address = document.getElementById("b2bAddress").value.trim();
+    const pincode = document.getElementById("b2bPincode").value.trim();
+    const gst_number = document.getElementById("b2bGst").value.trim() || "Not Provided";
+    const email = document.getElementById("b2bEmail").value.trim();
+    const password = document.getElementById("b2bPassword").value.trim();
 
-    if(!business_name || !owner_name || !mobile || !email || !password){ alert("Please fill all shop details!"); return; }
+    if(!business_name || !owner_name || !mobile || !address || !pincode || !email || !password){ 
+        alert("Please fill all required shop details!"); 
+        return; 
+    }
 
     const { data, error } = await supabaseClient.auth.signUp({ email, password });
+    if(error) { alert("Registration Error: " + error.message); return; }
+
     if(data.user){
         await supabaseClient.from("business_profiles").insert([{
-            user_id: data.user.id, business_name, owner_name, mobile
+            user_id: data.user.id, 
+            business_name, 
+            owner_name, 
+            mobile, 
+            address, 
+            pincode, 
+            gst_number
         }]);
     }
     triggerBothNotifications("Partner Registered", "Shop Registered on Jalvigo Network!");
     alert("✅ Shop Registered Successfully!");
     closeModal('b2bAuthModal');
-}
-
-async function handleAdminButtonClick(){
-    closeModal('accountModal');
-    const email = prompt("Enter Admin Email:");
-    const password = prompt("Enter Admin Password:");
-    if(!email || !password) return;
-
-    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-    if(!error && data.user && data.user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()){
-        document.getElementById("adminDashboardModal").style.display="block";
-        switchAdminTab('orders');
-    } else {
-        alert("Unauthorized Admin!");
-    }
 }
 
 function switchAdminTab(tabName) {
@@ -781,7 +893,10 @@ async function deleteProductById(id) {
 async function loadAdminOrders(){
     const list = document.getElementById("adminOrdersList");
     const { data } = await supabaseClient.from("orders").select("*").order("order_date", { ascending: false });
-    if(!data) return;
+    if(!data || data.length === 0) {
+        list.innerHTML = "<p style='padding:15px;text-align:center;'>No orders received yet.</p>";
+        return;
+    }
     list.innerHTML = data.map(o => `
         <div style="border:1px solid #ccc;padding:10px;margin:5px 0;background:#fff;border-radius:8px;">
             <b>#${o.order_id}</b> - ${o.customer_name} (₹${o.total})<br>
@@ -793,12 +908,17 @@ async function loadAdminOrders(){
 
 async function loadAdminRegisteredShops(){
     const list = document.getElementById("adminShopsList");
-    const { data } = await supabaseClient.from("business_profiles").select("*");
-    if(!data) return;
+    const { data, error } = await supabaseClient.from("business_profiles").select("*");
+    if(error || !data || data.length === 0) {
+        list.innerHTML = "<p style='padding:15px;text-align:center;color:#64748b;'>No registered shops found.</p>";
+        return;
+    }
     list.innerHTML = data.map(s => `
         <div style="border:1px solid #059669;padding:10px;margin:5px 0;background:#f0fdf4;border-radius:8px;">
             <b>🏪 ${s.business_name}</b> (${s.owner_name})<br>
-            Mobile: ${s.mobile}
+            <small>📍 ${s.address || 'Address N/A'} - Pincode: ${s.pincode || 'N/A'}</small><br>
+            <small>GST: ${s.gst_number || 'Optional / None'}</small><br>
+            <b>Mobile: ${s.mobile}</b>
         </div>
     `).join('');
 }
