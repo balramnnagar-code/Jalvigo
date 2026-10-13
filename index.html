@@ -42,7 +42,7 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 .prod-price{font-size:16px;font-weight:700;color:#0284c7;}
 .add-btn{background:#0284c7;color:white;border:none;padding:8px;border-radius:10px;font-weight:bold;font-size:13px;width:100%;margin-top:8px;cursor:pointer;}
 
-/* FIXED BOTTOM APP NAVIGATION BAR (SAFE FOR MOBILE BUTTONS) */
+/* FIXED BOTTOM APP NAVIGATION BAR */
 .bottom-nav{
     position:fixed;
     bottom:0;
@@ -304,7 +304,7 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 </div>
 </div>
 
-<!-- TOAST -->
+<!-- TOAST BANNER -->
 <div id="notificationToast">🔔 Order Updated!</div>
 
 <script>
@@ -324,6 +324,47 @@ let calculatedDistanceKM = 1.2;
 const SHOP_LAT = 28.6139; 
 const SHOP_LNG = 77.2090; 
 const ADMIN_EMAIL = "balramnnagar0077@gmail.com";
+
+// SERVICE WORKER & PUSH NOTIFICATION REGISTRATION
+if ('serviceWorker' in navigator && 'Notification' in window) {
+    navigator.serviceWorker.register('sw.js').then(reg => {
+        console.log('Push Service Worker Registered!', reg);
+    }).catch(err => console.log('ServiceWorker Error', err));
+
+    // Request Push Permission
+    window.addEventListener('load', () => {
+        if (Notification.permission === 'default') {
+            setTimeout(() => {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        sendNativePushNotification("Welcome to Jalvigo! 💧", "Notifications are active. You will get live order updates!");
+                    }
+                });
+            }, 3000);
+        }
+    });
+}
+
+// BOTH TOAST AND PUSH NOTIFICATION TRIGGER FUNCTION
+function triggerBothNotifications(title, bodyMsg) {
+    // 1. Toast Notification (In-App)
+    showNotification(`${title}: ${bodyMsg}`);
+
+    // 2. Push Notification (Mobile System Top Bar)
+    sendNativePushNotification(title, bodyMsg);
+}
+
+function sendNativePushNotification(title, body) {
+    if ('Notification' in window && Notification.permission === 'granted') {
+        navigator.serviceWorker.ready.then(registration => {
+            registration.showNotification(title, {
+                body: body,
+                icon: 'https://cdn-icons-png.flaticon.com/512/3105/3105807.png',
+                vibrate: [200, 100, 200]
+            });
+        });
+    }
+}
 
 function closeModal(id){ document.getElementById(id).style.display="none"; }
 function showNotification(msg){
@@ -347,7 +388,7 @@ function selectVipPlan(amt, dur, cardId) {
 
 function getGPSLocation() {
     if (navigator.geolocation) {
-        showNotification("Detecting GPS Location...");
+        triggerBothNotifications("GPS Location", "Detecting live GPS coordinates...");
         navigator.geolocation.getCurrentPosition(position => {
             userLat = position.coords.latitude;
             userLng = position.coords.longitude;
@@ -365,7 +406,7 @@ function getGPSLocation() {
             }
 
             autoDecideDeliverySlot(calculatedDistanceKM);
-            showNotification(`Location Detected: ~${calculatedDistanceKM.toFixed(1)} KM away`);
+            triggerBothNotifications("Location Updated", `Store Distance: ~${calculatedDistanceKM.toFixed(1)} KM`);
         }, () => {
             autoDecideDeliverySlot(1.0);
         });
@@ -432,7 +473,7 @@ async function renderPublicNearbyStores() {
 
 function activateVipSubscription(){
     isVipMember = true;
-    showNotification(`VIP (${selectedVipDuration}) Activated!`);
+    triggerBothNotifications("Jalvigo VIP Pass", `VIP (${selectedVipDuration}) Membership Activated! Free Delivery Unlocked.`);
     closeModal('subModal');
     updateCart();
 }
@@ -471,7 +512,7 @@ function addToCart(name, price){
     let item = cart.find(p => p.name === name);
     if(item) item.qty++; else cart.push({name, price, qty:1});
     updateCart();
-    showNotification(name + " added!");
+    triggerBothNotifications("Cart Updated", `${name} added to cart!`);
 }
 
 function updateCart(){
@@ -527,7 +568,7 @@ async function sendOrder(){
         total: grandTotal, order_date: new Date().toISOString(), status: "Confirmed", user_id: user.id
     }]);
 
-    showNotification("Order Confirmed!");
+    triggerBothNotifications("Order Placed 🎉", `Order #${orderId} Confirmed! Scheduled: ${slotText}`);
     cart = []; updateCart(); closeModal('orderModal');
 }
 
@@ -535,14 +576,14 @@ async function customerSignup(){
     const email = document.getElementById("customerEmail").value;
     const password = document.getElementById("customerPassword").value;
     await supabaseClient.auth.signUp({ email, password });
-    showNotification("Signup Successful!");
+    triggerBothNotifications("Jalvigo Account", "Customer Account Created Successfully!");
 }
 
 async function customerLogin(){
     const email = document.getElementById("customerEmail").value;
     const password = document.getElementById("customerPassword").value;
     await supabaseClient.auth.signInWithPassword({ email, password });
-    showNotification("Login Successful!");
+    triggerBothNotifications("Welcome Back", "Logged in successfully!");
     closeModal('customerAuthModal');
 }
 
@@ -559,7 +600,7 @@ async function registerB2BUser(){
             user_id: data.user.id, business_name, owner_name, mobile
         }]);
     }
-    showNotification("Shop Registered!");
+    triggerBothNotifications("Partner Registered", "Shop Registered on Jalvigo Network!");
     closeModal('b2bAuthModal');
 }
 
@@ -624,7 +665,7 @@ async function addNewProductWithImage() {
         created_at: new Date().toISOString() 
     }]);
 
-    showNotification("Product Added Successfully!");
+    triggerBothNotifications("Product Live", `${name} added to Jalvigo Marketplace!`);
     alert("✅ Product Added with Photo!");
     document.getElementById("newProdName").value = "";
     document.getElementById("newProdPrice").value = "";
@@ -661,7 +702,7 @@ async function loadAdminRegisteredShops(){
 async function userLogout(){
     await supabaseClient.auth.signOut();
     closeModal('accountModal');
-    showNotification("Logged Out");
+    triggerBothNotifications("Logged Out", "You have been logged out.");
 }
 
 loadDynamicProducts();
