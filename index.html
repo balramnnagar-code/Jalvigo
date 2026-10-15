@@ -260,16 +260,19 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
   </div>
 </div>
 
-<!-- CUSTOMER AUTH MODAL -->
+<!-- CUSTOMER AUTH MODAL (FIXED INPUT HANDLING) -->
 <div class="modal" id="customerAuthModal">
   <div class="modal-box">
     <span class="close" onclick="closeModal('customerAuthModal')">×</span>
     <h2>👤 Login / Signup</h2>
-    <div class="form-group"><label>Mobile Number or Email</label><input type="text" id="customerAuthInput" placeholder="9876543210 or email@domain.com"></div>
+    <div class="form-group">
+        <label>Mobile Number or Email</label>
+        <input type="text" id="customerAuthInput" placeholder="Enter 10-digit Mobile or Email" autocomplete="off">
+    </div>
     <div class="form-group">
         <label>Password</label>
         <div class="password-box">
-            <input type="password" id="customerPassword" placeholder="Enter password">
+            <input type="password" id="customerPassword" placeholder="Enter password (min 6 chars)">
             <button type="button" class="eye-btn" onclick="togglePasswordVisibility('customerPassword', this)">👁️</button>
         </div>
     </div>
@@ -354,7 +357,6 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
     <iframe id="googleMapIframe" width="100%" height="140" frameborder="0" style="border:0;" src="" allowfullscreen></iframe>
 </div>
 
-<!-- CLEAN CUSTOMER BILL -->
 <div style="background:#f0f9ff;padding:12px;border-radius:10px;font-size:13px;border:1px solid #0284c7;margin:10px 0;" id="feeBreakdownBox">
     <div>📍 Store Distance: <span id="detectedDistanceText">Calculating...</span></div>
     <div>📦 Item Total: ₹<span id="checkoutSubtotal">0</span></div>
@@ -362,7 +364,6 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
     <div style="font-weight:bold;font-size:16px;margin-top:6px;color:#0369a1;">Grand Total: ₹<span id="checkoutGrandTotal">0</span></div>
 </div>
 
-<!-- PAYMENT SELECTION -->
 <div class="form-group">
     <label>Choose Payment Method</label>
     <select id="paymentMethodSelect" onchange="togglePaymentUi()">
@@ -371,7 +372,6 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
     </select>
 </div>
 
-<!-- DIRECT DYNAMIC UPI SCANNER / INTENT BOX -->
 <div id="upiPaymentBox" style="background:#fffbe2;padding:15px;border-radius:12px;border:1px solid #facc15;text-align:center;margin:10px 0;">
     <h4 style="color:#854d0e;">⚡ Scan & Pay via UPI App</h4>
     <p style="font-size:11px;color:#666;margin:4px 0;">Scan QR Code using PhonePe, Paytm, Google Pay, or BHIM</p>
@@ -455,12 +455,10 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
     <button class="primary-btn" onclick="switchAdminTab('shops')" style="background:#059669;">Shops</button>
 </div>
 
-<!-- ORDERS & BACKEND COMMISSION TAB -->
 <div id="adminTabOrders">
     <div id="adminOrdersList"><p>Loading Orders...</p></div>
 </div>
 
-<!-- BANNERS & ADS MANAGEMENT TAB -->
 <div id="adminTabBanners" style="display:none;background:#f8fafc;padding:12px;border-radius:12px;border:1px solid #e2e8f0;">
     <h3>📢 Add Promotional Banner / Ad</h3>
     <div class="form-group"><label>Banner Title</label><input type="text" id="bannerTitle" placeholder="e.g. Special Cold Drink Offer"></div>
@@ -468,7 +466,6 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
     <button class="primary-btn" onclick="addNewPromoBanner()" style="background:#eab308;color:#000;margin-top:10px;">Publish Banner to Home Slider</button>
 </div>
 
-<!-- ADD PRODUCT TAB -->
 <div id="adminTabAddProduct" style="display:none;background:#f8fafc;padding:12px;border-radius:12px;border:1px solid #e2e8f0;">
     <h3>📸 Add Product with Photo</h3>
     <div class="form-group"><label>Product Name</label><input type="text" id="newProdName" placeholder="e.g. Bisleri 20L Water Jar"></div>
@@ -479,13 +476,11 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
     <button class="primary-btn" onclick="addNewProductWithImage()" style="background:#16a34a;margin-top:10px;">Save Product</button>
 </div>
 
-<!-- MANAGE PRODUCTS TAB -->
 <div id="adminTabManageProducts" style="display:none;">
     <h3>📦 Manage & Delete Products</h3>
     <div id="adminProductsManageList" style="margin-top:10px;"><p>Loading...</p></div>
 </div>
 
-<!-- SHOPS TAB -->
 <div id="adminTabShops" style="display:none;">
     <div id="adminShopsList"><p>Loading shops...</p></div>
 </div>
@@ -515,7 +510,7 @@ const SHOP_LNG = 77.2090;
 const ADMIN_EMAIL = "balramnnagar0077@gmail.com";
 const DELIVERY_AGENT_PIN = "1234";
 
-// ADVANCED BANNER SLIDER (AUTO-SWIPE + MANUAL TOUCH DRAG CONTROLS)
+// ADVANCED BANNER SLIDER
 let currentSlide = 0;
 let autoSlideInterval = null;
 let startX = 0;
@@ -586,7 +581,9 @@ if(bannerTouchArea) {
 
 startAutoSlide();
 
+// SAFE EMAIL FORMATTER FOR MOBILE NUMBERS & EMAILS
 function formatAuthEmail(inputVal) {
+    if (!inputVal) return "";
     const cleanVal = inputVal.trim();
     if (/^\d{10}$/.test(cleanVal)) {
         return `user_${cleanVal}@jalvigo.app`;
@@ -615,7 +612,92 @@ function togglePaymentUi() {
     }
 }
 
-// SERVICE WORKER & PUSH NOTIFICATION REGISTRATION
+// AUTH FUNCTIONS (FIXED ACCORDING TO SCREENSHOT BUG)
+async function customerSignup() {
+    const authInputElem = document.getElementById("customerAuthInput");
+    const passElem = document.getElementById("customerPassword");
+
+    const rawInput = authInputElem ? authInputElem.value.trim() : "";
+    const password = passElem ? passElem.value.trim() : "";
+
+    if (!rawInput || !password) {
+        alert("Please enter Mobile Number/Email and Password!");
+        return;
+    }
+
+    if (password.length < 6) {
+        alert("Password must be at least 6 characters long!");
+        return;
+    }
+
+    const emailFormatted = formatAuthEmail(rawInput);
+    
+    showNotification("Creating account...");
+    const { data, error } = await supabaseClient.auth.signUp({
+        email: emailFormatted,
+        password: password
+    });
+
+    if (error) {
+        alert("Signup Error: " + error.message);
+        return;
+    }
+
+    // Auto Login After Signup
+    const { error: loginErr } = await supabaseClient.auth.signInWithPassword({
+        email: emailFormatted,
+        password: password
+    });
+
+    triggerBothNotifications("Jalvigo Account 🎉", "Account Created Successfully!");
+    alert("✅ Account Created & Logged in Successfully!");
+    closeModal('customerAuthModal');
+    handleAccountClick();
+}
+
+async function customerLogin() {
+    const authInputElem = document.getElementById("customerAuthInput");
+    const passElem = document.getElementById("customerPassword");
+
+    const rawInput = authInputElem ? authInputElem.value.trim() : "";
+    const password = passElem ? passElem.value.trim() : "";
+
+    if (!rawInput || !password) {
+        alert("Please enter Mobile Number/Email and Password!");
+        return;
+    }
+
+    const emailFormatted = formatAuthEmail(rawInput);
+    
+    showNotification("Logging in...");
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+        email: emailFormatted,
+        password: password
+    });
+
+    if (error) {
+        alert("Login Error: Password galat hai ya account nahi bana hai!");
+        return;
+    }
+
+    triggerBothNotifications("Welcome Back 🎉", "Logged in successfully!");
+    closeModal('customerAuthModal');
+    handleAccountClick();
+}
+
+async function executePasswordReset() {
+    const rawInput = document.getElementById("forgotAuthInput").value.trim();
+    const newPassword = document.getElementById("forgotNewPassword").value.trim();
+    if(!rawInput || !newPassword) { alert("Please enter Mobile/Email and New Password!"); return; }
+
+    const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
+    showNotification("Password Reset Successful!");
+    alert("✅ Password updated successfully! Log in with your new password.");
+    closeModal('forgotPasswordModal');
+    openCustomerAuth();
+}
+
+// SERVICE WORKER & PUSH NOTIFICATIONS
 if ('serviceWorker' in navigator && 'Notification' in window) {
     navigator.serviceWorker.register('sw.js').then(reg => {
         console.log('Push Service Worker Registered!', reg);
@@ -1075,7 +1157,6 @@ async function sendOrder(){
         user_id: user.id
     }]);
 
-    // DUAL NOTIFICATIONS (ADMIN & SHOPKEEPER NOTIFICATION)
     triggerBothNotifications(
         "💰 New Order Received!", 
         `Order #${orderId} of ₹${grandTotal} received. Admin Comm: ₹${commission} | Net Shop Payout (₹${shopPayout}) will be transferred T+1 (Next Day) after delivery.`
@@ -1084,45 +1165,6 @@ async function sendOrder(){
     alert(`🎉 Order Placed Successfully!\n\nOrder ID: #${orderId}\nTotal Paid: ₹${grandTotal}\n\n📢 Note for Seller/Shopkeeper: Order deliver hone ke baad aapka Net Payout (₹${shopPayout}) T+1 (Agale din) aapke account/UPI me transfer ho jayega.`);
 
     cart = []; updateCart(); closeModal('orderModal');
-}
-
-async function customerSignup(){
-    const rawInput = document.getElementById("customerAuthInput").value;
-    const password = document.getElementById("customerPassword").value;
-    if(!rawInput || !password) { alert("Enter Mobile Number/Email and Password!"); return; }
-    
-    const emailFormatted = formatAuthEmail(rawInput);
-    const { error } = await supabaseClient.auth.signUp({ email: emailFormatted, password: password });
-    if(error) { alert("Signup Error: " + error.message); return; }
-
-    triggerBothNotifications("Jalvigo Account", "Account Created Successfully! You can now login.");
-    alert("✅ Account Created Successfully! Please login.");
-}
-
-async function customerLogin(){
-    const rawInput = document.getElementById("customerAuthInput").value;
-    const password = document.getElementById("customerPassword").value;
-    if(!rawInput || !password) { alert("Enter Mobile Number/Email and Password!"); return; }
-    
-    const emailFormatted = formatAuthEmail(rawInput);
-    const { error } = await supabaseClient.auth.signInWithPassword({ email: emailFormatted, password: password });
-    if(error) { alert("Login Error: Password galat hai ya account nahi bana hai!"); return; }
-
-    triggerBothNotifications("Welcome Back", "Logged in successfully!");
-    closeModal('customerAuthModal');
-    handleAccountClick();
-}
-
-async function executePasswordReset() {
-    const rawInput = document.getElementById("forgotAuthInput").value.trim();
-    const newPassword = document.getElementById("forgotNewPassword").value.trim();
-    if(!rawInput || !newPassword) { alert("Please enter Mobile/Email and New Password!"); return; }
-
-    const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
-    showNotification("Password Reset Successful!");
-    alert("✅ Password updated successfully! Log in with your new password.");
-    closeModal('forgotPasswordModal');
-    openCustomerAuth();
 }
 
 async function registerB2BUser(){
@@ -1251,7 +1293,6 @@ async function deleteProductById(id) {
     }
 }
 
-// CORRECT ADMIN ORDERS & COMMISSION CALCULATION VIEW
 async function loadAdminOrders(){
     const list = document.getElementById("adminOrdersList");
     const { data } = await supabaseClient.from("orders").select("*").order("order_date", { ascending: false });
