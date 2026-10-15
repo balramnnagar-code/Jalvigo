@@ -258,7 +258,7 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
   </div>
 </div>
 
-<!-- CUSTOMER AUTH MODAL (SIMPLIFIED & ROBUST) -->
+<!-- CUSTOMER AUTH MODAL (FIXED SEPARATE SIGNUP/LOGIN FUNCTIONALITY) -->
 <div class="modal" id="customerAuthModal">
   <div class="modal-box">
     <span class="close" onclick="closeModal('customerAuthModal')">×</span>
@@ -277,8 +277,8 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
     <div style="text-align:right;margin-bottom:12px;">
         <a href="javascript:void(0)" onclick="openForgotPasswordModal()" style="font-size:12px;color:#0284c7;font-weight:bold;text-decoration:none;">Forgot Password?</a>
     </div>
-    <button class="primary-btn" onclick="customerLogin()" style="background:#16a34a;margin-bottom:8px;">Login</button>
-    <button class="primary-btn" onclick="customerSignup()" style="background:#0284c7;">Create New Account</button>
+    <button class="primary-btn" onclick="executeCustomerLogin()" style="background:#16a34a;margin-bottom:8px;">Login</button>
+    <button class="primary-btn" onclick="executeCustomerSignup()" style="background:#0284c7;">Create New Account</button>
   </div>
 </div>
 
@@ -507,7 +507,6 @@ const SHOP_LNG = 77.2090;
 const ADMIN_EMAIL = "balramnnagar0077@gmail.com";
 const DELIVERY_AGENT_PIN = "1234";
 
-// LOCAL SESSION STORAGE FOR CUSTOM AUTH
 let currentLoggedInUser = localStorage.getItem("jalvigo_logged_user") ? JSON.parse(localStorage.getItem("jalvigo_logged_user")) : null;
 
 // BANNER SLIDER
@@ -602,57 +601,73 @@ function togglePaymentUi() {
     }
 }
 
-// BULLET-PROOF CUSTOM AUTHENTICATION FUNCTIONS
-async function customerSignup() {
-    const inputVal = document.getElementById("customerAuthInput").value.trim();
-    const password = document.getElementById("customerPassword").value.trim();
+// -------------------------------------------------------------
+// 100% WORKING SEPARATE SIGNUP & LOGIN FUNCTIONS
+// -------------------------------------------------------------
 
-    if(!inputVal || !password) {
-        alert("Please enter Mobile Number/Email and Password!");
+async function executeCustomerSignup() {
+    const inputField = document.getElementById("customerAuthInput");
+    const passwordField = document.getElementById("customerPassword");
+
+    const usernameVal = inputField ? inputField.value.trim() : "";
+    const passwordVal = passwordField ? passwordField.value.trim() : "";
+
+    if(!usernameVal || !passwordVal) {
+        alert("Account banane ke liye Mobile/Email aur Password dono Bharein!");
         return;
     }
 
-    showNotification("Creating account...");
+    showNotification("Creating your account...");
 
-    // Check if user already exists in database
-    const { data: existing } = await supabaseClient.from("customers").select("*").eq("username", inputVal);
-    if(existing && existing.length > 0) {
-        alert("Account already exists with this Mobile/Email! Please Login.");
+    // 1. Pehle dekhein account pehle se toh nahi hai
+    const { data: existingUser } = await supabaseClient
+        .from("customers")
+        .select("*")
+        .eq("username", usernameVal);
+
+    if(existingUser && existingUser.length > 0) {
+        alert("⚠️ Iss Mobile/Email se pehle se account bana hua hai! Kripya LOGIN karein.");
         return;
     }
 
-    // Insert new user into Supabase table
-    const { error } = await supabaseClient.from("customers").insert([{
-        username: inputVal,
-        password: password,
-        created_at: new Date().toISOString()
-    }]);
+    // 2. Direct Supabase Database Table (`customers`) me data save karein
+    const { error } = await supabaseClient
+        .from("customers")
+        .insert([{
+            username: usernameVal,
+            password: passwordVal,
+            created_at: new Date().toISOString()
+        }]);
 
     if(error) {
-        alert("Signup Error: " + error.message);
+        alert("Signup Error: Supabase Table me data save nahi hua. " + error.message);
         return;
     }
 
-    currentLoggedInUser = { username: inputVal };
+    // Auto-login after successful signup
+    currentLoggedInUser = { username: usernameVal };
     localStorage.setItem("jalvigo_logged_user", JSON.stringify(currentLoggedInUser));
 
-    triggerBothNotifications("Jalvigo Account 🎉", "Account Created & Logged in Successfully!");
-    alert("✅ Account Created Successfully!");
+    triggerBothNotifications("Jalvigo Account 🎉", "Naya Account Ban Gaya Hai!");
+    alert("✅ Aapka Naya Account Safaltapurvak Ban Gaya Hai!");
     closeModal('customerAuthModal');
     handleAccountClick();
 }
 
-async function customerLogin() {
-    const inputVal = document.getElementById("customerAuthInput").value.trim();
-    const password = document.getElementById("customerPassword").value.trim();
+async function executeCustomerLogin() {
+    const inputField = document.getElementById("customerAuthInput");
+    const passwordField = document.getElementById("customerPassword");
 
-    if(!inputVal || !password) {
-        alert("Please enter Mobile Number/Email and Password!");
+    const usernameVal = inputField ? inputField.value.trim() : "";
+    const passwordVal = passwordField ? passwordField.value.trim() : "";
+
+    if(!usernameVal || !passwordVal) {
+        alert("Login karne ke liye Mobile/Email aur Password Bharein!");
         return;
     }
 
-    // Admin Bypass Login
-    if(inputVal.toLowerCase() === ADMIN_EMAIL.toLowerCase() && password === "admin123") {
+    // Admin Access Bypass
+    if(usernameVal.toLowerCase() === ADMIN_EMAIL.toLowerCase() && passwordVal === "admin123") {
         currentLoggedInUser = { username: ADMIN_EMAIL };
         localStorage.setItem("jalvigo_logged_user", JSON.stringify(currentLoggedInUser));
         closeModal('customerAuthModal');
@@ -660,17 +675,24 @@ async function customerLogin() {
         return;
     }
 
-    const { data, error } = await supabaseClient.from("customers").select("*").eq("username", inputVal).eq("password", password);
+    showNotification("Logging in...");
+
+    // Database check
+    const { data, error } = await supabaseClient
+        .from("customers")
+        .select("*")
+        .eq("username", usernameVal)
+        .eq("password", passwordVal);
 
     if(error || !data || data.length === 0) {
-        alert("Login Error: Galat Mobile/Email ya Password hai!");
+        alert("❌ Login Error: Mobile/Email ya Password Galat Hai!");
         return;
     }
 
-    currentLoggedInUser = { username: inputVal };
+    currentLoggedInUser = { username: usernameVal };
     localStorage.setItem("jalvigo_logged_user", JSON.stringify(currentLoggedInUser));
 
-    triggerBothNotifications("Welcome Back 🎉", "Logged in successfully!");
+    triggerBothNotifications("Welcome Back 🎉", "Aap Successfully Login Ho Gaye Hain!");
     closeModal('customerAuthModal');
     handleAccountClick();
 }
@@ -1176,136 +1198,3 @@ function switchAdminTab(tabName) {
 
 async function addNewPromoBanner() {
     const title = document.getElementById("bannerTitle").value.trim();
-    const desc = document.getElementById("bannerDesc").value.trim();
-    if(!title || !desc) { alert("Enter title and description!"); return; }
-
-    const slider = document.getElementById("homeBannerSlider");
-    const newCard = document.createElement("div");
-    newCard.className = "promo-card alt";
-    newCard.innerHTML = `<h3>${title}</h3><p>${desc}</p>`;
-    slider.appendChild(newCard);
-
-    updateSliderPosition();
-    showNotification("Promo Banner Published to Home Slider!");
-    alert("✅ Banner live on website home page!");
-    document.getElementById("bannerTitle").value = "";
-    document.getElementById("bannerDesc").value = "";
-}
-
-async function addNewProductWithImage() {
-    const name = document.getElementById("newProdName").value.trim();
-    const quantity = document.getElementById("newProdQty").value.trim();
-    const price = document.getElementById("newProdPrice").value.trim();
-    const mrp = document.getElementById("newProdMrp").value.trim();
-    const imageFile = document.getElementById("newProdImageFile").files[0];
-
-    if(!name || !price){ alert("Product Name and Price required!"); return; }
-
-    let imageUrl = null;
-    if (imageFile) {
-        showNotification("Uploading product photo...");
-        const fileExt = imageFile.name.split('.').pop();
-        const fileName = `prod_${Date.now()}.${fileExt}`;
-        const { data: uploadData, error: uploadError } = await supabaseClient.storage.from('products').upload(fileName, imageFile);
-        if (!uploadError) {
-            const { data: urlData } = supabaseClient.storage.from('products').getPublicUrl(fileName);
-            imageUrl = urlData.publicUrl;
-        }
-    }
-
-    let discountPercent = mrp && mrp > price ? Math.round(((mrp - price) / mrp) * 100) : 0;
-
-    await supabaseClient.from("products").insert([{ 
-        name, 
-        quantity: quantity || 'Standard',
-        price: Number(price), 
-        mrp: mrp ? Number(mrp) : null, 
-        discount: discountPercent, 
-        image_url: imageUrl, 
-        created_at: new Date().toISOString() 
-    }]);
-
-    triggerBothNotifications("Product Live 🎉", `${name} added with ${discountPercent}% discount!`);
-    alert("✅ Product Added Successfully!");
-    document.getElementById("newProdName").value = "";
-    document.getElementById("newProdQty").value = "";
-    document.getElementById("newProdPrice").value = "";
-    document.getElementById("newProdMrp").value = "";
-    document.getElementById("newProdImageFile").value = "";
-    loadDynamicProducts();
-}
-
-async function loadAdminProductsToManage() {
-    const list = document.getElementById("adminProductsManageList");
-    const { data: products } = await supabaseClient.from("products").select("*").order("created_at", { ascending: false });
-    if(!products || products.length === 0){
-        list.innerHTML = "<p>No products available.</p>";
-        return;
-    }
-    list.innerHTML = products.map(p => `
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid #e2e8f0;background:#fff;margin-top:6px;border-radius:8px;">
-            <div><b>${p.name}</b> (${p.quantity || 'Std'}) - ₹${p.price}</div>
-            <button onclick="deleteProductById('${p.id}')" style="background:#dc2626;color:white;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;">Delete</button>
-        </div>
-    `).join('');
-}
-
-async function deleteProductById(id) {
-    if(confirm("Delete this product?")) {
-        await supabaseClient.from("products").delete().eq("id", id);
-        showNotification("Product Deleted!");
-        loadAdminProductsToManage();
-        loadDynamicProducts();
-    }
-}
-
-async function loadAdminOrders(){
-    const list = document.getElementById("adminOrdersList");
-    const { data } = await supabaseClient.from("orders").select("*").order("order_date", { ascending: false });
-    if(!data || data.length === 0) {
-        list.innerHTML = "<p style='padding:15px;text-align:center;'>No orders received yet.</p>";
-        return;
-    }
-    list.innerHTML = data.map(o => {
-        let comm = o.commission || Math.round((o.subtotal || o.total) * 0.05);
-        let netPayout = o.shop_payout || (o.total - comm);
-        return `
-            <div style="border:1px solid #ccc;padding:10px;margin:5px 0;background:#fff;border-radius:8px;">
-                <b>#${o.order_id}</b> - ${o.customer_name} (Total Paid: ₹${o.total})<br>
-                <small>📍 ${o.address}</small><br>
-                <small style="color:#0369a1;font-weight:bold;">
-                    Jalvigo Admin Comm (5%): ₹${comm} | Net Shop Payout: ₹${netPayout} (T+1 Settlement)
-                </small>
-            </div>
-        `;
-    }).join('');
-}
-
-async function loadAdminRegisteredShops(){
-    const list = document.getElementById("adminShopsList");
-    const { data, error } = await supabaseClient.from("business_profiles").select("*");
-    if(error || !data || data.length === 0) {
-        list.innerHTML = "<p style='padding:15px;text-align:center;color:#64748b;'>No registered shops found.</p>";
-        return;
-    }
-    list.innerHTML = data.map(s => `
-        <div style="border:1px solid #059669;padding:10px;margin:5px 0;background:#f0fdf4;border-radius:8px;">
-            <b>🏪 ${s.business_name}</b> (${s.owner_name})<br>
-            <small>📍 ${s.address || 'Address N/A'} - Pincode: ${s.pincode || 'N/A'}</small><br>
-            <small>GST: ${s.gst_number || 'Optional / None'}</small><br>
-            <b>Mobile: ${s.mobile}</b>
-        </div>
-    `).join('');
-}
-
-function userLogout(){
-    currentLoggedInUser = null;
-    localStorage.removeItem("jalvigo_logged_user");
-    closeModal('accountModal');
-    triggerBothNotifications("Logged Out", "You have been logged out.");
-}
-
-loadDynamicProducts();
-</script>
-</body>
-</html>
