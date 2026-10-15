@@ -26,13 +26,32 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 .cat-item{display:flex;flex-direction:column;align-items:center;min-width:65px;font-size:11px;font-weight:600;color:#475569;cursor:pointer;}
 .cat-icon{width:48px;height:48px;background:#e0f2fe;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:4px;}
 
-/* BANNER SLIDER CAROUSEL */
-.banner-container{padding:12px 15px;overflow:hidden;}
-.slider-wrapper{display:flex;transition:transform 0.5s ease-in-out;width:100%;}
-.promo-card{min-width:100%;background:linear-gradient(135deg,#0284c7,#0284c7);color:#fff;padding:18px;border-radius:16px;box-shadow:0 4px 15px rgba(2,132,199,0.3);flex-shrink:0;}
+/* BANNER SLIDER CAROUSEL (FITTED & TOUCH SWIPE ENABLED) */
+.banner-container{padding:12px 15px;overflow:hidden;position:relative;width:100%;touch-action:pan-y;}
+.slider-wrapper{display:flex;transition:transform 0.4s ease-out;width:100%;cursor:grab;}
+.promo-card{
+    min-width:100%;
+    width:100%;
+    height:160px;
+    background:linear-gradient(135deg,#0284c7,#0369a1);
+    color:#fff;
+    padding:16px;
+    border-radius:16px;
+    box-shadow:0 4px 15px rgba(2,132,199,0.2);
+    flex-shrink:0;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    box-sizing:border-box;
+}
 .promo-card.alt{background:linear-gradient(135deg,#eab308,#ca8a04);}
-.promo-card h3{font-size:18px;font-weight:800;}
-.promo-card p{font-size:13px;margin-top:4px;}
+.promo-card h3{font-size:17px;font-weight:800;line-height:1.2;}
+.promo-card p{font-size:12px;margin-top:6px;opacity:0.95;line-height:1.4;}
+
+/* SLIDER DOT INDICATORS */
+.slider-dots{display:flex;justify-content:center;gap:6px;margin-top:8px;}
+.dot{width:8px;height:8px;background:#cbd5e1;border-radius:50%;transition:all 0.3s;}
+.dot.active{background:#0284c7;width:20px;border-radius:10px;}
 
 /* PRODUCTS GRID */
 .section-title{font-size:16px;font-weight:700;padding:10px 15px 5px 15px;display:flex;justify-content:space-between;align-items:center;}
@@ -111,8 +130,8 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
     <div class="cat-item" onclick="openB2BAuth()"><div class="cat-icon">🏪</div> Add Your Shop</div>
 </div>
 
-<!-- BANNER SLIDER CAROUSEL -->
-<div class="banner-container">
+<!-- BANNER SLIDER CAROUSEL (FITTED & TOUCH SWIPE ENABLED) -->
+<div class="banner-container" id="bannerTouchContainer">
     <div class="slider-wrapper" id="homeBannerSlider">
         <div class="promo-card">
             <h3>💧 Jalvigo B2B & Retail Marketplace</h3>
@@ -126,6 +145,11 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
             <h3>⚡ Grow Your Beverage Business</h3>
             <p>List your shop on Jalvigo today and reach thousands of daily retail & bulk customers!</p>
         </div>
+    </div>
+    <div class="slider-dots" id="sliderDotsContainer">
+        <div class="dot active"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
     </div>
 </div>
 
@@ -169,7 +193,6 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
         <button id="adminDashboardBtn" class="primary-btn" onclick="openAdminDashboardModalDirect()" style="display:none;margin-bottom:10px;background:#082f49;">🛠️ Open Admin Dashboard</button>
         <button id="myOrdersBtn" class="primary-btn" onclick="openMyOrders()" style="margin-bottom:10px;">📦 My Orders</button>
         
-        <!-- VIP PASS SECTION FOR CUSTOMERS -->
         <div style="background:#fef08a;padding:12px;border-radius:12px;margin:12px 0;border:1px solid #eab308;text-align:center;">
             <h4 style="color:#854d0e;font-size:15px;">👑 Jalvigo VIP Membership Pass</h4>
             <p style="font-size:11px;color:#555;margin:4px 0;">Unlimited FREE Express Delivery & Priority Slots</p>
@@ -292,7 +315,7 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
   </div>
 </div>
 
-<!-- MY ORDERS MODAL (CLEAN CUSTOMER & VENDOR VIEWS) -->
+<!-- MY ORDERS MODAL -->
 <div class="modal" id="myOrdersModal">
   <div class="modal-box">
     <span class="close" onclick="closeModal('myOrdersModal')">×</span>
@@ -312,7 +335,7 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
   </div>
 </div>
 
-<!-- CHECKOUT ORDER MODAL (CLEAN CUSTOMER BILL - NO COMMISSION SHOWN) -->
+<!-- CHECKOUT ORDER MODAL -->
 <div class="modal" id="orderModal">
 <div class="modal-box">
 <span class="close" onclick="closeModal('orderModal')">×</span>
@@ -331,7 +354,6 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
     <iframe id="googleMapIframe" width="100%" height="140" frameborder="0" style="border:0;" src="" allowfullscreen></iframe>
 </div>
 
-<!-- CUSTOMER BILL SUMMARY (ONLY ITEM TOTAL & DELIVERY FEE) -->
 <div style="background:#f0f9ff;padding:12px;border-radius:10px;font-size:13px;border:1px solid #0284c7;margin:10px 0;" id="feeBreakdownBox">
     <div>📍 Store Distance: <span id="detectedDistanceText">Calculating...</span></div>
     <div>📦 Item Total: ₹<span id="checkoutSubtotal">0</span></div>
@@ -402,7 +424,7 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
     <button class="primary-btn" onclick="switchAdminTab('shops')" style="background:#059669;">Shops</button>
 </div>
 
-<!-- ORDERS & BACKEND COMMISSION TAB -->
+<!-- ORDERS & CORRECT COMMISSION TAB -->
 <div id="adminTabOrders">
     <div id="adminOrdersList"><p>Loading Orders...</p></div>
 </div>
@@ -462,18 +484,78 @@ const SHOP_LNG = 77.2090;
 const ADMIN_EMAIL = "balramnnagar0077@gmail.com";
 const DELIVERY_AGENT_PIN = "1234";
 
-// AUTO SWEEP BANNER CAROUSEL
+// ADVANCED BANNER SLIDER (AUTO-SWIPE + MANUAL TOUCH DRAG CONTROLS)
 let currentSlide = 0;
-setInterval(() => {
+let autoSlideInterval = null;
+let startX = 0;
+let currentX = 0;
+let isDragging = false;
+
+function updateSliderPosition() {
     const slider = document.getElementById("homeBannerSlider");
-    if(slider) {
-        const totalSlides = slider.children.length;
-        if(totalSlides > 0) {
-            currentSlide = (currentSlide + 1) % totalSlides;
-            slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+    const dotsContainer = document.getElementById("sliderDotsContainer");
+    if(!slider) return;
+    
+    const totalSlides = slider.children.length;
+    if(totalSlides === 0) return;
+
+    if(currentSlide >= totalSlides) currentSlide = 0;
+    if(currentSlide < 0) currentSlide = totalSlides - 1;
+
+    slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+
+    // Update Dots
+    if(dotsContainer) {
+        dotsContainer.innerHTML = "";
+        for(let i=0; i<totalSlides; i++) {
+            const dot = document.createElement("div");
+            dot.className = `dot ${i === currentSlide ? 'active' : ''}`;
+            dotsContainer.appendChild(dot);
         }
     }
-}, 3000);
+}
+
+function startAutoSlide() {
+    stopAutoSlide();
+    autoSlideInterval = setInterval(() => {
+        currentSlide++;
+        updateSliderPosition();
+    }, 3500);
+}
+
+function stopAutoSlide() {
+    if(autoSlideInterval) clearInterval(autoSlideInterval);
+}
+
+// TOUCH & SWIPE LISTENERS
+const bannerTouchArea = document.getElementById("bannerTouchContainer");
+if(bannerTouchArea) {
+    bannerTouchArea.addEventListener('touchstart', (e) => {
+        stopAutoSlide();
+        startX = e.touches[0].clientX;
+        isDragging = true;
+    }, {passive: true});
+
+    bannerTouchArea.addEventListener('touchmove', (e) => {
+        if(!isDragging) return;
+        currentX = e.touches[0].clientX;
+    }, {passive: true});
+
+    bannerTouchArea.addEventListener('touchend', () => {
+        if(!isDragging) return;
+        const diffX = startX - currentX;
+        if(Math.abs(diffX) > 40 && currentX !== 0) {
+            if(diffX > 0) currentSlide++; else currentSlide--;
+            updateSliderPosition();
+        }
+        isDragging = false;
+        startX = 0;
+        currentX = 0;
+        startAutoSlide();
+    });
+}
+
+startAutoSlide();
 
 function formatAuthEmail(inputVal) {
     const cleanVal = inputVal.trim();
@@ -694,7 +776,6 @@ function openVendorAddProductModal() {
     loadVendorMyProducts();
 }
 
-// VENDOR PRODUCT SUBMISSION
 async function submitVendorProduct() {
     const name = document.getElementById("vProdName").value.trim();
     const quantity = document.getElementById("vProdQty").value.trim();
@@ -769,7 +850,6 @@ async function deleteVendorProduct(id) {
     }
 }
 
-// MY ORDERS VIEW FOR CUSTOMERS (NO COMMISSION DISPLAYED)
 async function openMyOrders() {
     closeModal('accountModal');
     const { data: { user } } = await supabaseClient.auth.getUser();
@@ -902,9 +982,9 @@ function calculateCheckoutFees() {
     
     let deliveryFee = 0;
     if (subtotal > 250) {
-        deliveryFee = 7; // Convenience fee for > ₹250
+        deliveryFee = 7;
     } else {
-        deliveryFee = Math.round(calculatedDistanceKM * 5); // ₹5/KM for < ₹250
+        deliveryFee = Math.round(calculatedDistanceKM * 5);
     }
 
     let grandTotal = subtotal + deliveryFee;
@@ -924,7 +1004,7 @@ async function sendOrder(){
     if(!name || !mobile || !address){ alert("Fill all delivery details!"); return; }
 
     let subtotal = 0; cart.forEach(i => subtotal += i.price * i.qty);
-    let commission = Math.round(subtotal * 0.05); // 5% Backend Jalvigo Admin Commission
+    let commission = Math.round(subtotal * 0.05);
     let deliveryFee = subtotal > 250 ? 7 : Math.round(calculatedDistanceKM * 5);
     let grandTotal = subtotal + deliveryFee;
     let shopPayout = grandTotal - commission;
@@ -1044,6 +1124,7 @@ async function addNewPromoBanner() {
     newCard.innerHTML = `<h3>${title}</h3><p>${desc}</p>`;
     slider.appendChild(newCard);
 
+    updateSliderPosition();
     showNotification("Promo Banner Published to Home Slider!");
     alert("✅ Banner live on website home page!");
     document.getElementById("bannerTitle").value = "";
@@ -1117,7 +1198,7 @@ async function deleteProductById(id) {
     }
 }
 
-// ADMIN DASHBOARD ORDERS & REVENUE (SHOWS ADMIN 5% COMMISSION CLEARLY)
+// CORRECT ADMIN ORDERS & COMMISSION CALCULATION VIEW
 async function loadAdminOrders(){
     const list = document.getElementById("adminOrdersList");
     const { data } = await supabaseClient.from("orders").select("*").order("order_date", { ascending: false });
@@ -1125,13 +1206,19 @@ async function loadAdminOrders(){
         list.innerHTML = "<p style='padding:15px;text-align:center;'>No orders received yet.</p>";
         return;
     }
-    list.innerHTML = data.map(o => `
-        <div style="border:1px solid #ccc;padding:10px;margin:5px 0;background:#fff;border-radius:8px;">
-            <b>#${o.order_id}</b> - ${o.customer_name} (Total: ₹${o.total})<br>
-            <small>📍 ${o.address}</small><br>
-            <small style="color:#0369a1;font-weight:bold;">Jalvigo Admin Commission (5%): ₹${o.commission || Math.round((o.subtotal||o.total)*0.05)} | Net Seller Payout: ₹${o.shop_payout || o.total}</small>
-        </div>
-    `).join('');
+    list.innerHTML = data.map(o => {
+        let comm = o.commission || Math.round((o.subtotal || o.total) * 0.05);
+        let netPayout = o.shop_payout || (o.total - comm);
+        return `
+            <div style="border:1px solid #ccc;padding:10px;margin:5px 0;background:#fff;border-radius:8px;">
+                <b>#${o.order_id}</b> - ${o.customer_name} (Total: ₹${o.total})<br>
+                <small>📍 ${o.address}</small><br>
+                <small style="color:#0369a1;font-weight:bold;">
+                    Jalvigo Admin Commission (5%): ₹${comm} | Net Seller Payout: ₹${netPayout}
+                </small>
+            </div>
+        `;
+    }).join('');
 }
 
 async function loadAdminRegisteredShops(){
