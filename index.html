@@ -671,10 +671,16 @@ async function executeCustomerLogin() {
         .eq("username", usernameVal)
         .eq("password", passwordVal);
 
-    if(error || !data || data.length === 0) {
-        alert("Login Error: Mobile/Email ya Password Galat Hai!");
-        return;
-    }
+    if (error) {
+    console.error("Customer Login Database Error:", error);
+    alert("Database Error: " + error.message);
+    return;
+}
+
+if (!data || data.length === 0) {
+    alert("Account match nahi hua. Mobile/Email aur Password check karein.");
+    return;
+}
 
     currentLoggedInUser = { username: usernameVal };
     localStorage.setItem("jalvigo_logged_user", JSON.stringify(currentLoggedInUser));
