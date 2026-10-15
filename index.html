@@ -26,7 +26,7 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 .cat-item{display:flex;flex-direction:column;align-items:center;min-width:65px;font-size:11px;font-weight:600;color:#475569;cursor:pointer;}
 .cat-icon{width:48px;height:48px;background:#e0f2fe;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:4px;}
 
-/* BANNER SLIDER CAROUSEL */
+/* BANNER CAROUSEL */
 .banner-container{padding:12px 15px;overflow:hidden;position:relative;width:100%;touch-action:pan-y;}
 .slider-wrapper{display:flex;transition:transform 0.4s ease-out;width:100%;cursor:grab;}
 .promo-card{
@@ -122,9 +122,9 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 
 <!-- CATEGORY NAV -->
 <div class="category-nav">
-    <div class="cat-item" onclick="selectCategory('All')"><div class="cat-icon">🛍️</div> For You</div>
-    <div class="cat-item" onclick="selectCategory('Water')"><div class="cat-icon">💧</div> Water Jars</div>
-    <div class="cat-item" onclick="selectCategory('Drinks')"><div class="cat-icon">🥤</div> Cold Drinks</div>
+    <div class="cat-item" onclick="filterProductsByCategory('All')"><div class="cat-icon">🛍️</div> For You</div>
+    <div class="cat-item" onclick="filterProductsByCategory('Water')"><div class="cat-icon">💧</div> Water Jars</div>
+    <div class="cat-item" onclick="filterProductsByCategory('Drinks')"><div class="cat-icon">🥤</div> Cold Drinks</div>
     <div class="cat-item" onclick="openB2BAuth()"><div class="cat-icon">🏪</div> Add Your Shop</div>
 </div>
 
@@ -194,7 +194,7 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
         <div style="background:#fef08a;padding:12px;border-radius:12px;margin:12px 0;border:1px solid #eab308;text-align:center;">
             <h4 style="color:#854d0e;font-size:15px;">👑 Jalvigo VIP Membership Pass</h4>
             <p style="font-size:11px;color:#555;margin:4px 0;">Unlimited FREE Express Delivery & Priority Slots</p>
-            <button class="vip-btn" onclick="openSubModal()" style="margin-top:6px;background:#ca8a04;color:white;">View VIP Plans</button>
+            <button class="vip-btn" onclick="openSubModal()" style="margin-top:6px;background:#ca8a04;color:white;border:none;padding:6px 12px;border-radius:8px;cursor:pointer;">View VIP Plans</button>
         </div>
 
         <button class="primary-btn" onclick="userLogout()" style="background:#dc2626;">🚪 Logout</button>
@@ -258,7 +258,7 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
   </div>
 </div>
 
-<!-- CUSTOMER AUTH MODAL (FIXED SEPARATE SIGNUP/LOGIN FUNCTIONALITY) -->
+<!-- CUSTOMER AUTH MODAL -->
 <div class="modal" id="customerAuthModal">
   <div class="modal-box">
     <span class="close" onclick="closeModal('customerAuthModal')">×</span>
@@ -527,13 +527,13 @@ function updateSliderPosition() {
     if(currentSlide >= totalSlides) currentSlide = 0;
     if(currentSlide < 0) currentSlide = totalSlides - 1;
 
-    slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+    slider.style.transform = "translateX(-" + (currentSlide * 100) + "%)";
 
     if(dotsContainer) {
         dotsContainer.innerHTML = "";
         for(let i=0; i<totalSlides; i++) {
             const dot = document.createElement("div");
-            dot.className = `dot ${i === currentSlide ? 'active' : ''}`;
+            dot.className = "dot " + (i === currentSlide ? "active" : "");
             dotsContainer.appendChild(dot);
         }
     }
@@ -601,10 +601,7 @@ function togglePaymentUi() {
     }
 }
 
-// -------------------------------------------------------------
-// 100% WORKING SEPARATE SIGNUP & LOGIN FUNCTIONS
-// -------------------------------------------------------------
-
+// SIGNUP FUNCTION
 async function executeCustomerSignup() {
     const inputField = document.getElementById("customerAuthInput");
     const passwordField = document.getElementById("customerPassword");
@@ -613,24 +610,22 @@ async function executeCustomerSignup() {
     const passwordVal = passwordField ? passwordField.value.trim() : "";
 
     if(!usernameVal || !passwordVal) {
-        alert("Account banane ke liye Mobile/Email aur Password dono Bharein!");
+        alert("Mobile/Email aur Password dono Bharein!");
         return;
     }
 
-    showNotification("Creating your account...");
+    showNotification("Creating account...");
 
-    // 1. Pehle dekhein account pehle se toh nahi hai
     const { data: existingUser } = await supabaseClient
         .from("customers")
         .select("*")
         .eq("username", usernameVal);
 
     if(existingUser && existingUser.length > 0) {
-        alert("⚠️ Iss Mobile/Email se pehle se account bana hua hai! Kripya LOGIN karein.");
+        alert("Iss Mobile/Email se pehle se account bana hua hai! Kripya LOGIN karein.");
         return;
     }
 
-    // 2. Direct Supabase Database Table (`customers`) me data save karein
     const { error } = await supabaseClient
         .from("customers")
         .insert([{
@@ -640,20 +635,20 @@ async function executeCustomerSignup() {
         }]);
 
     if(error) {
-        alert("Signup Error: Supabase Table me data save nahi hua. " + error.message);
+        alert("Signup Error: " + error.message);
         return;
     }
 
-    // Auto-login after successful signup
     currentLoggedInUser = { username: usernameVal };
     localStorage.setItem("jalvigo_logged_user", JSON.stringify(currentLoggedInUser));
 
-    triggerBothNotifications("Jalvigo Account 🎉", "Naya Account Ban Gaya Hai!");
-    alert("✅ Aapka Naya Account Safaltapurvak Ban Gaya Hai!");
+    triggerBothNotifications("Jalvigo Account 🎉", "Account Created Successfully!");
+    alert("✅ Aapka Account Ban Gaya Hai!");
     closeModal('customerAuthModal');
     handleAccountClick();
 }
 
+// LOGIN FUNCTION
 async function executeCustomerLogin() {
     const inputField = document.getElementById("customerAuthInput");
     const passwordField = document.getElementById("customerPassword");
@@ -662,11 +657,10 @@ async function executeCustomerLogin() {
     const passwordVal = passwordField ? passwordField.value.trim() : "";
 
     if(!usernameVal || !passwordVal) {
-        alert("Login karne ke liye Mobile/Email aur Password Bharein!");
+        alert("Mobile/Email aur Password Bharein!");
         return;
     }
 
-    // Admin Access Bypass
     if(usernameVal.toLowerCase() === ADMIN_EMAIL.toLowerCase() && passwordVal === "admin123") {
         currentLoggedInUser = { username: ADMIN_EMAIL };
         localStorage.setItem("jalvigo_logged_user", JSON.stringify(currentLoggedInUser));
@@ -677,7 +671,6 @@ async function executeCustomerLogin() {
 
     showNotification("Logging in...");
 
-    // Database check
     const { data, error } = await supabaseClient
         .from("customers")
         .select("*")
@@ -685,14 +678,14 @@ async function executeCustomerLogin() {
         .eq("password", passwordVal);
 
     if(error || !data || data.length === 0) {
-        alert("❌ Login Error: Mobile/Email ya Password Galat Hai!");
+        alert("Login Error: Mobile/Email ya Password Galat Hai!");
         return;
     }
 
     currentLoggedInUser = { username: usernameVal };
     localStorage.setItem("jalvigo_logged_user", JSON.stringify(currentLoggedInUser));
 
-    triggerBothNotifications("Welcome Back 🎉", "Aap Successfully Login Ho Gaye Hain!");
+    triggerBothNotifications("Welcome Back 🎉", "Logged in successfully!");
     closeModal('customerAuthModal');
     handleAccountClick();
 }
@@ -710,12 +703,11 @@ async function executePasswordReset() {
 
     await supabaseClient.from("customers").update({ password: newPassword }).eq("username", inputVal);
     showNotification("Password Reset Successful!");
-    alert("✅ Password updated successfully! Log in with your new password.");
+    alert("✅ Password updated successfully!");
     closeModal('forgotPasswordModal');
     openCustomerAuth();
 }
 
-// PUSH NOTIFICATIONS
 if ('serviceWorker' in navigator && 'Notification' in window) {
     navigator.serviceWorker.register('sw.js').then(reg => {
         console.log('Push Service Worker Registered!', reg);
@@ -735,7 +727,7 @@ if ('serviceWorker' in navigator && 'Notification' in window) {
 }
 
 function triggerBothNotifications(title, bodyMsg) {
-    showNotification(`${title}: ${bodyMsg}`);
+    showNotification(title + ": " + bodyMsg);
     sendNativePushNotification(title, bodyMsg);
 }
 
@@ -765,8 +757,8 @@ function selectVipPlan(amt, dur, cardId) {
     selectedVipDuration = dur;
     document.querySelectorAll('.plan-btn-card').forEach(c => c.classList.remove('active'));
     document.getElementById(cardId).classList.add('active');
-    document.getElementById("selectedVipText").innerText = `₹${amt} (${dur} Access)`;
-    document.getElementById("vipUpiQr").src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=balramnnagar@okaxis%26pn=Jalvigo%20VIP%26am=${amt}%26cu=INR`;
+    document.getElementById("selectedVipText").innerText = "₹" + amt + " (" + dur + " Access)";
+    document.getElementById("vipUpiQr").src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=balramnnagar@okaxis%26pn=Jalvigo%20VIP%26am=" + amt + "%26cu=INR";
 }
 
 function getGPSLocation() {
@@ -777,19 +769,19 @@ function getGPSLocation() {
             userLng = position.coords.longitude;
             calculatedDistanceKM = calculateHaversineDistance(SHOP_LAT, SHOP_LNG, userLat, userLng);
             
-            document.getElementById("locText").innerText = `${userLat.toFixed(2)}, ${userLng.toFixed(2)} (${calculatedDistanceKM.toFixed(1)} KM)`;
+            document.getElementById("locText").innerText = userLat.toFixed(2) + ", " + userLng.toFixed(2) + " (" + calculatedDistanceKM.toFixed(1) + " KM)";
             const streetAreaInput = document.getElementById("streetArea");
-            if(streetAreaInput) streetAreaInput.value = `GPS Pin: ${userLat.toFixed(4)}, ${userLng.toFixed(4)}`;
+            if(streetAreaInput) streetAreaInput.value = "GPS Pin: " + userLat.toFixed(4) + ", " + userLng.toFixed(4);
 
             const mapContainer = document.getElementById("mapContainer");
             const mapIframe = document.getElementById("googleMapIframe");
             if(mapContainer && mapIframe) {
-                mapIframe.src = `https://maps.google.com/maps?q=${userLat},${userLng}&z=15&output=embed`;
+                mapIframe.src = "https://maps.google.com/maps?q=" + userLat + "," + userLng + "&z=15&output=embed";
                 mapContainer.style.display = "block";
             }
 
             autoDecideDeliverySlot(calculatedDistanceKM);
-            triggerBothNotifications("Location Updated", `Store Distance: ~${calculatedDistanceKM.toFixed(1)} KM`);
+            triggerBothNotifications("Location Updated", "Store Distance: ~" + calculatedDistanceKM.toFixed(1) + " KM");
         }, () => {
             autoDecideDeliverySlot(1.0);
         });
@@ -813,7 +805,7 @@ function autoDecideDeliverySlot(distKM) {
 
     const distElem = document.getElementById("detectedDistanceText");
     const slotElem = document.getElementById("estimatedDeliverySlotDisplay");
-    if(distElem) distElem.innerText = `~${distKM.toFixed(1)} KM from Store`;
+    if(distElem) distElem.innerText = "~" + distKM.toFixed(1) + " KM from Store";
     if(slotElem) slotElem.innerText = slotText;
 
     return slotText;
@@ -872,7 +864,7 @@ async function handleAccountClick() {
     if(currentLoggedInUser){
         document.getElementById("authButtonsSection").style.display = "none";
         document.getElementById("loggedInSection").style.display = "block";
-        document.getElementById("userEmailText").innerText = `Account: ${currentLoggedInUser.username}`;
+        document.getElementById("userEmailText").innerText = "Account: " + currentLoggedInUser.username;
 
         if(currentLoggedInUser.username.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
             document.getElementById("adminDashboardBtn").style.display = "block";
@@ -915,7 +907,7 @@ async function submitVendorProduct() {
     if (imageFile) {
         showNotification("Uploading product photo...");
         const fileExt = imageFile.name.split('.').pop();
-        const fileName = `prod_${Date.now()}.${fileExt}`;
+        const fileName = "prod_" + Date.now() + "." + fileExt;
         const { data: uploadData, error: uploadError } = await supabaseClient.storage.from('products').upload(fileName, imageFile);
         if (!uploadError) {
             const { data: urlData } = supabaseClient.storage.from('products').getPublicUrl(fileName);
@@ -936,7 +928,7 @@ async function submitVendorProduct() {
         created_at: new Date().toISOString()
     }]);
 
-    triggerBothNotifications("New Product Live 🎉", `${name} (${quantity}) added with ${discountPercent}% OFF!`);
+    triggerBothNotifications("New Product Live 🎉", name + " (" + quantity + ") added with " + discountPercent + "% OFF!");
     alert("✅ Product published successfully!");
     document.getElementById("vProdName").value = "";
     document.getElementById("vProdQty").value = "";
@@ -984,7 +976,7 @@ async function openMyOrders() {
     const { data: orders, error } = await supabaseClient.from("orders").select("*").eq("user_id", currentLoggedInUser.username).order("order_date", { ascending: false });
     
     if(error || !orders || orders.length === 0) {
-        container.innerHTML = `<p style="text-align:center;color:#64748b;padding:15px;">No orders found.</p>`;
+        container.innerHTML = "<p style='text-align:center;color:#64748b;padding:15px;'>No orders found.</p>";
         return;
     }
 
@@ -1002,12 +994,12 @@ async function openMyOrders() {
 
 async function renderPublicNearbyStores() {
     const list = document.getElementById("storesList");
-    list.innerHTML = `<p style="padding:15px;text-align:center;color:#64748b;">Loading nearby stores...</p>`;
+    list.innerHTML = "<p style='padding:15px;text-align:center;color:#64748b;'>Loading nearby stores...</p>";
     
     const { data: stores, error } = await supabaseClient.from("business_profiles").select("*");
 
     if(error || !stores || stores.length === 0){
-        list.innerHTML = `<p style="padding:15px;text-align:center;color:#64748b;">No registered stores found nearby yet.</p>`;
+        list.innerHTML = "<p style='padding:15px;text-align:center;color:#64748b;'>No registered stores found nearby yet.</p>";
         return;
     }
     list.innerHTML = stores.map(s => `
@@ -1021,7 +1013,7 @@ async function renderPublicNearbyStores() {
 
 function activateVipSubscription(){
     isVipMember = true;
-    triggerBothNotifications("Jalvigo VIP Pass", `VIP (${selectedVipDuration}) Membership Activated! Free Delivery Unlocked.`);
+    triggerBothNotifications("Jalvigo VIP Pass", "VIP (" + selectedVipDuration + ") Membership Activated!");
     closeModal('subModal');
     updateCart();
 }
@@ -1054,6 +1046,16 @@ function renderProducts(prods) {
     `).join('');
 }
 
+function filterProductsByCategory(cat) {
+    if (cat === 'All') {
+        renderProducts(allProductsList);
+    } else if (cat === 'Water') {
+        renderProducts(allProductsList.filter(p => p.name.toLowerCase().includes('water') || p.name.toLowerCase().includes('jar')));
+    } else if (cat === 'Drinks') {
+        renderProducts(allProductsList.filter(p => p.name.toLowerCase().includes('drink') || p.name.toLowerCase().includes('cold') || p.name.toLowerCase().includes('soda')));
+    }
+}
+
 function filterProducts(){
     const query = document.getElementById("productSearchInput").value.toLowerCase();
     renderProducts(allProductsList.filter(p => p.name.toLowerCase().includes(query)));
@@ -1063,7 +1065,7 @@ function addToCart(name, price){
     let item = cart.find(p => p.name === name);
     if(item) item.qty++; else cart.push({name, price, qty:1});
     updateCart();
-    triggerBothNotifications("Cart Updated", `${name} added to cart!`);
+    triggerBothNotifications("Cart Updated", name + " added to cart!");
 }
 
 function updateCart(){
@@ -1109,8 +1111,8 @@ function calculateCheckoutFees() {
     document.getElementById("checkoutDeliveryFee").innerText = deliveryFee;
     document.getElementById("checkoutGrandTotal").innerText = grandTotal;
 
-    const upiUri = `upi://pay?pa=balramnnagar@okaxis&pn=Jalvigo%20Marketplace&am=${grandTotal}&cu=INR`;
-    document.getElementById("orderCheckoutUpiQr").src = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(upiUri)}`;
+    const upiUri = "upi://pay?pa=balramnnagar@okaxis&pn=Jalvigo%20Marketplace&am=" + grandTotal + "&cu=INR";
+    document.getElementById("orderCheckoutUpiQr").src = "https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=" + encodeURIComponent(upiUri);
     document.getElementById("directUpiLinkBtn").href = upiUri;
 }
 
@@ -1133,7 +1135,7 @@ async function sendOrder(){
 
     const orderId = "JAL" + Date.now();
     const slotText = autoDecideDeliverySlot(calculatedDistanceKM);
-    const fullAddress = `${address} | Distance: ~${calculatedDistanceKM.toFixed(1)} KM | Slot: ${slotText} | Pay: ${paymentMethod} ${utr ? '(UTR:'+utr+')' : ''}`;
+    const fullAddress = address + " | Distance: ~" + calculatedDistanceKM.toFixed(1) + " KM | Slot: " + slotText + " | Pay: " + paymentMethod + (utr ? " (UTR:" + utr + ")" : "");
 
     await supabaseClient.from("orders").insert([{
         order_id: orderId, 
@@ -1153,10 +1155,10 @@ async function sendOrder(){
 
     triggerBothNotifications(
         "💰 New Order Received!", 
-        `Order #${orderId} of ₹${grandTotal} received. Admin Comm: ₹${commission} | Net Shop Payout (₹${shopPayout}) will be transferred T+1 (Next Day) after delivery.`
+        "Order #" + orderId + " of ₹" + grandTotal + " received."
     );
 
-    alert(`🎉 Order Placed Successfully!\n\nOrder ID: #${orderId}\nTotal Paid: ₹${grandTotal}\n\n📢 Note for Seller/Shopkeeper: Order deliver hone ke baad aapka Net Payout (₹${shopPayout}) T+1 (Agale din) aapke account/UPI me transfer ho jayega.`);
+    alert("🎉 Order Placed Successfully!\n\nOrder ID: #" + orderId + "\nTotal Paid: ₹" + grandTotal + "\n\n📢 Note for Seller/Shopkeeper: Order deliver hone ke baad aapka Net Payout (₹" + shopPayout + ") T+1 (Agale din) aapke account/UPI me transfer ho jayega.");
 
     cart = []; updateCart(); closeModal('orderModal');
 }
@@ -1198,3 +1200,136 @@ function switchAdminTab(tabName) {
 
 async function addNewPromoBanner() {
     const title = document.getElementById("bannerTitle").value.trim();
+    const desc = document.getElementById("bannerDesc").value.trim();
+    if(!title || !desc) { alert("Enter title and description!"); return; }
+
+    const slider = document.getElementById("homeBannerSlider");
+    const newCard = document.createElement("div");
+    newCard.className = "promo-card alt";
+    newCard.innerHTML = "<h3>" + title + "</h3><p>" + desc + "</p>";
+    slider.appendChild(newCard);
+
+    updateSliderPosition();
+    showNotification("Promo Banner Published to Home Slider!");
+    alert("✅ Banner live on website home page!");
+    document.getElementById("bannerTitle").value = "";
+    document.getElementById("bannerDesc").value = "";
+}
+
+async function addNewProductWithImage() {
+    const name = document.getElementById("newProdName").value.trim();
+    const quantity = document.getElementById("newProdQty").value.trim();
+    const price = document.getElementById("newProdPrice").value.trim();
+    const mrp = document.getElementById("newProdMrp").value.trim();
+    const imageFile = document.getElementById("newProdImageFile").files[0];
+
+    if(!name || !price){ alert("Product Name and Price required!"); return; }
+
+    let imageUrl = null;
+    if (imageFile) {
+        showNotification("Uploading product photo...");
+        const fileExt = imageFile.name.split('.').pop();
+        const fileName = "prod_" + Date.now() + "." + fileExt;
+        const { data: uploadData, error: uploadError } = await supabaseClient.storage.from('products').upload(fileName, imageFile);
+        if (!uploadError) {
+            const { data: urlData } = supabaseClient.storage.from('products').getPublicUrl(fileName);
+            imageUrl = urlData.publicUrl;
+        }
+    }
+
+    let discountPercent = mrp && mrp > price ? Math.round(((mrp - price) / mrp) * 100) : 0;
+
+    await supabaseClient.from("products").insert([{ 
+        name, 
+        quantity: quantity || 'Standard',
+        price: Number(price), 
+        mrp: mrp ? Number(mrp) : null, 
+        discount: discountPercent, 
+        image_url: imageUrl, 
+        created_at: new Date().toISOString() 
+    }]);
+
+    triggerBothNotifications("Product Live 🎉", name + " added with " + discountPercent + "% discount!");
+    alert("✅ Product Added Successfully!");
+    document.getElementById("newProdName").value = "";
+    document.getElementById("newProdQty").value = "";
+    document.getElementById("newProdPrice").value = "";
+    document.getElementById("newProdMrp").value = "";
+    document.getElementById("newProdImageFile").value = "";
+    loadDynamicProducts();
+}
+
+async function loadAdminProductsToManage() {
+    const list = document.getElementById("adminProductsManageList");
+    const { data: products } = await supabaseClient.from("products").select("*").order("created_at", { ascending: false });
+    if(!products || products.length === 0){
+        list.innerHTML = "<p>No products available.</p>";
+        return;
+    }
+    list.innerHTML = products.map(p => `
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid #e2e8f0;background:#fff;margin-top:6px;border-radius:8px;">
+            <div><b>${p.name}</b> (${p.quantity || 'Std'}) - ₹${p.price}</div>
+            <button onclick="deleteProductById('${p.id}')" style="background:#dc2626;color:white;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;">Delete</button>
+        </div>
+    `).join('');
+}
+
+async function deleteProductById(id) {
+    if(confirm("Delete this product?")) {
+        await supabaseClient.from("products").delete().eq("id", id);
+        showNotification("Product Deleted!");
+        loadAdminProductsToManage();
+        loadDynamicProducts();
+    }
+}
+
+async function loadAdminOrders(){
+    const list = document.getElementById("adminOrdersList");
+    const { data } = await supabaseClient.from("orders").select("*").order("order_date", { ascending: false });
+    if(!data || data.length === 0) {
+        list.innerHTML = "<p style='padding:15px;text-align:center;'>No orders received yet.</p>";
+        return;
+    }
+    list.innerHTML = data.map(o => {
+        let comm = o.commission || Math.round((o.subtotal || o.total) * 0.05);
+        let netPayout = o.shop_payout || (o.total - comm);
+        return `
+            <div style="border:1px solid #ccc;padding:10px;margin:5px 0;background:#fff;border-radius:8px;">
+                <b>#${o.order_id}</b> - ${o.customer_name} (Total Paid: ₹${o.total})<br>
+                <small>📍 ${o.address}</small><br>
+                <small style="color:#0369a1;font-weight:bold;">
+                    Jalvigo Admin Comm (5%): ₹${comm} | Net Shop Payout: ₹${netPayout} (T+1 Settlement)
+                </small>
+            </div>
+        `;
+    }).join('');
+}
+
+async function loadAdminRegisteredShops(){
+    const list = document.getElementById("adminShopsList");
+    const { data, error } = await supabaseClient.from("business_profiles").select("*");
+    if(error || !data || data.length === 0) {
+        list.innerHTML = "<p style='padding:15px;text-align:center;color:#64748b;'>No registered shops found.</p>";
+        return;
+    }
+    list.innerHTML = data.map(s => `
+        <div style="border:1px solid #059669;padding:10px;margin:5px 0;background:#f0fdf4;border-radius:8px;">
+            <b>🏪 ${s.business_name}</b> (${s.owner_name})<br>
+            <small>📍 ${s.address || 'Address N/A'} - Pincode: ${s.pincode || 'N/A'}</small><br>
+            <small>GST: ${s.gst_number || 'Optional / None'}</small><br>
+            <b>Mobile: ${s.mobile}</b>
+        </div>
+    `).join('');
+}
+
+function userLogout(){
+    currentLoggedInUser = null;
+    localStorage.removeItem("jalvigo_logged_user");
+    closeModal('accountModal');
+    triggerBothNotifications("Logged Out", "You have been logged out.");
+}
+
+loadDynamicProducts();
+</script>
+</body>
+</html>
