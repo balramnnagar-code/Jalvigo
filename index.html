@@ -26,21 +26,27 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 .cat-item{display:flex;flex-direction:column;align-items:center;min-width:65px;font-size:11px;font-weight:600;color:#475569;cursor:pointer;}
 .cat-icon{width:48px;height:48px;background:#e0f2fe;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:4px;}
 
-/* BANNER */
-.banner-container{padding:12px 15px;}
-.promo-card{background:linear-gradient(135deg,#eab308,#ca8a04);color:#fff;padding:18px;border-radius:16px;box-shadow:0 4px 15px rgba(234,179,8,0.3);}
+/* BANNER SLIDER CAROUSEL (AUTO 3 SEC SWEEP) */
+.banner-container{padding:12px 15px;overflow:hidden;}
+.slider-wrapper{display:flex;transition:transform 0.5s ease-in-out;width:100%;}
+.promo-card{min-width:100%;background:linear-gradient(135deg,#0284c7,#0284c7);color:#fff;padding:18px;border-radius:16px;box-shadow:0 4px 15px rgba(2,132,199,0.3);flex-shrink:0;}
+.promo-card.alt{background:linear-gradient(135deg,#eab308,#ca8a04);}
 .promo-card h3{font-size:18px;font-weight:800;}
-.vip-btn{background:white;color:#854d0e;border:none;padding:8px 14px;border-radius:20px;font-weight:bold;font-size:12px;margin-top:10px;cursor:pointer;}
+.promo-card p{font-size:13px;margin-top:4px;}
 
 /* PRODUCTS GRID */
 .section-title{font-size:16px;font-weight:700;padding:10px 15px 5px 15px;display:flex;justify-content:space-between;align-items:center;}
 .products-grid{display:grid;grid-template-columns:repeat(2, 1fr);gap:12px;padding:10px 15px;}
-.product-card{background:white;border-radius:16px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.04);display:flex;flex-direction:column;justify-content:space-between;align-items:center;}
+.product-card{background:white;border-radius:16px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.04);display:flex;flex-direction:column;justify-content:space-between;align-items:center;position:relative;}
+.discount-badge{position:absolute;top:10px;left:10px;background:#ef4444;color:white;font-size:10px;padding:2px 6px;border-radius:6px;font-weight:bold;}
 .prod-img{width:90px;height:90px;object-fit:contain;margin:8px 0;border-radius:10px;}
 .prod-emoji{font-size:42px;margin:8px 0;}
-.prod-title{font-size:14px;font-weight:600;color:#1e293b;margin-bottom:4px;}
-.prod-price{font-size:16px;font-weight:700;color:#0284c7;}
-.add-btn{background:#0284c7;color:white;border:none;padding:8px;border-radius:10px;font-weight:bold;font-size:13px;width:100%;margin-top:8px;cursor:pointer;}
+.prod-title{font-size:14px;font-weight:600;color:#1e293b;margin-bottom:2px;}
+.prod-qty{font-size:11px;color:#64748b;margin-bottom:4px;}
+.price-box{display:flex;gap:6px;align-items:center;justify-content:center;margin:6px 0;}
+.prod-price{font-size:15px;font-weight:700;color:#0284c7;}
+.prod-mrp{font-size:12px;color:#94a3b8;text-decoration:line-through;}
+.add-btn{background:#0284c7;color:white;border:none;padding:8px;border-radius:10px;font-weight:bold;font-size:13px;width:100%;cursor:pointer;}
 
 /* FIXED BOTTOM APP NAVIGATION BAR */
 .bottom-nav{
@@ -93,7 +99,7 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
         </div>
     </div>
     <div class="search-bar">
-        🔍 <input type="text" id="productSearchInput" placeholder="Search Water Jar, Cold Drink, Beverages..." onkeyup="filterProducts()">
+        🔍 <input type="text" id="productSearchInput" placeholder="Search Water Jars, Cold Drinks, Beverages..." onkeyup="filterProducts()">
     </div>
 </header>
 
@@ -105,19 +111,28 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
     <div class="cat-item" onclick="openB2BAuth()"><div class="cat-icon">🏪</div> Add Your Shop</div>
 </div>
 
-<!-- BANNER -->
+<!-- BANNER SLIDER CAROUSEL (AUTO SWEEP EVERY 3s & ADS) -->
 <div class="banner-container">
-    <div class="promo-card">
-        <h3>👑 Jalvigo VIP Membership Pass</h3>
-        <p>Unlimited FREE Delivery & Priority Same-Day Slot!</p>
-        <p style="font-size:11px; margin-top:4px; opacity:0.95;">Choose Plan: <b>₹99</b> / 1 Mo • <b>₹499</b> / 6 Mo • <b>₹799</b> / 1 Yr</p>
-        <button class="vip-btn" onclick="openSubModal()">View Plans & Join VIP</button>
+    <div class="slider-wrapper" id="homeBannerSlider">
+        <div class="promo-card">
+            <h3>💧 Jalvigo B2B & Retail Marketplace</h3>
+            <p>India's Fastest Water & Beverage Delivery Network. Connect with local verified dealers instantly!</p>
+        </div>
+        <div class="promo-card alt">
+            <h3>🥤 Premium Cold Drinks & Beverages</h3>
+            <p>Direct wholesale rates from top authorized dealers with express 30-min delivery slots.</p>
+        </div>
+        <div class="promo-card" style="background:linear-gradient(135deg,#059669,#047857);">
+            <h3>⚡ Grow Your Beverage Business</h3>
+            <p>List your shop on Jalvigo today and reach thousands of daily retail & bulk customers!</p>
+        </div>
     </div>
 </div>
 
 <!-- PRODUCTS GRID -->
 <div class="section-title">
-    <span>⚡ All Products</span>
+    <span>⚡ All Products & Beverages</span>
+    <span style="font-size:12px;color:#0284c7;font-weight:600;cursor:pointer;" onclick="loadDynamicProducts()">🔄 Refresh</span>
 </div>
 <div class="products-grid" id="dynamicProductsList">
     <p style="grid-column:1/-1;text-align:center;padding:20px;color:#64748b;">Loading products...</p>
@@ -134,6 +149,39 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
     <button class="nav-item" onclick="handleAccountClick()"><span class="nav-icon">👤</span> Account</button>
 </div>
 
+<!-- ACCOUNT MODAL (VIP MEMBERSHIP SHIFTED INSIDE ACCOUNT) -->
+<div class="modal" id="accountModal">
+  <div class="modal-box">
+    <span class="close" onclick="closeModal('accountModal')">×</span>
+    <h2>👤 Account & Dashboard</h2>
+    
+    <div id="authButtonsSection" style="margin-top:15px;">
+        <button class="primary-btn" onclick="openCustomerAuth()" style="margin-bottom:10px;">👤 Customer Login / Signup</button>
+        <button class="primary-btn" onclick="openB2BAuth()" style="margin-bottom:10px;background:#059669;">🏪 Register Shop / Dealer / Company</button>
+        <button class="primary-btn" onclick="openDeliveryModal()" style="margin-bottom:10px;background:#16a34a;">🚚 Delivery Partner Portal</button>
+        <button class="primary-btn" onclick="openAdminAuthModal()" style="background:#082f49;">🔐 Admin Login</button>
+    </div>
+
+    <div id="loggedInSection" style="display:none;margin-top:15px;">
+        <p id="userEmailText" style="margin-bottom:12px;font-weight:bold;color:#0369a1;background:#e0f2fe;padding:8px;border-radius:8px;text-align:center;"></p>
+        
+        <!-- VENDOR PRODUCT ADDITION BUTTON (FOR SHOPKEEPERS, DEALERS & ADMIN) -->
+        <button id="vendorProductAddBtn" class="primary-btn" onclick="openVendorAddProductModal()" style="display:none;margin-bottom:10px;background:#16a34a;">➕ Add & Manage My Products</button>
+        <button id="adminDashboardBtn" class="primary-btn" onclick="openAdminDashboardModalDirect()" style="display:none;margin-bottom:10px;background:#082f49;">🛠️ Open Admin Dashboard</button>
+        <button id="myOrdersBtn" class="primary-btn" onclick="openMyOrders()" style="margin-bottom:10px;">📦 My Orders & Financials</button>
+        
+        <!-- VIP PASS SECTION FOR CUSTOMERS -->
+        <div style="background:#fef08a;padding:12px;border-radius:12px;margin:12px 0;border:1px solid #eab308;text-align:center;">
+            <h4 style="color:#854d0e;font-size:15px;">👑 Jalvigo VIP Membership Pass</h4>
+            <p style="font-size:11px;color:#555;margin:4px 0;">Unlimited FREE Express Delivery & Priority Slots</p>
+            <button class="vip-btn" onclick="openSubModal()" style="margin-top:6px;background:#ca8a04;color:white;">View VIP Plans</button>
+        </div>
+
+        <button class="primary-btn" onclick="userLogout()" style="background:#dc2626;">🚪 Logout</button>
+    </div>
+  </div>
+</div>
+
 <!-- VIP MODAL -->
 <div class="modal" id="subModal">
   <div class="modal-box" style="text-align:center;">
@@ -145,17 +193,14 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
         <div class="plan-btn-card active" id="vipPlanCard1" onclick="selectVipPlan(99, '1 Month', 'vipPlanCard1')">
             <div style="font-weight:800;color:#0284c7;font-size:16px;">₹99</div>
             <div style="font-size:11px;font-weight:bold;margin-top:2px;">1 Month</div>
-            <div style="font-size:9px;color:#64748b;">₹99/mo</div>
         </div>
         <div class="plan-btn-card" id="vipPlanCard2" onclick="selectVipPlan(499, '6 Months', 'vipPlanCard2')">
             <div style="font-weight:800;color:#0284c7;font-size:16px;">₹499</div>
             <div style="font-size:11px;font-weight:bold;margin-top:2px;">6 Months</div>
-            <div style="font-size:9px;color:#16a34a;font-weight:bold;">Save 16%</div>
         </div>
         <div class="plan-btn-card" id="vipPlanCard3" onclick="selectVipPlan(799, '12 Months', 'vipPlanCard3')">
             <div style="font-weight:800;color:#0284c7;font-size:16px;">₹799</div>
             <div style="font-size:11px;font-weight:bold;margin-top:2px;">1 Year</div>
-            <div style="font-size:9px;color:#16a34a;font-weight:bold;">Save 33%</div>
         </div>
     </div>
 
@@ -163,7 +208,6 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
         <p style="font-size:13px;font-weight:bold;color:#854d0e;">
             Selected Plan: <span id="selectedVipText">₹99 (1 Month Access)</span>
         </p>
-        <small style="color:#555;font-size:11px;">Scan & Pay to activate Express Priority Delivery</small>
     </div>
 
     <img id="vipUpiQr" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=balramnnagar@okaxis%26pn=Jalvigo%20VIP%26am=99%26cu=INR" alt="UPI QR" style="width:140px;height:140px;border-radius:10px;border:2px solid #eab308;">
@@ -173,54 +217,45 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
   </div>
 </div>
 
-<!-- ACCOUNT MODAL -->
-<div class="modal" id="accountModal">
+<!-- VENDOR PRODUCT ADDITION & MANAGEMENT MODAL -->
+<div class="modal" id="vendorProductModal">
   <div class="modal-box">
-    <span class="close" onclick="closeModal('accountModal')">×</span>
-    <h2>👤 Account Access</h2>
-    
-    <div id="authButtonsSection" style="margin-top:15px;">
-        <button class="primary-btn" onclick="openCustomerAuth()" style="margin-bottom:10px;">👤 Customer Login / Signup</button>
-        <button class="primary-btn" onclick="openB2BAuth()" style="margin-bottom:10px;background:#059669;">🏪 Add / Register Your Shop</button>
-        <button class="primary-btn" onclick="openDeliveryModal()" style="margin-bottom:10px;background:#16a34a;">🚚 Delivery Partner Portal</button>
-        <button class="primary-btn" onclick="openAdminAuthModal()" style="background:#082f49;">🔐 Admin Login / Dashboard</button>
+    <span class="close" onclick="closeModal('vendorProductModal')">×</span>
+    <h2>📦 Add & Manage Products</h2>
+    <div style="background:#f8fafc;padding:12px;border-radius:12px;border:1px solid #e2e8f0;margin-top:10px;">
+        <h3>➕ Add New Product</h3>
+        <div class="form-group"><label>Product Name</label><input type="text" id="vProdName" placeholder="e.g. Bisleri 20L / Kinley 1L"></div>
+        <div class="form-group"><label>Product Quantity / Size</label><input type="text" id="vProdQty" placeholder="e.g. 20 Litre Jar / 500ml Bottle"></div>
+        <div class="form-group"><label>Actual Price / MRP (₹)</label><input type="number" id="vProdMrp" placeholder="e.g. 90"></div>
+        <div class="form-group"><label>Discounted / Selling Price (₹)</label><input type="number" id="vProdPrice" placeholder="e.g. 70"></div>
+        <div class="form-group"><label>Product Photo</label><input type="file" id="vProdImageFile" accept="image/*"></div>
+        <button class="primary-btn" onclick="submitVendorProduct()" style="background:#16a34a;margin-top:10px;">Save & Publish Product</button>
     </div>
-
-    <div id="loggedInSection" style="display:none;margin-top:15px;">
-        <p id="userEmailText" style="margin-bottom:12px;font-weight:bold;color:#0369a1;background:#e0f2fe;padding:8px;border-radius:8px;text-align:center;"></p>
-        <button id="adminDashboardBtn" class="primary-btn" onclick="openAdminDashboardModalDirect()" style="display:none;margin-bottom:10px;background:#082f49;">🛠️ Open Admin Dashboard</button>
-        <button id="myOrdersBtn" class="primary-btn" onclick="openMyOrders()" style="margin-bottom:10px;">📦 My Orders</button>
-        <button class="primary-btn" onclick="userLogout()" style="background:#dc2626;">🚪 Logout</button>
+    <div style="margin-top:15px;">
+        <h3>Your Listed Products</h3>
+        <div id="vendorMyProductsList" style="margin-top:8px;"><p>Loading products...</p></div>
     </div>
   </div>
 </div>
 
-<!-- CUSTOMER/USER AUTH MODAL (MOBILE OR EMAIL LOGIN WITH FORGOT PASSWORD) -->
+<!-- CUSTOMER AUTH MODAL -->
 <div class="modal" id="customerAuthModal">
   <div class="modal-box">
     <span class="close" onclick="closeModal('customerAuthModal')">×</span>
     <h2>👤 Login / Signup</h2>
-    <p style="font-size:12px;color:#64748b;margin-bottom:12px;">Apna Mobile Number ya Email ID aur Password use karein.</p>
-    
-    <div class="form-group">
-        <label>Mobile Number OR Email ID</label>
-        <input type="text" id="customerAuthInput" placeholder="Enter Mobile Number (10 digit) or Email">
-    </div>
-    
+    <div class="form-group"><label>Mobile Number or Email</label><input type="text" id="customerAuthInput" placeholder="9876543210 or email@domain.com"></div>
     <div class="form-group">
         <label>Password</label>
         <div class="password-box">
-            <input type="password" id="customerPassword" placeholder="Enter secret password">
+            <input type="password" id="customerPassword" placeholder="Enter password">
             <button type="button" class="eye-btn" onclick="togglePasswordVisibility('customerPassword', this)">👁️</button>
         </div>
     </div>
-
     <div style="text-align:right;margin-bottom:12px;">
         <a href="javascript:void(0)" onclick="openForgotPasswordModal()" style="font-size:12px;color:#0284c7;font-weight:bold;text-decoration:none;">Forgot Password?</a>
     </div>
-
-    <button class="primary-btn" onclick="customerLogin()" style="background:#16a34a;margin-bottom:8px;">Login Now</button>
-    <button class="primary-btn" onclick="customerSignup()" style="background:#0284c7;">Create New Account (Signup)</button>
+    <button class="primary-btn" onclick="customerLogin()" style="background:#16a34a;margin-bottom:8px;">Login</button>
+    <button class="primary-btn" onclick="customerSignup()" style="background:#0284c7;">Create New Account</button>
   </div>
 </div>
 
@@ -228,21 +263,16 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 <div class="modal" id="forgotPasswordModal">
   <div class="modal-box">
     <span class="close" onclick="closeModal('forgotPasswordModal')">×</span>
-    <h2>🔑 Forgot / Reset Password</h2>
-    <p style="font-size:12px;color:#64748b;margin-bottom:12px;">Enter your registered Mobile Number or Email to set a new password.</p>
-    
-    <div class="form-group">
-        <label>Mobile Number or Email</label>
-        <input type="text" id="forgotAuthInput" placeholder="Registered Mobile or Email">
-    </div>
+    <h2>🔑 Reset Password</h2>
+    <div class="form-group"><label>Mobile Number or Email</label><input type="text" id="forgotAuthInput" placeholder="Mobile or Email"></div>
     <div class="form-group">
         <label>New Password</label>
         <div class="password-box">
-            <input type="password" id="forgotNewPassword" placeholder="Enter New Password">
+            <input type="password" id="forgotNewPassword" placeholder="New Password">
             <button type="button" class="eye-btn" onclick="togglePasswordVisibility('forgotNewPassword', this)">👁️</button>
         </div>
     </div>
-    <button class="primary-btn" onclick="executePasswordReset()" style="background:#ca8a04;margin-top:10px;">Reset Password Now</button>
+    <button class="primary-btn" onclick="executePasswordReset()" style="background:#ca8a04;margin-top:10px;">Update Password</button>
   </div>
 </div>
 
@@ -255,7 +285,7 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
     <div class="form-group">
         <label>Password</label>
         <div class="password-box">
-            <input type="password" id="adminPasswordInput" placeholder="Enter password">
+            <input type="password" id="adminPasswordInput" placeholder="Password">
             <button type="button" class="eye-btn" onclick="togglePasswordVisibility('adminPasswordInput', this)">👁️</button>
         </div>
     </div>
@@ -263,12 +293,12 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
   </div>
 </div>
 
-<!-- MY ORDERS MODAL -->
+<!-- MY ORDERS MODAL (WITH FINANCIAL & COMMISSION BREAKDOWN) -->
 <div class="modal" id="myOrdersModal">
   <div class="modal-box">
     <span class="close" onclick="closeModal('myOrdersModal')">×</span>
-    <h2>📦 My Placed Orders</h2>
-    <div id="myOrdersListContainer" style="margin-top:10px;"><p>Loading your orders...</p></div>
+    <h2>📦 My Orders & Financial Payouts</h2>
+    <div id="myOrdersListContainer" style="margin-top:10px;"><p>Loading orders...</p></div>
   </div>
 </div>
 
@@ -277,27 +307,24 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
   <div class="modal-box">
     <span class="close" onclick="closeModal('deliveryModal')">×</span>
     <h2>🚚 Delivery Partner Portal</h2>
-    <div class="form-group">
-        <label>Enter 4-Digit Security PIN (Default: 1234)</label>
-        <input type="password" id="deliveryPinInput" placeholder="Enter PIN" maxlength="4">
-    </div>
-    <button class="primary-btn" onclick="verifyDeliveryPin()" style="background:#16a34a;">Access Delivery Orders</button>
+    <div class="form-group"><label>Enter 4-Digit Security PIN (Default: 1234)</label><input type="password" id="deliveryPinInput" placeholder="PIN" maxlength="4"></div>
+    <button class="primary-btn" onclick="verifyDeliveryPin()" style="background:#16a34a;">Access Deliveries</button>
     <div id="deliveryOrdersContainer" style="margin-top:15px;"></div>
   </div>
 </div>
 
-<!-- CHECKOUT ORDER MODAL -->
+<!-- CHECKOUT ORDER MODAL (TRANSPARENT FEES BREAKDOWN) -->
 <div class="modal" id="orderModal">
 <div class="modal-box">
 <span class="close" onclick="closeModal('orderModal')">×</span>
-<h2>📦 Delivery Details</h2>
+<h2>📦 Delivery & Fee Breakdown</h2>
 <div class="form-group"><label>Full Name</label><input type="text" id="customerName"></div>
 <div class="form-group"><label>Mobile</label><input type="tel" id="customerMobile"></div>
 <div class="form-group">
     <label>Delivery Address</label>
     <input type="text" id="streetArea" placeholder="Full Address">
     <button type="button" onclick="getGPSLocation()" style="margin-top:5px;background:#e0f2fe;color:#0284c7;border:1px solid #0284c7;padding:6px 12px;border-radius:8px;font-weight:bold;font-size:12px;cursor:pointer;">
-        🎯 Auto-Fill Current Live GPS Location
+        🎯 Auto-Fill Live GPS Location
     </button>
 </div>
 
@@ -305,13 +332,15 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
     <iframe id="googleMapIframe" width="100%" height="140" frameborder="0" style="border:0;" src="" allowfullscreen></iframe>
 </div>
 
-<div style="background:#f0f9ff;padding:12px;border-radius:10px;font-size:13px;border:1px solid #0284c7;margin:10px 0;">
-    <div style="color:#0369a1;font-weight:bold;">📍 Detected Distance: <span id="detectedDistanceText">Detecting GPS...</span></div>
-    <div style="color:#075985;font-weight:bold;margin-top:4px;">🕒 Auto-Scheduled Slot: <span id="estimatedDeliverySlotDisplay">...</span></div>
-    <small style="color:#64748b;display:block;margin-top:2px;">Delivery Hours: 7:00 AM - 11:00 PM</small>
+<div style="background:#f0f9ff;padding:12px;border-radius:10px;font-size:13px;border:1px solid #0284c7;margin:10px 0;" id="feeBreakdownBox">
+    <div>📍 Distance: <span id="detectedDistanceText">Calculating...</span></div>
+    <div>📦 Subtotal: ₹<span id="checkoutSubtotal">0</span></div>
+    <div>🏷️ Platform Commission (5%): ₹<span id="checkoutCommission">0</span></div>
+    <div>🚚 Delivery / Convenience Fee: ₹<span id="checkoutDeliveryFee">0</span></div>
+    <div style="font-weight:bold;margin-top:4px;color:#0369a1;">Grand Total: ₹<span id="checkoutGrandTotal">0</span></div>
 </div>
 
-<button class="primary-btn" onclick="sendOrder()">Place Order Now</button>
+<button class="primary-btn" onclick="sendOrder()">Confirm & Place Order</button>
 </div>
 </div>
 
@@ -319,7 +348,7 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 <div class="modal" id="nearbyModal">
   <div class="modal-box">
     <span class="close" onclick="closeModal('nearbyModal')">×</span>
-    <h2>📍 Nearby Verified Stores</h2>
+    <h2>📍 Nearby Verified Stores & Dealers</h2>
     <div id="storesList"></div>
   </div>
 </div>
@@ -332,33 +361,33 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 <div id="cartItems"></div>
 <div style="font-size:15px;margin-top:12px;">
     <div>Subtotal: ₹<span id="cartSubtotal">0</span></div>
-    <div>Delivery: ₹<span id="deliveryFee">30</span></div>
+    <div>Estimated Fees (Calculated at Checkout): Auto</div>
 </div>
 <div style="font-size:18px;font-weight:bold;margin:10px 0;">Total: ₹<span id="cartTotal">0</span></div>
-<button class="primary-btn" onclick="openOrderForm()">Checkout Now</button>
+<button class="primary-btn" onclick="openOrderForm()">Proceed to Checkout</button>
 </div>
 </div>
 
-<!-- B2B ADD YOUR SHOP MODAL -->
+<!-- B2B SHOP REGISTRATION MODAL -->
 <div class="modal" id="b2bAuthModal">
   <div class="modal-box">
     <span class="close" onclick="closeModal('b2bAuthModal')">×</span>
-    <h2>🏪 Add & Register Your Shop</h2>
-    <div class="form-group"><label>Shop / Business Name</label><input type="text" id="b2bBizName" placeholder="e.g. Laxmi Water Supplier"></div>
-    <div class="form-group"><label>Owner Full Name</label><input type="text" id="b2bOwnerName" placeholder="Owner Name"></div>
+    <h2>🏪 Register Shop, Dealer or Company</h2>
+    <div class="form-group"><label>Business / Company Name</label><input type="text" id="b2bBizName" placeholder="e.g. Laxmi Beverages"></div>
+    <div class="form-group"><label>Owner Name</label><input type="text" id="b2bOwnerName" placeholder="Owner Name"></div>
     <div class="form-group"><label>Mobile Number (For Login)</label><input type="tel" id="b2bMobile" placeholder="10 Digit Mobile"></div>
-    <div class="form-group"><label>Full Shop Address & Area</label><input type="text" id="b2bAddress" placeholder="Street, Locality, City"></div>
+    <div class="form-group"><label>Full Address & Area</label><input type="text" id="b2bAddress" placeholder="Street, City"></div>
     <div class="form-group"><label>Pincode</label><input type="text" id="b2bPincode" placeholder="6-digit Pincode"></div>
     <div class="form-group"><label>GST Number (Optional)</label><input type="text" id="b2bGst" placeholder="Optional GSTIN"></div>
     <div class="form-group">
-        <label>Password (Secret Key for Login)</label>
+        <label>Password</label>
         <div class="password-box">
-            <input type="password" id="b2bPassword" placeholder="Create Password">
+            <input type="password" id="b2bPassword" placeholder="Secret Password">
             <button type="button" class="eye-btn" onclick="togglePasswordVisibility('b2bPassword', this)">👁️</button>
         </div>
     </div>
-    <div class="form-group"><label>Email (Optional)</label><input type="email" id="b2bEmail" placeholder="Shop Email (Optional)"></div>
-    <button class="primary-btn" onclick="registerB2BUser()" style="background:#059669;margin-top:10px;">Register My Shop Now</button>
+    <div class="form-group"><label>Email (Optional)</label><input type="email" id="b2bEmail" placeholder="Email"></div>
+    <button class="primary-btn" onclick="registerB2BUser()" style="background:#059669;margin-top:10px;">Register Business Now</button>
   </div>
 </div>
 
@@ -368,35 +397,41 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 <span class="close" onclick="closeModal('adminDashboardModal')">×</span>
 <h2>🛠️ Admin Panel Dashboard</h2>
 <div style="margin:10px 0;display:flex;gap:5px;overflow-x:auto;">
-    <button class="primary-btn" onclick="switchAdminTab('orders')">Orders</button>
+    <button class="primary-btn" onclick="switchAdminTab('orders')">Orders & Payouts</button>
+    <button class="primary-btn" onclick="switchAdminTab('banners')" style="background:#eab308;color:#000;">📢 Manage Banners/Ads</button>
     <button class="primary-btn" onclick="switchAdminTab('addProduct')" style="background:#16a34a;">➕ Add Product</button>
     <button class="primary-btn" onclick="switchAdminTab('manageProducts')" style="background:#0284c7;">📦 Manage Products</button>
     <button class="primary-btn" onclick="switchAdminTab('shops')" style="background:#059669;">Shops</button>
 </div>
 
-<!-- ORDERS TAB -->
+<!-- ORDERS & FINANCIAL BREAKDOWN TAB -->
 <div id="adminTabOrders">
     <div id="adminOrdersList"><p>Loading Orders...</p></div>
 </div>
 
-<!-- ADD PRODUCT WITH PHOTO TAB -->
+<!-- BANNERS & ADS MANAGEMENT TAB -->
+<div id="adminTabBanners" style="display:none;background:#f8fafc;padding:12px;border-radius:12px;border:1px solid #e2e8f0;">
+    <h3>📢 Add Promotional Banner / Ad</h3>
+    <div class="form-group"><label>Banner Title</label><input type="text" id="bannerTitle" placeholder="e.g. Special Cold Drink Offer"></div>
+    <div class="form-group"><label>Banner Description / Offer</label><input type="text" id="bannerDesc" placeholder="e.g. Get 20% off on bulk water orders!"></div>
+    <button class="primary-btn" onclick="addNewPromoBanner()" style="background:#eab308;color:#000;margin-top:10px;">Publish Banner to Home Slider</button>
+</div>
+
+<!-- ADD PRODUCT TAB -->
 <div id="adminTabAddProduct" style="display:none;background:#f8fafc;padding:12px;border-radius:12px;border:1px solid #e2e8f0;">
     <h3>📸 Add Product with Photo</h3>
     <div class="form-group"><label>Product Name</label><input type="text" id="newProdName" placeholder="e.g. Bisleri 20L Water Jar"></div>
-    <div class="form-group"><label>Selling Price (₹)</label><input type="number" id="newProdPrice" placeholder="e.g. 60"></div>
-    <div class="form-group"><label>MRP / Old Price (₹)</label><input type="number" id="newProdMrp" placeholder="e.g. 80"></div>
-    <div class="form-group"><label>Product Emoji / Icon (Optional)</label><input type="text" id="newProdEmoji" placeholder="💧"></div>
-    <div class="form-group">
-        <label>📸 Select Product Photo (Image File)</label>
-        <input type="file" id="newProdImageFile" accept="image/*">
-    </div>
-    <button class="primary-btn" onclick="addNewProductWithImage()" style="background:#16a34a;margin-top:10px;">Upload Photo & Save Product</button>
+    <div class="form-group"><label>Quantity / Size</label><input type="text" id="newProdQty" placeholder="e.g. 20 Litre"></div>
+    <div class="form-group"><label>Selling Price (₹)</label><input type="number" id="newProdPrice" placeholder="60"></div>
+    <div class="form-group"><label>Actual MRP / Old Price (₹)</label><input type="number" id="newProdMrp" placeholder="80"></div>
+    <div class="form-group"><label>Product Photo</label><input type="file" id="newProdImageFile" accept="image/*"></div>
+    <button class="primary-btn" onclick="addNewProductWithImage()" style="background:#16a34a;margin-top:10px;">Save Product</button>
 </div>
 
-<!-- MANAGE & DELETE PRODUCTS TAB -->
+<!-- MANAGE PRODUCTS TAB -->
 <div id="adminTabManageProducts" style="display:none;">
-    <h3>📦 Manage & Delete Existing Products</h3>
-    <div id="adminProductsManageList" style="margin-top:10px;"><p>Loading products...</p></div>
+    <h3>📦 Manage & Delete Products</h3>
+    <div id="adminProductsManageList" style="margin-top:10px;"><p>Loading...</p></div>
 </div>
 
 <!-- SHOPS TAB -->
@@ -429,7 +464,19 @@ const SHOP_LNG = 77.2090;
 const ADMIN_EMAIL = "balramnnagar0077@gmail.com";
 const DELIVERY_AGENT_PIN = "1234";
 
-// HELPER TO CONVERT MOBILE OR INPUT TO SUPABASE COMPATIBLE EMAIL
+// AUTO SWEEP BANNER CAROUSEL (EVERY 3 SECONDS)
+let currentSlide = 0;
+setInterval(() => {
+    const slider = document.getElementById("homeBannerSlider");
+    if(slider) {
+        const totalSlides = slider.children.length;
+        if(totalSlides > 0) {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+        }
+    }
+}, 3000);
+
 function formatAuthEmail(inputVal) {
     const cleanVal = inputVal.trim();
     if (/^\d{10}$/.test(cleanVal)) {
@@ -438,7 +485,6 @@ function formatAuthEmail(inputVal) {
     return cleanVal;
 }
 
-// PASSWORD VISIBILITY TOGGLE (EYE ICON)
 function togglePasswordVisibility(fieldId, btnElem) {
     const input = document.getElementById(fieldId);
     if(input.type === "password") {
@@ -470,7 +516,7 @@ if ('serviceWorker' in navigator && 'Notification' in window) {
 }
 
 function triggerBothNotifications(title, bodyMsg) {
-    showNotification(`${title}: ${bodyMsg}`);
+    showNotification(`${title}:${bodyMsg}`);
     sendNativePushNotification(title, bodyMsg);
 }
 
@@ -514,7 +560,7 @@ function getGPSLocation() {
             
             document.getElementById("locText").innerText = `${userLat.toFixed(2)}, ${userLng.toFixed(2)} (${calculatedDistanceKM.toFixed(1)} KM)`;
             const streetAreaInput = document.getElementById("streetArea");
-            if(streetAreaInput) streetAreaInput.value = `GPS Pin: ${userLat.toFixed(4)}, ${userLng.toFixed(4)}`;
+            if(streetAreaInput) streetAreaInput.value = `GPS Pin: ${userLat.toFixed(4)},${userLng.toFixed(4)}`;
 
             const mapContainer = document.getElementById("mapContainer");
             const mapIframe = document.getElementById("googleMapIframe");
@@ -606,7 +652,7 @@ async function verifyDeliveryPin() {
             <div style="border:1px solid #16a34a;padding:10px;margin-top:6px;background:#f0fdf4;border-radius:8px;">
                 <b>#${o.order_id}</b> - ${o.customer_name} (${o.mobile})<br>
                 <small>📍 ${o.address}</small><br>
-                <b style="color:#0284c7;">Total: ₹${o.total}</b>
+                <b style="color:#0284c7;">Total Payout to Shop: ₹${o.shop_payout || o.total}</b>
             </div>
         `).join('');
     } else {
@@ -624,9 +670,11 @@ async function handleAccountClick() {
 
         if(user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
             document.getElementById("adminDashboardBtn").style.display = "block";
+            document.getElementById("vendorProductAddBtn").style.display = "block";
             document.getElementById("myOrdersBtn").style.display = "none";
         } else {
             document.getElementById("adminDashboardBtn").style.display = "none";
+            document.getElementById("vendorProductAddBtn").style.display = "block"; // Shopkeepers/Dealers can add products
             document.getElementById("myOrdersBtn").style.display = "block";
         }
     } else {
@@ -642,7 +690,88 @@ function openAdminDashboardModalDirect() {
     switchAdminTab('orders');
 }
 
-// MY ORDERS VIEW
+function openVendorAddProductModal() {
+    closeModal('accountModal');
+    document.getElementById("vendorProductModal").style.display = "block";
+    loadVendorMyProducts();
+}
+
+// VENDOR PRODUCT SUBMISSION
+async function submitVendorProduct() {
+    const name = document.getElementById("vProdName").value.trim();
+    const quantity = document.getElementById("vProdQty").value.trim();
+    const mrp = document.getElementById("vProdMrp").value.trim();
+    const price = document.getElementById("vProdPrice").value.trim();
+    const imageFile = document.getElementById("vProdImageFile").files[0];
+
+    if(!name || !price) { alert("Product Name and Selling Price are required!"); return; }
+
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    let imageUrl = null;
+
+    if (imageFile) {
+        showNotification("Uploading product photo...");
+        const fileExt = imageFile.name.split('.').pop();
+        const fileName = `prod_${Date.now()}.${fileExt}`;
+        const { data: uploadData, error: uploadError } = await supabaseClient.storage.from('products').upload(fileName, imageFile);
+        if (!uploadError) {
+            const { data: urlData } = supabaseClient.storage.from('products').getPublicUrl(fileName);
+            imageUrl = urlData.publicUrl;
+        }
+    }
+
+    let discountPercent = mrp && mrp > price ? Math.round(((mrp - price) / mrp) * 100) : 0;
+
+    await supabaseClient.from("products").insert([{
+        name,
+        quantity: quantity || 'Standard',
+        price: Number(price),
+        mrp: mrp ? Number(mrp) : null,
+        discount: discountPercent,
+        image_url: imageUrl,
+        user_id: user ? user.id : 'admin',
+        created_at: new Date().toISOString()
+    }]);
+
+    triggerBothNotifications("New Product Added 🎉", `${name} (${quantity}) is now live with${discountPercent}% OFF!`);
+    alert("✅ Product published successfully!");
+    document.getElementById("vProdName").value = "";
+    document.getElementById("vProdQty").value = "";
+    document.getElementById("vProdMrp").value = "";
+    document.getElementById("vProdPrice").value = "";
+    document.getElementById("vProdImageFile").value = "";
+    loadVendorMyProducts();
+    loadDynamicProducts();
+}
+
+async function loadVendorMyProducts() {
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    const list = document.getElementById("vendorMyProductsList");
+    if(!user) return;
+
+    const { data } = await supabaseClient.from("products").select("*").eq("user_id", user.id);
+    if(!data || data.length === 0) {
+        list.innerHTML = "<p style='color:#64748b;'>You have not added any products yet.</p>";
+        return;
+    }
+    list.innerHTML = data.map(p => `
+        <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e2e8f0;padding:8px 0;">
+            <div><b>${p.name}</b> (${p.quantity \vert{}\vert{} 'Std'}) - ₹${p.price}</div>
+            <button onclick="deleteVendorProduct('${p.id}')" style="background:#dc2626;color:white;border:none;padding:4px 8px;border-radius:6px;cursor:pointer;">Delete</button>
+        </div>
+    `).join('');
+}
+
+async function deleteVendorProduct(id) {
+    if(confirm("Delete this product?")) {
+        await supabaseClient.from("products").delete().eq("id", id);
+        showNotification("Product Deleted!");
+        loadVendorMyProducts();
+        loadDynamicProducts();
+    }
+}
+
+// MY ORDERS & FINANCIAL BREAKDOWN FOR CUSTOMERS & VENDORS
 async function openMyOrders() {
     closeModal('accountModal');
     const { data: { user } } = await supabaseClient.auth.getUser();
@@ -650,12 +779,12 @@ async function openMyOrders() {
 
     document.getElementById("myOrdersModal").style.display = "block";
     const container = document.getElementById("myOrdersListContainer");
-    container.innerHTML = "<p>Loading your orders...</p>";
+    container.innerHTML = "<p>Loading financial records...</p>";
 
-    const { data: orders, error } = await supabaseClient.from("orders").select("*").eq("user_id", user.id).order("order_date", { ascending: false });
+    const { data: orders, error } = await supabaseClient.from("orders").select("*").or(`user_id.eq.${user.id},vendor_id.eq.${user.id}`).order("order_date", { ascending: false });
     
     if(error || !orders || orders.length === 0) {
-        container.innerHTML = `<p style="text-align:center;color:#64748b;padding:15px;">You have not placed any orders yet.</p>`;
+        container.innerHTML = `<p style="text-align:center;color:#64748b;padding:15px;">No orders or financial records found.</p>`;
         return;
     }
 
@@ -663,9 +792,16 @@ async function openMyOrders() {
         <div style="border:1px solid #cbd5e1;padding:12px;margin-top:8px;background:#f8fafc;border-radius:10px;">
             <div style="display:flex;justify-content:space-between;font-weight:bold;color:#0284c7;">
                 <span>#${o.order_id}</span>
-                <span style="color:#16a34a;">₹${o.total}</span>
+                <span style="color:#16a34a;">Grand Total: ₹${o.total}</span>
             </div>
             <div style="font-size:12px;color:#475569;margin-top:4px;">📍 ${o.address}</div>
+            <div style="font-size:11px;color:#0369a1;margin-top:4px;background:#e0f2fe;padding:6px;border-radius:6px;">
+                🔹 <b>Financial Breakdown:</b><br>
+                • Subtotal: ₹${o.subtotal || o.total}<br>
+                • Jalvigo Commission (5%): ₹${o.commission || Math.round((o.subtotal||o.total)*0.05)}<br>
+                • Convenience / Delivery Fee: ₹${o.delivery_fee || 0}<br>
+                • <b>Net Payout to Shop/Dealer: ₹${o.shop_payout || (o.total - (o.commission||0))}</b>
+            </div>
             <div style="font-size:11px;color:#64748b;margin-top:2px;">Status: <b>${o.status || 'Confirmed'}</b></div>
         </div>
     `).join('');
@@ -673,7 +809,7 @@ async function openMyOrders() {
 
 async function renderPublicNearbyStores() {
     const list = document.getElementById("storesList");
-    list.innerHTML = `<p style="padding:15px;text-align:center;color:#64748b;">Loading nearby stores...</p>`;
+    list.innerHTML = `<p style="padding:15px;text-align:center;color:#64748b;">Loading nearby stores...</p>";
     
     const { data: stores, error } = await supabaseClient.from("business_profiles").select("*");
 
@@ -712,10 +848,13 @@ function renderProducts(prods) {
     const container = document.getElementById("dynamicProductsList");
     container.innerHTML = prods.map(p => `
         <div class="product-card">
-            ${p.image_url ? `<img src="${p.image_url}" class="prod-img" alt="${p.name}">` : `<div class="prod-emoji">${p.emoji || '💧'}</div>`}
+            ${p.discount ? `<div class="discount-badge">${p.discount}% OFF</div>` : ''}
+            ${p.image_url ? `<img src="${p.image_url}" class="prod-img" alt="${p.name}">` : `<div class="prod-emoji">💧</div>`}
             <div class="prod-title">${p.name}</div>
-            <div>
+            <div class="prod-qty">${p.quantity || 'Standard Pack'}</div>
+            <div class="price-box">
                 <span class="prod-price">₹${p.price}</span>
+                ${p.mrp && p.mrp > p.price ? `<span class="prod-mrp">₹${p.mrp}</span>` : ''}
             </div>
             <button class="add-btn" onclick="addToCart('${p.name}', ${p.price})">ADD TO CART</button>
         </div>
@@ -737,12 +876,10 @@ function addToCart(name, price){
 function updateCart(){
     let count = 0, subtotal = 0;
     cart.forEach(item => { count += item.qty; subtotal += item.price * item.qty; });
-    let deliveryFee = (isVipMember || subtotal >= 250 || subtotal === 0) ? 0 : 30;
 
     document.getElementById("cartCount").innerText = count;
     document.getElementById("cartSubtotal").innerText = subtotal;
-    document.getElementById("deliveryFee").innerText = deliveryFee;
-    document.getElementById("cartTotal").innerText = subtotal + deliveryFee;
+    document.getElementById("cartTotal").innerText = subtotal;
 
     let html = cart.length === 0 ? "<p>Cart is empty.</p>" : "";
     cart.forEach((item,index) => {
@@ -764,7 +901,29 @@ function openOrderForm(){
     if(cart.length===0){alert("Cart is empty!"); return;}
     closeModal('cartModal');
     document.getElementById("orderModal").style.display="block";
+    calculateCheckoutFees();
     getGPSLocation();
+}
+
+function calculateCheckoutFees() {
+    let subtotal = 0;
+    cart.forEach(i => subtotal += i.price * i.qty);
+    
+    let commission = Math.round(subtotal * 0.05); // 5% fixed commission
+    let deliveryFee = 0;
+
+    if (subtotal > 250) {
+        deliveryFee = 7; // ₹7 convenience fee for > ₹250 orders
+    } else {
+        deliveryFee = Math.round(calculatedDistanceKM * 5); // ₹5 per KM for < ₹250 orders
+    }
+
+    let grandTotal = subtotal + deliveryFee;
+
+    document.getElementById("checkoutSubtotal").innerText = subtotal;
+    document.getElementById("checkoutCommission").innerText = commission;
+    document.getElementById("checkoutDeliveryFee").innerText = deliveryFee;
+    document.getElementById("checkoutGrandTotal").innerText = grandTotal;
 }
 
 async function sendOrder(){
@@ -774,45 +933,57 @@ async function sendOrder(){
     const name = document.getElementById("customerName").value;
     const mobile = document.getElementById("customerMobile").value;
     const address = document.getElementById("streetArea").value;
-    if(!name || !mobile || !address){ alert("Fill all details!"); return; }
+    if(!name || !mobile || !address){ alert("Fill all delivery details!"); return; }
 
+    let subtotal = 0; cart.forEach(i => subtotal += i.price * i.qty);
+    let commission = Math.round(subtotal * 0.05);
+    let deliveryFee = subtotal > 250 ? 7 : Math.round(calculatedDistanceKM * 5);
+    let grandTotal = subtotal + deliveryFee;
+    let shopPayout = grandTotal - commission;
+
+    const orderId = "JAL" + Date.now();
     const slotText = autoDecideDeliverySlot(calculatedDistanceKM);
     const fullAddress = `${address} | Distance: ~${calculatedDistanceKM.toFixed(1)} KM | Slot: ${slotText}`;
-    const orderId = "JAL" + Date.now();
-    let subtotal = 0; cart.forEach(i => subtotal += i.price * i.qty);
-    let grandTotal = subtotal + ((subtotal>=250 || isVipMember)?0:30);
 
     await supabaseClient.from("orders").insert([{
-        order_id: orderId, customer_name: name, mobile, address: fullAddress, items: JSON.stringify(cart),
-        total: grandTotal, order_date: new Date().toISOString(), status: "Confirmed", user_id: user.id
+        order_id: orderId, 
+        customer_name: name, 
+        mobile, 
+        address: fullAddress, 
+        items: JSON.stringify(cart),
+        subtotal: subtotal,
+        commission: commission,
+        delivery_fee: deliveryFee,
+        shop_payout: shopPayout,
+        total: grandTotal, 
+        order_date: new Date().toISOString(), 
+        status: "Confirmed", 
+        user_id: user.id
     }]);
 
-    triggerBothNotifications("Order Placed 🎉", `Order #${orderId} Confirmed! Scheduled: ${slotText}`);
+    triggerBothNotifications("Order Placed 🎉", `Order #${orderId} Confirmed! Payout dispatched to dealer.`);
     cart = []; updateCart(); closeModal('orderModal');
 }
 
-// DUAL LOGIN/SIGNUP LOGIC (MOBILE OR EMAIL WITH CUSTOM PASSWORD)
 async function customerSignup(){
     const rawInput = document.getElementById("customerAuthInput").value;
     const password = document.getElementById("customerPassword").value;
-    if(!rawInput || !password) { alert("Enter Mobile Number or Email and Password!"); return; }
+    if(!rawInput || !password) { alert("Enter Mobile Number/Email and Password!"); return; }
     
     const emailFormatted = formatAuthEmail(rawInput);
-
-    const { data, error } = await supabaseClient.auth.signUp({ email: emailFormatted, password: password });
+    const { error } = await supabaseClient.auth.signUp({ email: emailFormatted, password: password });
     if(error) { alert("Signup Error: " + error.message); return; }
 
     triggerBothNotifications("Jalvigo Account", "Account Created Successfully! You can now login.");
-    alert("✅ Account Created Successfully! Please click Login to continue.");
+    alert("✅ Account Created Successfully! Please login.");
 }
 
 async function customerLogin(){
     const rawInput = document.getElementById("customerAuthInput").value;
     const password = document.getElementById("customerPassword").value;
-    if(!rawInput || !password) { alert("Enter Mobile Number or Email and Password!"); return; }
+    if(!rawInput || !password) { alert("Enter Mobile Number/Email and Password!"); return; }
     
     const emailFormatted = formatAuthEmail(rawInput);
-
     const { error } = await supabaseClient.auth.signInWithPassword({ email: emailFormatted, password: password });
     if(error) { alert("Login Error: Password galat hai ya account nahi bana hai!"); return; }
 
@@ -824,19 +995,15 @@ async function customerLogin(){
 async function executePasswordReset() {
     const rawInput = document.getElementById("forgotAuthInput").value.trim();
     const newPassword = document.getElementById("forgotNewPassword").value.trim();
-
     if(!rawInput || !newPassword) { alert("Please enter Mobile/Email and New Password!"); return; }
 
-    const emailFormatted = formatAuthEmail(rawInput);
-
     const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
-    showNotification("Password Reset Successful! Try login now.");
+    showNotification("Password Reset Successful!");
     alert("✅ Password updated successfully! Log in with your new password.");
     closeModal('forgotPasswordModal');
     openCustomerAuth();
 }
 
-// B2B SHOP REGISTRATION WITH OPTIONAL GST & ADDRESS/PINCODE
 async function registerB2BUser(){
     const business_name = document.getElementById("b2bBizName").value.trim();
     const owner_name = document.getElementById("b2bOwnerName").value.trim();
@@ -853,28 +1020,22 @@ async function registerB2BUser(){
     }
 
     const formattedEmail = formatAuthEmail(emailRaw);
-
     const { data, error } = await supabaseClient.auth.signUp({ email: formattedEmail, password: password });
     if(error) { alert("Registration Error: " + error.message); return; }
 
     if(data.user){
         await supabaseClient.from("business_profiles").insert([{
-            user_id: data.user.id, 
-            business_name, 
-            owner_name, 
-            mobile, 
-            address, 
-            pincode, 
-            gst_number
+            user_id: data.user.id, business_name, owner_name, mobile, address, pincode, gst_number
         }]);
     }
     triggerBothNotifications("Partner Registered", "Shop Registered on Jalvigo Network!");
-    alert("✅ Shop Registered Successfully! You can now log in using your Mobile Number & Password.");
+    alert("✅ Shop Registered Successfully!");
     closeModal('b2bAuthModal');
 }
 
 function switchAdminTab(tabName) {
     document.getElementById("adminTabOrders").style.display = tabName === 'orders' ? 'block' : 'none';
+    document.getElementById("adminTabBanners").style.display = tabName === 'banners' ? 'block' : 'none';
     document.getElementById("adminTabAddProduct").style.display = tabName === 'addProduct' ? 'block' : 'none';
     document.getElementById("adminTabManageProducts").style.display = tabName === 'manageProducts' ? 'block' : 'none';
     document.getElementById("adminTabShops").style.display = tabName === 'shops' ? 'block' : 'none';
@@ -884,48 +1045,60 @@ function switchAdminTab(tabName) {
     if(tabName === 'shops') loadAdminRegisteredShops();
 }
 
+async function addNewPromoBanner() {
+    const title = document.getElementById("bannerTitle").value.trim();
+    const desc = document.getElementById("bannerDesc").value.trim();
+    if(!title || !desc) { alert("Enter title and description!"); return; }
+
+    const slider = document.getElementById("homeBannerSlider");
+    const newCard = document.createElement("div");
+    newCard.className = "promo-card alt";
+    newCard.innerHTML = `<h3>${title}</h3><p>${desc}</p>`;
+    slider.appendChild(newCard);
+
+    showNotification("Promo Banner Published to Home Slider!");
+    alert("✅ Banner live on website home page!");
+    document.getElementById("bannerTitle").value = "";
+    document.getElementById("bannerDesc").value = "";
+}
+
 async function addNewProductWithImage() {
     const name = document.getElementById("newProdName").value.trim();
+    const quantity = document.getElementById("newProdQty").value.trim();
     const price = document.getElementById("newProdPrice").value.trim();
     const mrp = document.getElementById("newProdMrp").value.trim();
-    const emoji = document.getElementById("newProdEmoji").value.trim() || "💧";
     const imageFile = document.getElementById("newProdImageFile").files[0];
 
-    if(!name || !price){ alert("Product Name aur Price required hain!"); return; }
+    if(!name || !price){ alert("Product Name and Price required!"); return; }
 
     let imageUrl = null;
-
     if (imageFile) {
         showNotification("Uploading product photo...");
         const fileExt = imageFile.name.split('.').pop();
         const fileName = `prod_${Date.now()}.${fileExt}`;
-        
-        const { data: uploadData, error: uploadError } = await supabaseClient.storage
-            .from('products')
-            .upload(fileName, imageFile);
-
-        if (uploadError) {
-            alert("Image Upload Error: " + uploadError.message);
-        } else {
-            const { data: urlData } = supabaseClient.storage
-                .from('products')
-                .getPublicUrl(fileName);
+        const { data: uploadData, error: uploadError } = await supabaseClient.storage.from('products').upload(fileName, imageFile);
+        if (!uploadError) {
+            const { data: urlData } = supabaseClient.storage.from('products').getPublicUrl(fileName);
             imageUrl = urlData.publicUrl;
         }
     }
 
+    let discountPercent = mrp && mrp > price ? Math.round(((mrp - price) / mrp) * 100) : 0;
+
     await supabaseClient.from("products").insert([{ 
         name, 
+        quantity: quantity || 'Standard',
         price: Number(price), 
         mrp: mrp ? Number(mrp) : null, 
-        emoji, 
+        discount: discountPercent, 
         image_url: imageUrl, 
         created_at: new Date().toISOString() 
     }]);
 
-    triggerBothNotifications("Product Live", `${name} added to Jalvigo Marketplace!`);
-    alert("✅ Product Added with Photo!");
+    triggerBothNotifications("Product Live 🎉", `${name} added with ${discountPercent}% discount!`);
+    alert("✅ Product Added Successfully!");
     document.getElementById("newProdName").value = "";
+    document.getElementById("newProdQty").value = "";
     document.getElementById("newProdPrice").value = "";
     document.getElementById("newProdMrp").value = "";
     document.getElementById("newProdImageFile").value = "";
@@ -936,25 +1109,19 @@ async function loadAdminProductsToManage() {
     const list = document.getElementById("adminProductsManageList");
     const { data: products } = await supabaseClient.from("products").select("*").order("created_at", { ascending: false });
     if(!products || products.length === 0){
-        list.innerHTML = "<p>No products available to manage.</p>";
+        list.innerHTML = "<p>No products available.</p>";
         return;
     }
     list.innerHTML = products.map(p => `
         <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid #e2e8f0;background:#fff;margin-top:6px;border-radius:8px;">
-            <div style="display:flex;align-items:center;gap:10px;">
-                ${p.image_url ? `<img src="${p.image_url}" style="width:40px;height:40px;object-fit:contain;">` : `<span style="font-size:24px;">${p.emoji || '💧'}</span>`}
-                <div>
-                    <b>${p.name}</b><br>
-                    <small style="color:#0284c7;font-weight:bold;">₹${p.price}</small>
-                </div>
-            </div>
-            <button onclick="deleteProductById('${p.id}')" style="background:#dc2626;color:white;border:none;padding:6px 12px;border-radius:6px;font-weight:bold;cursor:pointer;">Delete</button>
+            <div><b>${p.name}</b> (${p.quantity || 'Std'}) - ₹${p.price}</div>
+            <button onclick="deleteProductById('${p.id}')" style="background:#dc2626;color:white;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;">Delete</button>
         </div>
     `).join('');
 }
 
 async function deleteProductById(id) {
-    if(confirm("Kya aap sach me is product ko delete karna chahte hain?")) {
+    if(confirm("Delete this product?")) {
         await supabaseClient.from("products").delete().eq("id", id);
         showNotification("Product Deleted!");
         loadAdminProductsToManage();
@@ -971,9 +1138,9 @@ async function loadAdminOrders(){
     }
     list.innerHTML = data.map(o => `
         <div style="border:1px solid #ccc;padding:10px;margin:5px 0;background:#fff;border-radius:8px;">
-            <b>#${o.order_id}</b> - ${o.customer_name} (₹${o.total})<br>
-            <small>${o.address}</small><br>
-            <small style="color:#16a34a;font-weight:bold;">Commission (5%): ₹${Math.round(o.total*0.05)}</small>
+            <b>#${o.order_id}</b> - ${o.customer_name} (Total: ₹${o.total})<br>
+            <small>📍 ${o.address}</small><br>
+            <small style="color:#0369a1;font-weight:bold;">Jalvigo Commission (5%): ₹${o.commission || Math.round((o.subtotal||o.total)*0.05)} | Net Shop Payout: ₹${o.shop_payout || o.total}</small>
         </div>
     `).join('');
 }
