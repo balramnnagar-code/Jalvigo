@@ -650,6 +650,8 @@ async function executeCustomerLogin() {
     const usernameVal = document.getElementById("customerAuthInput").value.trim();
     const passwordVal = document.getElementById("customerPassword").value.trim();
 
+alert("Input Check: " + usernameVal + " | Password entered: " + (passwordVal.length > 0));
+    
     if(!usernameVal || !passwordVal) {
         alert("Mobile/Email aur Password dono Bharein!");
         return;
