@@ -104,7 +104,7 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 
 .primary-btn{background:#0284c7;color:white;border:none;padding:12px;width:100%;border-radius:12px;font-weight:bold;cursor:pointer;}
 
-#notificationToast{display:none;position:fixed;bottom:75px;left:50%;transform:translateX(-50%);background:#0f172a;color:white;padding:10px 20px;border-radius:25px;font-size:12px;font-weight:bold;z-index:400;}
+#notificationToast{display:none;position:fixed;bottom:75px;left:50%;transform:translateX(-50%);background:#0f172a;color:white;padding:10px 20px;border-radius:25px;font-size:12px;font-weight:bold;z-index:400;width:90%;max-width:400px;text-align:center;}
 </style>
 </head>
 <body>
@@ -130,7 +130,7 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
     <div class="cat-item" onclick="openB2BAuth()"><div class="cat-icon">🏪</div> Add Your Shop</div>
 </div>
 
-<!-- BANNER SLIDER CAROUSEL (FITTED & TOUCH SWIPE ENABLED) -->
+<!-- BANNER SLIDER CAROUSEL -->
 <div class="banner-container" id="bannerTouchContainer">
     <div class="slider-wrapper" id="homeBannerSlider">
         <div class="promo-card">
@@ -354,11 +354,42 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
     <iframe id="googleMapIframe" width="100%" height="140" frameborder="0" style="border:0;" src="" allowfullscreen></iframe>
 </div>
 
+<!-- CLEAN CUSTOMER BILL -->
 <div style="background:#f0f9ff;padding:12px;border-radius:10px;font-size:13px;border:1px solid #0284c7;margin:10px 0;" id="feeBreakdownBox">
     <div>📍 Store Distance: <span id="detectedDistanceText">Calculating...</span></div>
     <div>📦 Item Total: ₹<span id="checkoutSubtotal">0</span></div>
     <div>🚚 Delivery Charge: ₹<span id="checkoutDeliveryFee">0</span></div>
     <div style="font-weight:bold;font-size:16px;margin-top:6px;color:#0369a1;">Grand Total: ₹<span id="checkoutGrandTotal">0</span></div>
+</div>
+
+<!-- PAYMENT SELECTION -->
+<div class="form-group">
+    <label>Choose Payment Method</label>
+    <select id="paymentMethodSelect" onchange="togglePaymentUi()">
+        <option value="UPI">📱 Instant UPI / QR (GPay, PhonePe, Paytm)</option>
+        <option value="COD">💵 Cash on Delivery (COD)</option>
+    </select>
+</div>
+
+<!-- DIRECT DYNAMIC UPI SCANNER / INTENT BOX -->
+<div id="upiPaymentBox" style="background:#fffbe2;padding:15px;border-radius:12px;border:1px solid #facc15;text-align:center;margin:10px 0;">
+    <h4 style="color:#854d0e;">⚡ Scan & Pay via UPI App</h4>
+    <p style="font-size:11px;color:#666;margin:4px 0;">Scan QR Code using PhonePe, Paytm, Google Pay, or BHIM</p>
+    
+    <img id="orderCheckoutUpiQr" src="" alt="UPI QR" style="width:150px;height:150px;border-radius:10px;border:2px solid #eab308;margin:8px 0;">
+    
+    <div style="font-size:12px;font-weight:bold;margin-bottom:8px;">
+        UPI ID: <span style="color:#0284c7;">balramnnagar@okaxis</span>
+    </div>
+
+    <a id="directUpiLinkBtn" href="#" style="display:inline-block;background:#16a34a;color:white;text-decoration:none;padding:10px 16px;border-radius:10px;font-weight:bold;font-size:13px;width:100%;margin-bottom:8px;">
+        🚀 Open UPI App Directly
+    </a>
+
+    <div class="form-group" style="text-align:left;margin-top:8px;">
+        <label>Enter UTR / Transaction ID (Optional)</label>
+        <input type="text" id="paymentUtrInput" placeholder="12 Digit UTR / Ref Number">
+    </div>
 </div>
 
 <button class="primary-btn" onclick="sendOrder()">Confirm & Place Order</button>
@@ -424,7 +455,7 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
     <button class="primary-btn" onclick="switchAdminTab('shops')" style="background:#059669;">Shops</button>
 </div>
 
-<!-- ORDERS & CORRECT COMMISSION TAB -->
+<!-- ORDERS & BACKEND COMMISSION TAB -->
 <div id="adminTabOrders">
     <div id="adminOrdersList"><p>Loading Orders...</p></div>
 </div>
@@ -504,7 +535,6 @@ function updateSliderPosition() {
 
     slider.style.transform = `translateX(-${currentSlide * 100}%)`;
 
-    // Update Dots
     if(dotsContainer) {
         dotsContainer.innerHTML = "";
         for(let i=0; i<totalSlides; i++) {
@@ -527,7 +557,6 @@ function stopAutoSlide() {
     if(autoSlideInterval) clearInterval(autoSlideInterval);
 }
 
-// TOUCH & SWIPE LISTENERS
 const bannerTouchArea = document.getElementById("bannerTouchContainer");
 if(bannerTouchArea) {
     bannerTouchArea.addEventListener('touchstart', (e) => {
@@ -576,6 +605,16 @@ function togglePasswordVisibility(fieldId, btnElem) {
     }
 }
 
+function togglePaymentUi() {
+    const method = document.getElementById("paymentMethodSelect").value;
+    const box = document.getElementById("upiPaymentBox");
+    if(method === "UPI") {
+        box.style.display = "block";
+    } else {
+        box.style.display = "none";
+    }
+}
+
 // SERVICE WORKER & PUSH NOTIFICATION REGISTRATION
 if ('serviceWorker' in navigator && 'Notification' in window) {
     navigator.serviceWorker.register('sw.js').then(reg => {
@@ -587,7 +626,7 @@ if ('serviceWorker' in navigator && 'Notification' in window) {
             setTimeout(() => {
                 Notification.requestPermission().then(permission => {
                     if (permission === 'granted') {
-                        sendNativePushNotification("Welcome to Jalvigo! 💧", "Notifications are active.");
+                        sendNativePushNotification("Welcome to Jalvigo! 💧", "Notifications active!");
                     }
                 });
             }, 3000);
@@ -617,7 +656,7 @@ function showNotification(msg){
     const toast = document.getElementById("notificationToast");
     toast.innerText = "🔔 " + msg;
     toast.style.display = "block";
-    setTimeout(() => { toast.style.display = "none"; }, 3000);
+    setTimeout(() => { toast.style.display = "none"; }, 4000);
 }
 function scrollToTop(){ window.scrollTo({top:0, behavior:'smooth'}); }
 
@@ -712,7 +751,7 @@ async function executeAdminLogin() {
         closeModal('adminAuthModal');
         document.getElementById("adminDashboardModal").style.display="block";
         switchAdminTab('orders');
-        triggerBothNotifications("Admin Access", "Logged in to Admin Dashboard successfully!");
+        triggerBothNotifications("Admin Access Granted", "Logged in to Admin Dashboard!");
     } else {
         alert("Unauthorized Admin Credentials!");
     }
@@ -812,7 +851,7 @@ async function submitVendorProduct() {
         created_at: new Date().toISOString()
     }]);
 
-    triggerBothNotifications("New Product Added 🎉", `${name} (${quantity}) is live with ${discountPercent}% OFF!`);
+    triggerBothNotifications("New Product Live 🎉", `${name} (${quantity}) added with ${discountPercent}% OFF!`);
     alert("✅ Product published successfully!");
     document.getElementById("vProdName").value = "";
     document.getElementById("vProdQty").value = "";
@@ -992,6 +1031,10 @@ function calculateCheckoutFees() {
     document.getElementById("checkoutSubtotal").innerText = subtotal;
     document.getElementById("checkoutDeliveryFee").innerText = deliveryFee;
     document.getElementById("checkoutGrandTotal").innerText = grandTotal;
+
+    const upiUri = `upi://pay?pa=balramnnagar@okaxis&pn=Jalvigo%20Marketplace&am=${grandTotal}&cu=INR`;
+    document.getElementById("orderCheckoutUpiQr").src = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(upiUri)}`;
+    document.getElementById("directUpiLinkBtn").href = upiUri;
 }
 
 async function sendOrder(){
@@ -1001,6 +1044,9 @@ async function sendOrder(){
     const name = document.getElementById("customerName").value;
     const mobile = document.getElementById("customerMobile").value;
     const address = document.getElementById("streetArea").value;
+    const paymentMethod = document.getElementById("paymentMethodSelect").value;
+    const utr = document.getElementById("paymentUtrInput") ? document.getElementById("paymentUtrInput").value.trim() : "";
+
     if(!name || !mobile || !address){ alert("Fill all delivery details!"); return; }
 
     let subtotal = 0; cart.forEach(i => subtotal += i.price * i.qty);
@@ -1011,7 +1057,7 @@ async function sendOrder(){
 
     const orderId = "JAL" + Date.now();
     const slotText = autoDecideDeliverySlot(calculatedDistanceKM);
-    const fullAddress = `${address} | Distance: ~${calculatedDistanceKM.toFixed(1)} KM | Slot: ${slotText}`;
+    const fullAddress = `${address} | Distance: ~${calculatedDistanceKM.toFixed(1)} KM | Slot: ${slotText} | Pay: ${paymentMethod} ${utr ? '(UTR:'+utr+')' : ''}`;
 
     await supabaseClient.from("orders").insert([{
         order_id: orderId, 
@@ -1025,11 +1071,18 @@ async function sendOrder(){
         shop_payout: shopPayout,
         total: grandTotal, 
         order_date: new Date().toISOString(), 
-        status: "Confirmed", 
+        status: paymentMethod === 'UPI' ? 'Paid via UPI - Delivery Pending' : 'COD - Pending Delivery', 
         user_id: user.id
     }]);
 
-    triggerBothNotifications("Order Placed 🎉", `Order #${orderId} Confirmed!`);
+    // DUAL NOTIFICATIONS (ADMIN & SHOPKEEPER NOTIFICATION)
+    triggerBothNotifications(
+        "💰 New Order Received!", 
+        `Order #${orderId} of ₹${grandTotal} received. Admin Comm: ₹${commission} | Net Shop Payout (₹${shopPayout}) will be transferred T+1 (Next Day) after delivery.`
+    );
+
+    alert(`🎉 Order Placed Successfully!\n\nOrder ID: #${orderId}\nTotal Paid: ₹${grandTotal}\n\n📢 Note for Seller/Shopkeeper: Order deliver hone ke baad aapka Net Payout (₹${shopPayout}) T+1 (Agale din) aapke account/UPI me transfer ho jayega.`);
+
     cart = []; updateCart(); closeModal('orderModal');
 }
 
@@ -1211,10 +1264,10 @@ async function loadAdminOrders(){
         let netPayout = o.shop_payout || (o.total - comm);
         return `
             <div style="border:1px solid #ccc;padding:10px;margin:5px 0;background:#fff;border-radius:8px;">
-                <b>#${o.order_id}</b> - ${o.customer_name} (Total: ₹${o.total})<br>
+                <b>#${o.order_id}</b> - ${o.customer_name} (Total Paid: ₹${o.total})<br>
                 <small>📍 ${o.address}</small><br>
                 <small style="color:#0369a1;font-weight:bold;">
-                    Jalvigo Admin Commission (5%): ₹${comm} | Net Seller Payout: ₹${netPayout}
+                    Jalvigo Admin Comm (5%): ₹${comm} | Net Shop Payout: ₹${netPayout} (T+1 Settlement)
                 </small>
             </div>
         `;
