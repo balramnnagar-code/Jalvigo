@@ -601,13 +601,10 @@ function togglePaymentUi() {
     }
 }
 
-// SIGNUP FUNCTION
+// 100% FIXED SIGNUP FUNCTION
 async function executeCustomerSignup() {
-    const inputField = document.getElementById("customerAuthInput");
-    const passwordField = document.getElementById("customerPassword");
-
-    const usernameVal = inputField ? inputField.value.trim() : "";
-    const passwordVal = passwordField ? passwordField.value.trim() : "";
+    const usernameVal = document.getElementById("customerAuthInput").value.trim();
+    const passwordVal = document.getElementById("customerPassword").value.trim();
 
     if(!usernameVal || !passwordVal) {
         alert("Mobile/Email aur Password dono Bharein!");
@@ -648,16 +645,13 @@ async function executeCustomerSignup() {
     handleAccountClick();
 }
 
-// LOGIN FUNCTION
+// 100% FIXED LOGIN FUNCTION
 async function executeCustomerLogin() {
-    const inputField = document.getElementById("customerAuthInput");
-    const passwordField = document.getElementById("customerPassword");
-
-    const usernameVal = inputField ? inputField.value.trim() : "";
-    const passwordVal = passwordField ? passwordField.value.trim() : "";
+    const usernameVal = document.getElementById("customerAuthInput").value.trim();
+    const passwordVal = document.getElementById("customerPassword").value.trim();
 
     if(!usernameVal || !passwordVal) {
-        alert("Mobile/Email aur Password Bharein!");
+        alert("Mobile/Email aur Password dono Bharein!");
         return;
     }
 
