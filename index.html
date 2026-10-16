@@ -650,8 +650,6 @@ async function executeCustomerLogin() {
     const usernameVal = document.getElementById("customerAuthInput").value.trim();
     const passwordVal = document.getElementById("customerPassword").value.trim();
 
-alert("Input Check: " + usernameVal + " | Password entered: " + (passwordVal.length > 0));
-    
     if(!usernameVal || !passwordVal) {
         alert("Mobile/Email aur Password dono Bharein!");
         return;
@@ -673,16 +671,10 @@ alert("Input Check: " + usernameVal + " | Password entered: " + (passwordVal.len
         .eq("username", usernameVal)
         .eq("password", passwordVal);
 
-    if (error) {
-    console.error("Customer Login Database Error:", error);
-    alert("Database Error: " + error.message);
-    return;
-}
-
-if (!data || data.length === 0) {
-    alert("Account match nahi hua. Mobile/Email aur Password check karein.");
-    return;
-}
+    if(error || !data || data.length === 0) {
+        alert("Login Error: Mobile/Email ya Password Galat Hai!");
+        return;
+    }
 
     currentLoggedInUser = { username: usernameVal };
     localStorage.setItem("jalvigo_logged_user", JSON.stringify(currentLoggedInUser));
@@ -1130,7 +1122,7 @@ async function sendOrder(){
     if(!name || !mobile || !address){ alert("Fill all delivery details!"); return; }
 
     let subtotal = 0; cart.forEach(i => subtotal += i.price * i.qty);
-    let commission = Math.round(subtotal * 0.05);
+    let commission = Math.round(subtotal * 0.07); // 7% Commission Model
     let deliveryFee = subtotal > 250 ? 7 : Math.round(calculatedDistanceKM * 5);
     let grandTotal = subtotal + deliveryFee;
     let shopPayout = grandTotal - commission;
@@ -1293,14 +1285,14 @@ async function loadAdminOrders(){
         return;
     }
     list.innerHTML = data.map(o => {
-        let comm = o.commission || Math.round((o.subtotal || o.total) * 0.05);
+        let comm = o.commission || Math.round((o.subtotal || o.total) * 0.07);
         let netPayout = o.shop_payout || (o.total - comm);
         return `
             <div style="border:1px solid #ccc;padding:10px;margin:5px 0;background:#fff;border-radius:8px;">
                 <b>#${o.order_id}</b> - ${o.customer_name} (Total Paid: ₹${o.total})<br>
                 <small>📍 ${o.address}</small><br>
                 <small style="color:#0369a1;font-weight:bold;">
-                    Jalvigo Admin Comm (5%): ₹${comm} | Net Shop Payout: ₹${netPayout} (T+1 Settlement)
+                    Jalvigo Admin Comm (7%): ₹${comm} | Net Shop Payout: ₹${netPayout} (T+1 Settlement)
                 </small>
             </div>
         `;
