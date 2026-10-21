@@ -787,7 +787,8 @@ async function executeAdminLogin() {
 
     if(!email || !password) { alert("Please enter email and password!"); return; }
 
-    if(email.toLowerCase() === ADMIN_EMAIL.toLowerCase() && password === "admin123"){
+    // Badlaav yahan kiya gaya hai:
+    if(email.toLowerCase() === ADMIN_EMAIL.toLowerCase() && password === "Balram@70245872"){
         currentLoggedInUser = { username: ADMIN_EMAIL };
         localStorage.setItem("jalvigo_logged_user", JSON.stringify(currentLoggedInUser));
         closeModal('adminAuthModal');
