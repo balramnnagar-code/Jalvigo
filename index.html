@@ -556,12 +556,12 @@ const DEFAULT_PRODUCTS = [
   { id: 325, name: "Water Bottle (Bisleri/Kinley)", quantity: "500ml Single Bottle", price: 10, mrp: 10, discount: 0, category: "Water", emoji: "💧", type: "Retail" },
   { id: 326, name: "Bisleri Water Jar", quantity: "20 Liter Jar", price: 90, mrp: 90, discount: 0, category: "Water", emoji: "🚰", type: "Retail" },
     
-// --- WHOLESALE PACKS (20% Discount Applied Directly On Given Price) ---
+// --- COMPLETE WHOLESALE PRODUCTS ARRAY ---
 const wholesalePacks = [
   { id: 101, name: "Coca-Cola Wholesale Pack", quantity: "250ml (Pack of 30)", price: 408, mrp: 600, discount: 20, category: "Drinks", emoji: "🥤", type: "Wholesale" },
-  { id: 102, name: "Coca-Cola Wholesale Pack", quantity: "750ml (Pack of 24)", price: 614.4, mrp: 960, discount: 20, category: "Drinks", emoji: "🍾", type: "Wholesale" },
+  { id: 102, name: "Coca-Cola Wholesale Pack", quantity: "750ml (Pack of 24)", price: 614, mrp: 960, discount: 20, category: "Drinks", emoji: "🍾", type: "Wholesale" },
   { id: 103, name: "Coca-Cola Wholesale Pack", quantity: "1 Liter (Pack of 15)", price: 480, mrp: 750, discount: 20, category: "Drinks", emoji: "🍾", type: "Wholesale" },
-  { id: 104, name: "Coca-Cola Wholesale Pack", quantity: "2 Liter (Pack of 9)", price: 547.2, mrp: 855, discount: 20, category: "Drinks", emoji: "🍾", type: "Wholesale" },
+  { id: 104, name: "Coca-Cola Wholesale Pack", quantity: "2 Liter (Pack of 9)", price: 547, mrp: 855, discount: 20, category: "Drinks", emoji: "🍾", type: "Wholesale" },
 
   { id: 105, name: "Pepsi Wholesale Pack", quantity: "250ml (Pack of 30)", price: 408, mrp: 600, discount: 20, category: "Drinks", emoji: "🥤", type: "Wholesale" },
   { id: 106, name: "Pepsi Wholesale Pack", quantity: "750ml (Pack of 24)", price: 360, mrp: 960, discount: 20, category: "Drinks", emoji: "🍾", type: "Wholesale" },
@@ -589,6 +589,16 @@ const wholesalePacks = [
   { id: 123, name: "Aquafina / Bisleri Water", quantity: "250ml (Pack of 48)", price: 112, mrp: 288, discount: 20, category: "Water", emoji: "💧", type: "Wholesale" }
 ];
 
+// --- IMPORTANT: LOADING STATE KO STOP KAREIN ---
+// Agar aap React use kar rhe hain toh useEffect ke andar ise add karein:
+/*
+  useEffect(() => {
+    setProducts(wholesalePacks);
+    setIsLoading(false); // <= Ye Line Missing hone ki wajah se "Loading products..." nahi hata tha
+  }, []);
+*/
+
+    
 let cart = [];
 let allProductsList = [];
 let isVipMember = false;
