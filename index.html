@@ -648,7 +648,7 @@ function populatePreDefinedDropdown() {
     DEFAULT_PRODUCTS.forEach(p => {
         const opt = document.createElement("option");
         opt.value = p.id;
-        opt.innerText = p.name + " (" + p.quantity + ") - MRP: ₹" + p.mrp + " | Wholesale: ₹" + p.price;
+        opt.innerText = p.name + " (" + p.quantity + ") - MRP: ₹" + p.mrp + " | Selling: ₹" + p.price;
         select.appendChild(opt);
     });
 }
