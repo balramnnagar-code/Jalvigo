@@ -514,7 +514,11 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 </div>
 
 <div id="adminTabManageProducts" style="display:none;">
-    <h3>📦 Manage, Edit & Delete Products</h3>
+    <div style="background:#e0f2fe;padding:10px;border-radius:10px;margin-bottom:12px;border:1px solid #0284c7;">
+        <b>⚡ First Time Setup:</b> Code me written master products ko Database me upload karein taaki wo Admin se edit/delete ho sakein.
+        <button class="primary-btn" onclick="syncMasterCatalogToDb()" style="background:#0284c7;margin-top:8px;">⚡ Sync Master Catalog to Database</button>
+    </div>
+    <h3>📦 Manage, Edit & Delete Database Products</h3>
     <div id="adminProductsManageList" style="margin-top:10px;"><p>Loading...</p></div>
 </div>
 
@@ -970,7 +974,7 @@ function activateVipSubscription(){
     updateCart();
 }
 
-// LOAD PRODUCTS WITH REFRESH FIX
+// LOAD PRODUCTS
 async function loadDynamicProducts() {
     let dbProducts = [];
     try {
@@ -978,10 +982,44 @@ async function loadDynamicProducts() {
         if (products && products.length > 0) dbProducts = products;
     } catch(err) { console.log("Catalog fallback"); }
 
-    allProductsList = [...dbProducts, ...DEFAULT_PRODUCTS];
+    // Avoid duplicate default products if they exist in DB
+    if(dbProducts.length > 0) {
+        allProductsList = [...dbProducts];
+    } else {
+        allProductsList = [...DEFAULT_PRODUCTS];
+    }
+    
     currentFilteredList = [...allProductsList];
     renderProducts(currentFilteredList);
     showNotification("Products Refreshed Successfully!");
+}
+
+// SYNC DEFAULT MASTER CATALOG TO SUPABASE DB
+async function syncMasterCatalogToDb() {
+    if(!confirm("Kya aap saare Master Catalog Products ko Database me sync karna chahte hain? Isse aap inko edit/delete kar paayenge.")) return;
+    
+    showNotification("Syncing products to Database...");
+    
+    const formattedProducts = DEFAULT_PRODUCTS.map(p => ({
+        name: p.name,
+        quantity: p.quantity,
+        category: p.category,
+        price: p.price,
+        mrp: p.mrp,
+        discount: p.discount,
+        user_id: 'admin',
+        created_at: new Date().toISOString()
+    }));
+
+    const { error } = await supabaseClient.from("products").insert(formattedProducts);
+    
+    if(error) {
+        alert("Sync Error: " + error.message);
+    } else {
+        alert("🎉 Saare Master Catalog Products Database me sync ho gaye hain! Ab aap inko Edit & Delete kar sakte hain.");
+        loadAdminProductsToManage();
+        loadDynamicProducts();
+    }
 }
 
 // SORTING LOGIC FOR WHOLESALE & RETAIL
@@ -993,10 +1031,10 @@ function applySorting(type) {
         currentFilteredList = [...allProductsList];
     } else if(type === 'retail') {
         document.getElementById("sortRetail").classList.add('active');
-        currentFilteredList = allProductsList.filter(p => p.type === 'Retail' || p.quantity.toLowerCase().includes('single') || p.quantity.toLowerCase().includes('bottle') || p.quantity.toLowerCase().includes('jar') && p.price < 100);
+        currentFilteredList = allProductsList.filter(p => p.type === 'Retail' || (p.quantity && (p.quantity.toLowerCase().includes('single') || p.quantity.toLowerCase().includes('bottle') || p.quantity.toLowerCase().includes('jar'))) && p.price < 100);
     } else if(type === 'wholesale') {
         document.getElementById("sortWholesale").classList.add('active');
-        currentFilteredList = allProductsList.filter(p => p.type === 'Wholesale' || p.quantity.toLowerCase().includes('pack'));
+        currentFilteredList = allProductsList.filter(p => p.type === 'Wholesale' || (p.quantity && p.quantity.toLowerCase().includes('pack')));
     } else if(type === 'lowHigh') {
         document.getElementById("sortLowHigh").classList.add('active');
         currentFilteredList.sort((a, b) => a.price - b.price);
@@ -1183,10 +1221,13 @@ async function addNewProductWithImage() {
 async function loadAdminProductsToManage() {
     const list = document.getElementById("adminProductsManageList");
     const { data: products } = await supabaseClient.from("products").select("*").order("created_at", { ascending: false });
-    if(!products || products.length === 0){ list.innerHTML = "<p>No custom products found in database to edit.</p>"; return; }
+    if(!products || products.length === 0){ 
+        list.innerHTML = "<p style='padding:10px;'>No database products found. Click 'Sync Master Catalog' above to sync code products to Database.</p>"; 
+        return; 
+    }
     list.innerHTML = products.map(p => `
         <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid #e2e8f0;background:#fff;margin-top:6px;border-radius:8px;">
-            <div><b>${p.name}</b> - ₹${p.price}</div>
+            <div><b>${p.name}</b> (${p.quantity || 'Std'}) - ₹${p.price}</div>
             <div>
                 <button onclick="openEditProductModal('${p.id}', '${p.name}', '${p.quantity || ''}', ${p.price}, ${p.mrp || 0})" style="background:#0284c7;color:white;border:none;padding:5px 10px;border-radius:6px;cursor:pointer;margin-right:5px;">Edit</button>
                 <button onclick="deleteProductById('${p.id}')" style="background:#dc2626;color:white;border:none;padding:5px 10px;border-radius:6px;cursor:pointer;">Delete</button>
