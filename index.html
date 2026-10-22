@@ -27,6 +27,11 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 .cat-item:active{transform:scale(0.92);}
 .cat-icon{width:48px;height:48px;background:#e0f2fe;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:4px;}
 
+/* SORT FILTER BAR */
+.sort-filter-bar{display:flex;gap:8px;padding:8px 15px;background:white;border-top:1px solid #e2e8f0;overflow-x:auto;}
+.sort-chip{background:#f1f5f9;border:1px solid #cbd5e1;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;color:#334155;}
+.sort-chip.active{background:#0284c7;color:white;border-color:#0284c7;}
+
 /* BANNER CAROUSEL */
 .banner-container{padding:12px 15px;overflow:hidden;position:relative;width:100%;touch-action:pan-y;}
 .slider-wrapper{display:flex;transition:transform 0.4s ease-out;width:100%;cursor:grab;}
@@ -129,6 +134,15 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
     <div class="cat-item" onclick="filterProductsByCategory('Drinks')"><div class="cat-icon">🥤</div> Cold Drinks</div>
     <div class="cat-item" onclick="filterProductsByCategory('Energy')"><div class="cat-icon">⚡</div> Energy/Juice</div>
     <div class="cat-item" onclick="openB2BAuth()"><div class="cat-icon">🏪</div> Add Your Shop</div>
+</div>
+
+<!-- SORT & FILTER BAR -->
+<div class="sort-filter-bar">
+    <div class="sort-chip active" id="sortAll" onclick="applySorting('all')">All / Default</div>
+    <div class="sort-chip" id="sortRetail" onclick="applySorting('retail')">🏷️ Retail Only</div>
+    <div class="sort-chip" id="sortWholesale" onclick="applySorting('wholesale')">📦 Wholesale Only</div>
+    <div class="sort-chip" id="sortLowHigh" onclick="applySorting('lowHigh')">📈 Price: Low to High</div>
+    <div class="sort-chip" id="sortHighLow" onclick="applySorting('highLow')">📉 Price: High to Low</div>
 </div>
 
 <!-- BANNER CAROUSEL -->
@@ -474,7 +488,7 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
     <button class="primary-btn" onclick="switchAdminTab('orders')">Orders & Revenue</button>
     <button class="primary-btn" onclick="switchAdminTab('banners')" style="background:#eab308;color:#000;">📢 Banners</button>
     <button class="primary-btn" onclick="switchAdminTab('addProduct')" style="background:#16a34a;">➕ Add Product</button>
-    <button class="primary-btn" onclick="switchAdminTab('manageProducts')" style="background:#0284c7;">📦 Manage</button>
+    <button class="primary-btn" onclick="switchAdminTab('manageProducts')" style="background:#0284c7;">📦 Manage & Edit</button>
     <button class="primary-btn" onclick="switchAdminTab('shops')" style="background:#059669;">Shops</button>
 </div>
 
@@ -500,7 +514,7 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 </div>
 
 <div id="adminTabManageProducts" style="display:none;">
-    <h3>📦 Manage & Delete Products</h3>
+    <h3>📦 Manage, Edit & Delete Products</h3>
     <div id="adminProductsManageList" style="margin-top:10px;"><p>Loading...</p></div>
 </div>
 
@@ -511,6 +525,42 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 </div>
 </div>
 
+<!-- EDIT PRODUCT MODAL (ADMIN) -->
+<div class="modal" id="editProductModal">
+  <div class="modal-box">
+    <span class="close" onclick="closeModal('editProductModal')">×</span>
+    <h2>✏️ Edit Product Details</h2>
+    <input type="hidden" id="editProdId">
+    <div class="form-group"><label>Product Name</label><input type="text" id="editProdName"></div>
+    <div class="form-group"><label>Quantity / Pack</label><input type="text" id="editProdQty"></div>
+    <div class="form-group"><label>Selling Price (₹)</label><input type="number" id="editProdPrice"></div>
+    <div class="form-group"><label>MRP (₹)</label><input type="number" id="editProdMrp"></div>
+    <button class="primary-btn" onclick="saveEditedProduct()" style="background:#16a34a;margin-top:10px;">Update Product</button>
+  </div>
+</div>
+
+<!-- EDIT ORDER MODAL (ADMIN) -->
+<div class="modal" id="editOrderModal">
+  <div class="modal-box">
+    <span class="close" onclick="closeModal('editOrderModal')">×</span>
+    <h2>✏️ Edit Order & Status</h2>
+    <input type="hidden" id="editOrderIdVal">
+    <div class="form-group"><label>Customer Name</label><input type="text" id="editOrderCustName"></div>
+    <div class="form-group"><label>Mobile</label><input type="text" id="editOrderMobile"></div>
+    <div class="form-group"><label>Delivery Address / Status Info</label><textarea id="editOrderAddress" rows="3"></textarea></div>
+    <div class="form-group"><label>Order Status</label>
+        <select id="editOrderStatus">
+            <option value="Paid via UPI - Delivery Pending">Paid via UPI - Delivery Pending</option>
+            <option value="COD - Pending Delivery">COD - Pending Delivery</option>
+            <option value="Out for Delivery">Out for Delivery</option>
+            <option value="Delivered Successfully">Delivered Successfully</option>
+            <option value="Cancelled">Cancelled</option>
+        </select>
+    </div>
+    <button class="primary-btn" onclick="saveEditedOrder()" style="background:#0284c7;margin-top:10px;">Update Order</button>
+  </div>
+</div>
+
 <div id="notificationToast">🔔 Order Updated!</div>
 
 <script>
@@ -518,71 +568,54 @@ const SUPABASE_URL = "https://zqirmlnbqftzurjzbluv.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_QesFfLaf4IlgNcEJbm3WEw_tq5ISxz1"; 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
-// MASTER DEFAULT PRODUCTS CATALOG (WHOLESALE PACKS + SINGLE 1-PIECE RETAIL UNITS)
 const DEFAULT_PRODUCTS = [
-  // --- SINGLE RETAIL UNITS (1 Piece / Bottle at Market Price) ---
   { id: 301, name: "Coca-Cola 250ml", quantity: "1 Single Bottle", price: 20, mrp: 20, discount: 0, category: "Drinks", emoji: "🥤", type: "Retail" },
   { id: 302, name: "Coca-Cola 750ml", quantity: "1 Single Bottle", price: 40, mrp: 40, discount: 0, category: "Drinks", emoji: "🍾", type: "Retail" },
   { id: 303, name: "Coca-Cola 1 Liter", quantity: "1 Single Bottle", price: 50, mrp: 50, discount: 0, category: "Drinks", emoji: "🍾", type: "Retail" },
   { id: 304, name: "Coca-Cola 2 Liter", quantity: "1 Single Bottle", price: 95, mrp: 95, discount: 0, category: "Drinks", emoji: "🍾", type: "Retail" },
-  
   { id: 305, name: "Pepsi 250ml", quantity: "1 Single Bottle", price: 20, mrp: 20, discount: 0, category: "Drinks", emoji: "🥤", type: "Retail" },
   { id: 306, name: "Pepsi 750ml", quantity: "1 Single Bottle", price: 40, mrp: 40, discount: 0, category: "Drinks", emoji: "🍾", type: "Retail" },
   { id: 307, name: "Pepsi 1 Liter", quantity: "1 Single Bottle", price: 50, mrp: 50, discount: 0, category: "Drinks", emoji: "🍾", type: "Retail" },
   { id: 308, name: "Pepsi 2.25 Liter", quantity: "1 Single Bottle", price: 95, mrp: 95, discount: 0, category: "Drinks", emoji: "🍾", type: "Retail" },
-
   { id: 309, name: "Thums Up 250ml", quantity: "1 Single Bottle", price: 20, mrp: 20, discount: 0, category: "Drinks", emoji: "🥤", type: "Retail" },
   { id: 310, name: "Thums Up 750ml", quantity: "1 Single Bottle", price: 40, mrp: 40, discount: 0, category: "Drinks", emoji: "🍾", type: "Retail" },
   { id: 311, name: "Thums Up 1 Liter", quantity: "1 Single Bottle", price: 50, mrp: 50, discount: 0, category: "Drinks", emoji: "🍾", type: "Retail" },
   { id: 312, name: "Thums Up 2 Liter", quantity: "1 Single Bottle", price: 95, mrp: 95, discount: 0, category: "Drinks", emoji: "🍾", type: "Retail" },
-
   { id: 313, name: "Sprite 250ml", quantity: "1 Single Bottle", price: 20, mrp: 20, discount: 0, category: "Drinks", emoji: "🥤", type: "Retail" },
   { id: 314, name: "Sprite 750ml", quantity: "1 Single Bottle", price: 40, mrp: 40, discount: 0, category: "Drinks", emoji: "🍾", type: "Retail" },
   { id: 315, name: "Sprite 1 Liter", quantity: "1 Single Bottle", price: 50, mrp: 50, discount: 0, category: "Drinks", emoji: "🍾", type: "Retail" },
-
   { id: 316, name: "Fanta 250ml", quantity: "1 Single Bottle", price: 20, mrp: 20, discount: 0, category: "Drinks", emoji: "🥤", type: "Retail" },
   { id: 317, name: "Fanta 750ml", quantity: "1 Single Bottle", price: 40, mrp: 40, discount: 0, category: "Drinks", emoji: "🍾", type: "Retail" },
-
   { id: 318, name: "Sting Energy Drink", quantity: "250ml Single Bottle", price: 20, mrp: 20, discount: 0, category: "Energy", emoji: "⚡", type: "Retail" },
   { id: 319, name: "Sting Energy Drink", quantity: "500ml Single Bottle", price: 40, mrp: 40, discount: 0, category: "Energy", emoji: "⚡", type: "Retail" },
-
   { id: 320, name: "Red Bull Energy Drink", quantity: "250ml Single Can", price: 125, mrp: 125, discount: 0, category: "Energy", emoji: "🐂", type: "Retail" },
   { id: 321, name: "Monster Energy Drink", quantity: "350ml Single Can", price: 125, mrp: 125, discount: 0, category: "Energy", emoji: "🔋", type: "Retail" },
-
   { id: 322, name: "Maaza Mango Juice", quantity: "250ml Single Bottle", price: 20, mrp: 20, discount: 0, category: "Energy", emoji: "🥭", type: "Retail" },
   { id: 323, name: "Frooti Mango Juice", quantity: "250ml Single Bottle", price: 20, mrp: 20, discount: 0, category: "Energy", emoji: "🧃", type: "Retail" },
-
   { id: 324, name: "Water Bottle (Bisleri/Kinley)", quantity: "1 Liter Single Bottle", price: 20, mrp: 20, discount: 0, category: "Water", emoji: "💧", type: "Retail" },
   { id: 325, name: "Water Bottle (Bisleri/Kinley)", quantity: "500ml Single Bottle", price: 10, mrp: 10, discount: 0, category: "Water", emoji: "💧", type: "Retail" },
   { id: 326, name: "Water Jar", quantity: "20 Liter Jar", price: 40, mrp: 50, discount: 10, category: "Water", emoji: "🚰", type: "Retail" },
-
-  // --- WHOLESALE PACKS (Provided List Rates) ---
+  
   { id: 101, name: "Coca-Cola Wholesale Pack", quantity: "250ml (Pack of 30)", price: 480, mrp: 600, discount: 20, category: "Drinks", emoji: "🥤", type: "Wholesale" },
   { id: 102, name: "Coca-Cola Wholesale Pack", quantity: "750ml (Pack of 24)", price: 768, mrp: 960, discount: 20, category: "Drinks", emoji: "🍾", type: "Wholesale" },
   { id: 103, name: "Coca-Cola Wholesale Pack", quantity: "1 Liter (Pack of 15)", price: 592.5, mrp: 750, discount: 21, category: "Drinks", emoji: "🍾", type: "Wholesale" },
   { id: 104, name: "Coca-Cola Wholesale Pack", quantity: "2 Liter (Pack of 9)", price: 684, mrp: 855, discount: 20, category: "Drinks", emoji: "🍾", type: "Wholesale" },
-
   { id: 105, name: "Pepsi Wholesale Pack", quantity: "250ml (Pack of 30)", price: 480, mrp: 600, discount: 20, category: "Drinks", emoji: "🥤", type: "Wholesale" },
   { id: 106, name: "Pepsi Wholesale Pack", quantity: "750ml (Pack of 24)", price: 768, mrp: 960, discount: 20, category: "Drinks", emoji: "🍾", type: "Wholesale" },
   { id: 107, name: "Pepsi Wholesale Pack", quantity: "1 Liter (Pack of 15)", price: 592.5, mrp: 750, discount: 21, category: "Drinks", emoji: "🍾", type: "Wholesale" },
   { id: 108, name: "Pepsi Wholesale Pack", quantity: "2.25 Liter (Pack of 9)", price: 720, mrp: 900, discount: 20, category: "Drinks", emoji: "🍾", type: "Wholesale" },
-
   { id: 109, name: "Thums Up Wholesale Pack", quantity: "250ml (Pack of 30)", price: 480, mrp: 600, discount: 20, category: "Drinks", emoji: "🥤", type: "Wholesale" },
   { id: 110, name: "Thums Up Wholesale Pack", quantity: "750ml (Pack of 24)", price: 768, mrp: 960, discount: 20, category: "Drinks", emoji: "🍾", type: "Wholesale" },
   { id: 111, name: "Thums Up Wholesale Pack", quantity: "1 Liter (Pack of 15)", price: 592.5, mrp: 750, discount: 21, category: "Drinks", emoji: "🍾", type: "Wholesale" },
   { id: 112, name: "Thums Up Wholesale Pack", quantity: "2 Liter (Pack of 9)", price: 684, mrp: 855, discount: 20, category: "Drinks", emoji: "🍾", type: "Wholesale" },
-
   { id: 113, name: "Sprite Wholesale Pack", quantity: "250ml (Pack of 30)", price: 486, mrp: 600, discount: 19, category: "Drinks", emoji: "🥤", type: "Wholesale" },
   { id: 114, name: "Sprite Wholesale Pack", quantity: "750ml (Pack of 24)", price: 768, mrp: 960, discount: 20, category: "Drinks", emoji: "🍾", type: "Wholesale" },
   { id: 115, name: "Sprite Wholesale Pack", quantity: "1 Liter (Pack of 15)", price: 607.5, mrp: 750, discount: 19, category: "Drinks", emoji: "🍾", type: "Wholesale" },
-
   { id: 116, name: "Sting Energy Wholesale", quantity: "250ml (Pack of 30)", price: 480, mrp: 600, discount: 20, category: "Energy", emoji: "⚡", type: "Wholesale" },
   { id: 117, name: "Sting Energy Wholesale", quantity: "500ml (Pack of 24)", price: 777.6, mrp: 960, discount: 19, category: "Energy", emoji: "⚡", type: "Wholesale" },
-
   { id: 118, name: "Red Bull Wholesale Pack", quantity: "250ml (Pack of 24)", price: 2460, mrp: 3000, discount: 18, category: "Energy", emoji: "🐂", type: "Wholesale" },
   { id: 119, name: "Maaza Mango Wholesale", quantity: "250ml (Pack of 30)", price: 480, mrp: 600, discount: 20, category: "Energy", emoji: "🥭", type: "Wholesale" },
   { id: 120, name: "Frooti Mango Wholesale", quantity: "250ml (Pack of 30)", price: 480, mrp: 600, discount: 20, category: "Energy", emoji: "🧃", type: "Wholesale" },
-
   { id: 121, name: "Aquafina / Bisleri Water", quantity: "1 Liter (Pack of 12)", price: 194.4, mrp: 240, discount: 19, category: "Water", emoji: "💧", type: "Wholesale" },
   { id: 122, name: "Aquafina / Bisleri Water", quantity: "500ml (Pack of 24)", price: 230.4, mrp: 288, discount: 20, category: "Water", emoji: "💧", type: "Wholesale" },
   { id: 123, name: "Aquafina / Bisleri Water", quantity: "250ml (Pack of 48)", price: 230.4, mrp: 288, discount: 20, category: "Water", emoji: "💧", type: "Wholesale" }
@@ -590,6 +623,7 @@ const DEFAULT_PRODUCTS = [
 
 let cart = [];
 let allProductsList = [];
+let currentFilteredList = [];
 let isVipMember = false;
 let selectedVipAmount = 99;
 let selectedVipDuration = "1 Month";
@@ -604,7 +638,6 @@ const DELIVERY_AGENT_PIN = "1234";
 
 let currentLoggedInUser = localStorage.getItem("jalvigo_logged_user") ? JSON.parse(localStorage.getItem("jalvigo_logged_user")) : null;
 
-// BANNER SLIDER
 let currentSlide = 0;
 let autoSlideInterval = null;
 
@@ -612,15 +645,11 @@ function updateSliderPosition() {
     const slider = document.getElementById("homeBannerSlider");
     const dotsContainer = document.getElementById("sliderDotsContainer");
     if(!slider) return;
-    
     const totalSlides = slider.children.length;
     if(totalSlides === 0) return;
-
     if(currentSlide >= totalSlides) currentSlide = 0;
     if(currentSlide < 0) currentSlide = totalSlides - 1;
-
     slider.style.transform = "translateX(-" + (currentSlide * 100) + "%)";
-
     if(dotsContainer) {
         dotsContainer.innerHTML = "";
         for(let i=0; i<totalSlides; i++) {
@@ -638,35 +667,20 @@ function startAutoSlide() {
         updateSliderPosition();
     }, 3500);
 }
-
-function stopAutoSlide() {
-    if(autoSlideInterval) clearInterval(autoSlideInterval);
-}
-
+function stopAutoSlide() { if(autoSlideInterval) clearInterval(autoSlideInterval); }
 startAutoSlide();
 
 function togglePasswordVisibility(fieldId, btnElem) {
     const input = document.getElementById(fieldId);
-    if(input.type === "password") {
-        input.type = "text";
-        btnElem.innerText = "🙈";
-    } else {
-        input.type = "password";
-        btnElem.innerText = "👁️";
-    }
+    if(input.type === "password") { input.type = "text"; btnElem.innerText = "🙈"; }
+    else { input.type = "password"; btnElem.innerText = "👁️"; }
 }
 
 function togglePaymentUi() {
     const method = document.getElementById("paymentMethodSelect").value;
-    const box = document.getElementById("upiPaymentBox");
-    if(method === "UPI") {
-        box.style.display = "block";
-    } else {
-        box.style.display = "none";
-    }
+    document.getElementById("upiPaymentBox").style.display = method === "UPI" ? "block" : "none";
 }
 
-// POPULATE PRE-DEFINED PRODUCTS IN VENDOR MODAL
 function populatePreDefinedDropdown() {
     const select = document.getElementById("vPreDefinedSelect");
     if(!select) return;
@@ -692,59 +706,26 @@ function autoFillVendorProductDetails() {
     }
 }
 
-// CUSTOMER SIGNUP
 async function executeCustomerSignup() {
     const usernameVal = document.getElementById("customerAuthInput").value.trim();
     const passwordVal = document.getElementById("customerPassword").value.trim();
+    if(!usernameVal || !passwordVal) { alert("Mobile/Email aur Password dono Bharein!"); return; }
 
-    if(!usernameVal || !passwordVal) {
-        alert("Mobile/Email aur Password dono Bharein!");
-        return;
-    }
+    const { data: existingUser } = await supabaseClient.from("customers").select("*").eq("username", usernameVal);
+    if(existingUser && existingUser.length > 0) { alert("Iss Mobile/Email se pehle se account bana hua hai!"); return; }
 
-    showNotification("Creating account...");
-
-    const { data: existingUser } = await supabaseClient
-        .from("customers")
-        .select("*")
-        .eq("username", usernameVal);
-
-    if(existingUser && existingUser.length > 0) {
-        alert("Iss Mobile/Email se pehle se account bana hua hai! Kripya LOGIN karein.");
-        return;
-    }
-
-    const { error } = await supabaseClient
-        .from("customers")
-        .insert([{
-            username: usernameVal,
-            password: passwordVal,
-            created_at: new Date().toISOString()
-        }]);
-
-    if(error) {
-        alert("Signup Error: " + error.message);
-        return;
-    }
-
+    await supabaseClient.from("customers").insert([{ username: usernameVal, password: passwordVal, created_at: new Date().toISOString() }]);
     currentLoggedInUser = { username: usernameVal };
     localStorage.setItem("jalvigo_logged_user", JSON.stringify(currentLoggedInUser));
-
-    triggerBothNotifications("Jalvigo Account 🎉", "Account Created Successfully!");
     alert("✅ Aapka Account Ban Gaya Hai!");
     closeModal('customerAuthModal');
     handleAccountClick();
 }
 
-// CUSTOMER LOGIN
 async function executeCustomerLogin() {
     const usernameVal = document.getElementById("customerAuthInput").value.trim();
     const passwordVal = document.getElementById("customerPassword").value.trim();
-
-    if(!usernameVal || !passwordVal) {
-        alert("Mobile/Email aur Password dono Bharein!");
-        return;
-    }
+    if(!usernameVal || !passwordVal) { alert("Mobile/Email aur Password dono Bharein!"); return; }
 
     if(usernameVal.toLowerCase() === ADMIN_EMAIL.toLowerCase() && (passwordVal === "admin123" || passwordVal === "Balram@70245872")) {
         currentLoggedInUser = { username: ADMIN_EMAIL };
@@ -754,23 +735,11 @@ async function executeCustomerLogin() {
         return;
     }
 
-    showNotification("Logging in...");
-
-    const { data, error } = await supabaseClient
-        .from("customers")
-        .select("*")
-        .eq("username", usernameVal)
-        .eq("password", passwordVal);
-
-    if(error || !data || data.length === 0) {
-        alert("Login Error: Mobile/Email ya Password Galat Hai!");
-        return;
-    }
+    const { data } = await supabaseClient.from("customers").select("*").eq("username", usernameVal).eq("password", passwordVal);
+    if(!data || data.length === 0) { alert("Login Error: Mobile/Email ya Password Galat Hai!"); return; }
 
     currentLoggedInUser = { username: usernameVal };
     localStorage.setItem("jalvigo_logged_user", JSON.stringify(currentLoggedInUser));
-
-    triggerBothNotifications("Welcome Back 🎉", "Logged in successfully!");
     closeModal('customerAuthModal');
     handleAccountClick();
 }
@@ -779,24 +748,13 @@ async function executePasswordReset() {
     const inputVal = document.getElementById("forgotAuthInput").value.trim();
     const newPassword = document.getElementById("forgotNewPassword").value.trim();
     if(!inputVal || !newPassword) { alert("Please enter Mobile/Email and New Password!"); return; }
-
-    const { data } = await supabaseClient.from("customers").select("*").eq("username", inputVal);
-    if(!data || data.length === 0) {
-        alert("No account found with this Mobile/Email!");
-        return;
-    }
-
     await supabaseClient.from("customers").update({ password: newPassword }).eq("username", inputVal);
-    showNotification("Password Reset Successful!");
     alert("✅ Password updated successfully!");
     closeModal('forgotPasswordModal');
     openCustomerAuth();
 }
 
-function triggerBothNotifications(title, bodyMsg) {
-    showNotification(title + ": " + bodyMsg);
-}
-
+function triggerBothNotifications(title, bodyMsg) { showNotification(title + ": " + bodyMsg); }
 function closeModal(id){ document.getElementById(id).style.display="none"; }
 function showNotification(msg){
     const toast = document.getElementById("notificationToast");
@@ -817,28 +775,21 @@ function selectVipPlan(amt, dur, cardId) {
 
 function getGPSLocation() {
     if (navigator.geolocation) {
-        triggerBothNotifications("GPS Location", "Detecting live GPS coordinates...");
         navigator.geolocation.getCurrentPosition(position => {
             userLat = position.coords.latitude;
             userLng = position.coords.longitude;
             calculatedDistanceKM = calculateHaversineDistance(SHOP_LAT, SHOP_LNG, userLat, userLng);
-            
             document.getElementById("locText").innerText = userLat.toFixed(2) + ", " + userLng.toFixed(2) + " (" + calculatedDistanceKM.toFixed(1) + " KM)";
             const streetAreaInput = document.getElementById("streetArea");
             if(streetAreaInput) streetAreaInput.value = "GPS Pin: " + userLat.toFixed(4) + ", " + userLng.toFixed(4);
-
             const mapContainer = document.getElementById("mapContainer");
             const mapIframe = document.getElementById("googleMapIframe");
             if(mapContainer && mapIframe) {
                 mapIframe.src = "https://maps.google.com/maps?q=" + userLat + "," + userLng + "&z=15&output=embed";
                 mapContainer.style.display = "block";
             }
-
             autoDecideDeliverySlot(calculatedDistanceKM);
-            triggerBothNotifications("Location Updated", "Store Distance: ~" + calculatedDistanceKM.toFixed(1) + " KM");
-        }, () => {
-            autoDecideDeliverySlot(1.0);
-        });
+        }, () => { autoDecideDeliverySlot(1.0); });
     }
 }
 
@@ -846,19 +797,14 @@ function calculateHaversineDistance(lat1, lon1, lat2, lon2) {
     const R = 6371;
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-              Math.sin(dLon/2) * Math.sin(dLon/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    return R * c;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+    return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
 }
 
 function autoDecideDeliverySlot(distKM) {
     let slotText = isVipMember ? "⚡ VIP Express Same-Day" : (distKM <= 1 ? "15-20 Mins Express" : "1-2 Hours Delivery");
-
     const distElem = document.getElementById("detectedDistanceText");
     if(distElem) distElem.innerText = "~" + distKM.toFixed(1) + " KM from Store";
-
     return slotText;
 }
 
@@ -874,31 +820,21 @@ function openAdminAuthModal() { closeModal('accountModal'); document.getElementB
 async function executeAdminLogin() {
     const email = document.getElementById("adminEmailInput").value.trim();
     const password = document.getElementById("adminPasswordInput").value.trim();
-
-    if(!email || !password) { alert("Please enter email and password!"); return; }
-
     if(email.toLowerCase() === ADMIN_EMAIL.toLowerCase() && (password === "admin123" || password === "Balram@70245872")){
         currentLoggedInUser = { username: ADMIN_EMAIL };
         localStorage.setItem("jalvigo_logged_user", JSON.stringify(currentLoggedInUser));
         closeModal('adminAuthModal');
         document.getElementById("adminDashboardModal").style.display="block";
         switchAdminTab('orders');
-        triggerBothNotifications("Admin Access Granted", "Logged in to Admin Dashboard!");
-    } else {
-        alert("Unauthorized Admin Credentials!");
-    }
+    } else { alert("Unauthorized Admin Credentials!"); }
 }
 
 async function verifyDeliveryPin() {
     const pin = document.getElementById("deliveryPinInput").value;
     const container = document.getElementById("deliveryOrdersContainer");
     if(pin === DELIVERY_AGENT_PIN) {
-        showNotification("Delivery Portal Unlocked!");
         const { data: orders } = await supabaseClient.from("orders").select("*").order("order_date", { ascending: false });
-        if(!orders || orders.length === 0) {
-            container.innerHTML = "<p style='margin-top:10px;text-align:center;'>No orders assigned yet.</p>";
-            return;
-        }
+        if(!orders || orders.length === 0) { container.innerHTML = "<p style='margin-top:10px;text-align:center;'>No orders assigned yet.</p>"; return; }
         container.innerHTML = "<h3 style='margin-top:10px;font-size:14px;color:#16a34a;'>Assigned Deliveries:</h3>" + orders.map(o => `
             <div style="border:1px solid #16a34a;padding:10px;margin-top:6px;background:#f0fdf4;border-radius:8px;">
                 <b>#${o.order_id}</b> - ${o.customer_name} (${o.mobile})<br>
@@ -906,9 +842,7 @@ async function verifyDeliveryPin() {
                 <b style="color:#0284c7;">Collect Amount: ₹${o.total}</b>
             </div>
         `).join('');
-    } else {
-        alert("Invalid Delivery PIN! Default is 1234");
-    }
+    } else { alert("Invalid Delivery PIN! Default is 1234"); }
 }
 
 async function handleAccountClick() {
@@ -916,7 +850,6 @@ async function handleAccountClick() {
         document.getElementById("authButtonsSection").style.display = "none";
         document.getElementById("loggedInSection").style.display = "block";
         document.getElementById("userEmailText").innerText = "Account: " + currentLoggedInUser.username;
-
         if(currentLoggedInUser.username.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
             document.getElementById("adminDashboardBtn").style.display = "block";
             document.getElementById("vendorProductAddBtn").style.display = "block";
@@ -953,15 +886,13 @@ async function submitVendorProduct() {
     const mrp = document.getElementById("vProdMrp").value.trim();
     const price = document.getElementById("vProdPrice").value.trim();
     const imageFile = document.getElementById("vProdImageFile").files[0];
-
     if(!name || !price) { alert("Product Name and Selling Price are required!"); return; }
 
     let imageUrl = null;
     if (imageFile) {
-        showNotification("Uploading product photo...");
         const fileExt = imageFile.name.split('.').pop();
         const fileName = "prod_" + Date.now() + "." + fileExt;
-        const { data: uploadData, error: uploadError } = await supabaseClient.storage.from('products').upload(fileName, imageFile);
+        const { error: uploadError } = await supabaseClient.storage.from('products').upload(fileName, imageFile);
         if (!uploadError) {
             const { data: urlData } = supabaseClient.storage.from('products').getPublicUrl(fileName);
             imageUrl = urlData.publicUrl;
@@ -969,27 +900,11 @@ async function submitVendorProduct() {
     }
 
     let discountPercent = mrp && mrp > price ? Math.round(((mrp - price) / mrp) * 100) : 0;
-
     await supabaseClient.from("products").insert([{
-        name,
-        quantity: quantity || 'Standard Pack',
-        category: category,
-        price: Number(price),
-        mrp: mrp ? Number(mrp) : null,
-        discount: discountPercent,
-        image_url: imageUrl,
-        user_id: currentLoggedInUser ? currentLoggedInUser.username : 'admin',
-        created_at: new Date().toISOString()
+        name, quantity: quantity || 'Standard Pack', category, price: Number(price), mrp: mrp ? Number(mrp) : null, discount: discountPercent, image_url: imageUrl, user_id: currentLoggedInUser.username, created_at: new Date().toISOString()
     }]);
 
-    triggerBothNotifications("New Product Live 🎉", name + " added successfully!");
     alert("✅ Product published successfully!");
-    document.getElementById("vProdName").value = "";
-    document.getElementById("vProdQty").value = "";
-    document.getElementById("vProdMrp").value = "";
-    document.getElementById("vProdPrice").value = "";
-    document.getElementById("vProdImageFile").value = "";
-    document.getElementById("vPreDefinedSelect").value = "";
     loadVendorMyProducts();
     loadDynamicProducts();
 }
@@ -997,12 +912,8 @@ async function submitVendorProduct() {
 async function loadVendorMyProducts() {
     const list = document.getElementById("vendorMyProductsList");
     if(!currentLoggedInUser) return;
-
     const { data } = await supabaseClient.from("products").select("*").eq("user_id", currentLoggedInUser.username);
-    if(!data || data.length === 0) {
-        list.innerHTML = "<p style='color:#64748b;'>You have not added any custom products yet.</p>";
-        return;
-    }
+    if(!data || data.length === 0) { list.innerHTML = "<p style='color:#64748b;'>No custom products added yet.</p>"; return; }
     list.innerHTML = data.map(p => `
         <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e2e8f0;padding:8px 0;">
             <div><b>${p.name}</b> (${p.quantity || 'Std'}) - ₹${p.price}</div>
@@ -1014,7 +925,6 @@ async function loadVendorMyProducts() {
 async function deleteVendorProduct(id) {
     if(confirm("Delete this product?")) {
         await supabaseClient.from("products").delete().eq("id", id);
-        showNotification("Product Deleted!");
         loadVendorMyProducts();
         loadDynamicProducts();
     }
@@ -1022,19 +932,12 @@ async function deleteVendorProduct(id) {
 
 async function openMyOrders() {
     closeModal('accountModal');
-    if(!currentLoggedInUser) { alert("Please login first!"); openCustomerAuth(); return; }
-
+    if(!currentLoggedInUser) { openCustomerAuth(); return; }
     document.getElementById("myOrdersModal").style.display = "block";
     const container = document.getElementById("myOrdersListContainer");
     container.innerHTML = "<p>Loading orders...</p>";
-
-    const { data: orders, error } = await supabaseClient.from("orders").select("*").eq("user_id", currentLoggedInUser.username).order("order_date", { ascending: false });
-    
-    if(error || !orders || orders.length === 0) {
-        container.innerHTML = "<p style='text-align:center;color:#64748b;padding:15px;'>No orders found.</p>";
-        return;
-    }
-
+    const { data: orders } = await supabaseClient.from("orders").select("*").eq("user_id", currentLoggedInUser.username).order("order_date", { ascending: false });
+    if(!orders || orders.length === 0) { container.innerHTML = "<p style='text-align:center;color:#64748b;padding:15px;'>No orders found.</p>"; return; }
     container.innerHTML = orders.map(o => `
         <div style="border:1px solid #cbd5e1;padding:12px;margin-top:8px;background:#f8fafc;border-radius:10px;">
             <div style="display:flex;justify-content:space-between;font-weight:bold;color:#0284c7;">
@@ -1049,14 +952,8 @@ async function openMyOrders() {
 
 async function renderPublicNearbyStores() {
     const list = document.getElementById("storesList");
-    list.innerHTML = "<p style='padding:15px;text-align:center;color:#64748b;'>Loading nearby stores...</p>";
-    
-    const { data: stores, error } = await supabaseClient.from("business_profiles").select("*");
-
-    if(error || !stores || stores.length === 0){
-        list.innerHTML = "<p style='padding:15px;text-align:center;color:#64748b;'>No registered stores found nearby yet.</p>";
-        return;
-    }
+    const { data: stores } = await supabaseClient.from("business_profiles").select("*");
+    if(!stores || stores.length === 0){ list.innerHTML = "<p style='padding:15px;text-align:center;color:#64748b;'>No registered stores found nearby.</p>"; return; }
     list.innerHTML = stores.map(s => `
         <div style="border:1px solid #e2e8f0;padding:12px;border-radius:10px;margin-top:8px;background:#f8fafc;">
             <b>🏪 ${s.business_name}</b> (${s.owner_name})<br>
@@ -1068,32 +965,52 @@ async function renderPublicNearbyStores() {
 
 function activateVipSubscription(){
     isVipMember = true;
-    triggerBothNotifications("Jalvigo VIP Pass", "VIP (" + selectedVipDuration + ") Membership Activated!");
+    triggerBothNotifications("Jalvigo VIP Pass", "VIP (" + selectedVipDuration + ") Activated!");
     closeModal('subModal');
     updateCart();
 }
 
-// LOAD PRODUCTS FROM DB + FALLBACK TO MASTER CATALOG
+// LOAD PRODUCTS WITH REFRESH FIX
 async function loadDynamicProducts() {
     let dbProducts = [];
-    
     try {
         const { data: products } = await supabaseClient.from("products").select("*").order("created_at", { ascending: false });
-        if (products && products.length > 0) {
-            dbProducts = products;
-        }
-    } catch(err) {
-        console.log("Using Master Default Catalog");
-    }
+        if (products && products.length > 0) dbProducts = products;
+    } catch(err) { console.log("Catalog fallback"); }
 
     allProductsList = [...dbProducts, ...DEFAULT_PRODUCTS];
-    renderProducts(allProductsList);
+    currentFilteredList = [...allProductsList];
+    renderProducts(currentFilteredList);
+    showNotification("Products Refreshed Successfully!");
+}
+
+// SORTING LOGIC FOR WHOLESALE & RETAIL
+function applySorting(type) {
+    document.querySelectorAll('.sort-chip').forEach(c => c.classList.remove('active'));
+    
+    if(type === 'all') {
+        document.getElementById("sortAll").classList.add('active');
+        currentFilteredList = [...allProductsList];
+    } else if(type === 'retail') {
+        document.getElementById("sortRetail").classList.add('active');
+        currentFilteredList = allProductsList.filter(p => p.type === 'Retail' || p.quantity.toLowerCase().includes('single') || p.quantity.toLowerCase().includes('bottle') || p.quantity.toLowerCase().includes('jar') && p.price < 100);
+    } else if(type === 'wholesale') {
+        document.getElementById("sortWholesale").classList.add('active');
+        currentFilteredList = allProductsList.filter(p => p.type === 'Wholesale' || p.quantity.toLowerCase().includes('pack'));
+    } else if(type === 'lowHigh') {
+        document.getElementById("sortLowHigh").classList.add('active');
+        currentFilteredList.sort((a, b) => a.price - b.price);
+    } else if(type === 'highLow') {
+        document.getElementById("sortHighLow").classList.add('active');
+        currentFilteredList.sort((a, b) => b.price - a.price);
+    }
+    renderProducts(currentFilteredList);
 }
 
 function renderProducts(prods) {
     const container = document.getElementById("dynamicProductsList");
     if(!prods || prods.length === 0) {
-        container.innerHTML = "<p style='grid-column:1/-1;text-align:center;padding:20px;color:#64748b;'>No products found in this category.</p>";
+        container.innerHTML = "<p style='grid-column:1/-1;text-align:center;padding:20px;color:#64748b;'>No products found.</p>";
         return;
     }
     container.innerHTML = prods.map(p => `
@@ -1101,7 +1018,7 @@ function renderProducts(prods) {
             ${p.discount && p.discount > 0 ? `<div class="discount-badge">${p.discount}% OFF</div>` : ''}
             <div class="type-badge">${p.type || 'B2B'}</div>
             <div onclick="openProductDetail('${p.id}')" style="width:100%;">
-                ${p.image_url ? `<img src="${p.image_url}" class="prod-img" alt="${p.name}">` : `<div class="prod-emoji">${p.emoji || '🥤'}</div>`}
+                ${p.image_url ? `<img src="${p.image_url}" class="prod-img">` : `<div class="prod-emoji">${p.emoji || '🥤'}</div>`}
                 <div class="prod-title">${p.name}</div>
                 <div class="prod-qty">${p.quantity || 'Standard Pack'}</div>
                 <div class="price-box">
@@ -1114,48 +1031,28 @@ function renderProducts(prods) {
     `).join('');
 }
 
-// SHOW PRODUCT FULL DETAIL POPUP
 function openProductDetail(id) {
     const p = allProductsList.find(item => item.id == id);
     if(!p) return;
-
-    const detailContainer = document.getElementById("productDetailContent");
-    detailContainer.innerHTML = `
+    document.getElementById("productDetailContent").innerHTML = `
         <div style="font-size:50px;margin-bottom:10px;">${p.image_url ? `<img src="${p.image_url}" style="width:120px;height:120px;object-fit:contain;">` : (p.emoji || '🥤')}</div>
         <h2 style="font-size:18px;color:#0f172a;">${p.name}</h2>
         <div style="font-size:13px;color:#0284c7;font-weight:bold;margin:6px 0;">Pack/Size: ${p.quantity}</div>
-        <div style="background:#f0f9ff;padding:10px;border-radius:10px;margin:12px 0;border:1px solid #e0f2fe;">
-            <div style="font-size:14px;color:#64748b;">Category: <b>${p.category}</b></div>
-            <div style="font-size:14px;color:#64748b;margin-top:4px;">Type: <b>${p.type || 'Wholesale / Retail'}</b></div>
-            <div style="font-size:20px;font-weight:800;color:#16a34a;margin-top:8px;">
-                Selling Price: ₹${p.price} ${p.mrp && p.mrp > p.price ? `<span style="font-size:14px;color:#94a3b8;text-decoration:line-through;margin-left:6px;">₹${p.mrp}</span>` : ''}
-            </div>
-            ${p.discount && p.discount > 0 ? `<div style="font-size:12px;color:#ef4444;font-weight:bold;margin-top:4px;">Special Discount: ${p.discount}% OFF</div>` : ''}
+        <div style="background:#f0f9ff;padding:10px;border-radius:10px;margin:12px 0;">
+            <div style="font-size:20px;font-weight:800;color:#16a34a;">Selling Price: ₹${p.price}</div>
         </div>
-        <p style="font-size:12px;color:#64748b;margin-bottom:15px;">Official verified product supplied via Jalvigo Verified Local Dealers Network.</p>
         <button class="primary-btn" onclick="addToCart('${p.name.replace(/'/g, "\\'")}', ${p.price});closeModal('productDetailModal');">🛒 Add to Cart Now</button>
     `;
-
     document.getElementById("productDetailModal").style.display = "block";
 }
 
-// CATEGORY FILTERING FUNCTION
 function filterProductsByCategory(cat) {
     const heading = document.getElementById("currentCategoryHeading");
-    
-    if (cat === 'All') {
-        if(heading) heading.innerText = "⚡ Wholesale & Retail Beverages";
-        renderProducts(allProductsList);
-    } else if (cat === 'Water') {
-        if(heading) heading.innerText = "💧 Water Jars & Mineral Water";
-        renderProducts(allProductsList.filter(p => p.category === 'Water' || p.name.toLowerCase().includes('water') || p.name.toLowerCase().includes('jar')));
-    } else if (cat === 'Drinks') {
-        if(heading) heading.innerText = "🥤 Cold Drinks & Soft Drinks";
-        renderProducts(allProductsList.filter(p => p.category === 'Drinks' || p.name.toLowerCase().includes('drink') || p.name.toLowerCase().includes('cola') || p.name.toLowerCase().includes('sprite') || p.name.toLowerCase().includes('pepsi') || p.name.toLowerCase().includes('thums')));
-    } else if (cat === 'Energy') {
-        if(heading) heading.innerText = "⚡ Energy Drinks & Juices";
-        renderProducts(allProductsList.filter(p => p.category === 'Energy' || p.name.toLowerCase().includes('sting') || p.name.toLowerCase().includes('bull') || p.name.toLowerCase().includes('monster') || p.name.toLowerCase().includes('frooti') || p.name.toLowerCase().includes('maaza')));
-    }
+    if (cat === 'All') { heading.innerText = "⚡ Wholesale & Retail Beverages"; currentFilteredList = [...allProductsList]; }
+    else if (cat === 'Water') { heading.innerText = "💧 Water Jars & Mineral Water"; currentFilteredList = allProductsList.filter(p => p.category === 'Water' || p.name.toLowerCase().includes('water')); }
+    else if (cat === 'Drinks') { heading.innerText = "🥤 Cold Drinks"; currentFilteredList = allProductsList.filter(p => p.category === 'Drinks' || p.name.toLowerCase().includes('cola')); }
+    else if (cat === 'Energy') { heading.innerText = "⚡ Energy Drinks & Juices"; currentFilteredList = allProductsList.filter(p => p.category === 'Energy'); }
+    renderProducts(currentFilteredList);
 }
 
 function filterProducts(){
@@ -1167,13 +1064,12 @@ function addToCart(name, price){
     let item = cart.find(p => p.name === name);
     if(item) item.qty++; else cart.push({name, price, qty:1});
     updateCart();
-    triggerBothNotifications("Cart Updated", name + " added to cart!");
+    showNotification(name + " added to cart!");
 }
 
 function updateCart(){
     let count = 0, subtotal = 0;
     cart.forEach(item => { count += item.qty; subtotal += item.price * item.qty; });
-
     document.getElementById("cartCount").innerText = count;
     document.getElementById("cartSubtotal").innerText = subtotal;
     document.getElementById("cartTotal").innerText = subtotal;
@@ -1205,63 +1101,34 @@ function openOrderForm(){
 function calculateCheckoutFees() {
     let subtotal = 0;
     cart.forEach(i => subtotal += i.price * i.qty);
-    
     let deliveryFee = subtotal > 250 ? 7 : Math.round(calculatedDistanceKM * 5);
     let grandTotal = subtotal + deliveryFee;
-
     document.getElementById("checkoutSubtotal").innerText = subtotal;
     document.getElementById("checkoutDeliveryFee").innerText = deliveryFee;
     document.getElementById("checkoutGrandTotal").innerText = grandTotal;
-
-    const upiUri = "upi://pay?pa=balramnnagar@okaxis&pn=Jalvigo%20Marketplace&am=" + grandTotal + "&cu=INR";
+    const upiUri = "upi://pay?pa=balramnnagar@okaxis&pn=Jalvigo&am=" + grandTotal + "&cu=INR";
     document.getElementById("orderCheckoutUpiQr").src = "https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=" + encodeURIComponent(upiUri);
     document.getElementById("directUpiLinkBtn").href = upiUri;
 }
 
 async function sendOrder(){
-    if(!currentLoggedInUser){ alert("Please Login First!"); openCustomerAuth(); return; }
-    
+    if(!currentLoggedInUser){ openCustomerAuth(); return; }
     const name = document.getElementById("customerName").value;
     const mobile = document.getElementById("customerMobile").value;
     const address = document.getElementById("streetArea").value;
     const paymentMethod = document.getElementById("paymentMethodSelect").value;
-    const utr = document.getElementById("paymentUtrInput") ? document.getElementById("paymentUtrInput").value.trim() : "";
-
     if(!name || !mobile || !address){ alert("Fill all delivery details!"); return; }
 
     let subtotal = 0; cart.forEach(i => subtotal += i.price * i.qty);
-    let commission = Math.round(subtotal * 0.07); // 7% Jalvigo Commission Model
     let deliveryFee = subtotal > 250 ? 7 : Math.round(calculatedDistanceKM * 5);
     let grandTotal = subtotal + deliveryFee;
-    let shopPayout = grandTotal - commission;
-
     const orderId = "JAL" + Date.now();
-    const slotText = autoDecideDeliverySlot(calculatedDistanceKM);
-    const fullAddress = address + " | Distance: ~" + calculatedDistanceKM.toFixed(1) + " KM | Slot: " + slotText + " | Pay: " + paymentMethod + (utr ? " (UTR:" + utr + ")" : "");
 
     await supabaseClient.from("orders").insert([{
-        order_id: orderId, 
-        customer_name: name, 
-        mobile, 
-        address: fullAddress, 
-        items: JSON.stringify(cart),
-        subtotal: subtotal,
-        commission: commission,
-        delivery_fee: deliveryFee,
-        shop_payout: shopPayout,
-        total: grandTotal, 
-        order_date: new Date().toISOString(), 
-        status: paymentMethod === 'UPI' ? 'Paid via UPI - Delivery Pending' : 'COD - Pending Delivery', 
-        user_id: currentLoggedInUser.username
+        order_id: orderId, customer_name: name, mobile, address, items: JSON.stringify(cart), subtotal, total: grandTotal, order_date: new Date().toISOString(), status: 'Pending Delivery', user_id: currentLoggedInUser.username
     }]);
 
-    triggerBothNotifications(
-        "💰 New Order Received!", 
-        "Order #" + orderId + " of ₹" + grandTotal + " received."
-    );
-
-    alert("🎉 Order Placed Successfully!\n\nOrder ID: #" + orderId + "\nTotal Paid: ₹" + grandTotal + "\n\n📢 Note for Seller/Shopkeeper: Order deliver hone ke baad aapka Net Payout (₹" + shopPayout + ") T+1 (Agale din) aapke account/UPI me transfer ho jayega.");
-
+    alert("🎉 Order Placed Successfully! ID: #" + orderId);
     cart = []; updateCart(); closeModal('orderModal');
 }
 
@@ -1271,19 +1138,10 @@ async function registerB2BUser(){
     const mobile = document.getElementById("b2bMobile").value.trim();
     const address = document.getElementById("b2bAddress").value.trim();
     const pincode = document.getElementById("b2bPincode").value.trim();
-    const gst_number = document.getElementById("b2bGst").value.trim() || "Not Provided";
     const password = document.getElementById("b2bPassword").value.trim();
+    if(!business_name || !mobile || !password){ alert("Please fill required shop details!"); return; }
 
-    if(!business_name || !owner_name || !mobile || !address || !pincode || !password){ 
-        alert("Please fill all required shop details!"); 
-        return; 
-    }
-
-    await supabaseClient.from("business_profiles").insert([{
-        user_id: mobile, business_name, owner_name, mobile, address, pincode, gst_number
-    }]);
-
-    triggerBothNotifications("Partner Registered", "Shop Registered on Jalvigo Network!");
+    await supabaseClient.from("business_profiles").insert([{ user_id: mobile, business_name, owner_name, mobile, address, pincode }]);
     alert("✅ Shop Registered Successfully!");
     closeModal('b2bAuthModal');
 }
@@ -1294,7 +1152,6 @@ function switchAdminTab(tabName) {
     document.getElementById("adminTabAddProduct").style.display = tabName === 'addProduct' ? 'block' : 'none';
     document.getElementById("adminTabManageProducts").style.display = tabName === 'manageProducts' ? 'block' : 'none';
     document.getElementById("adminTabShops").style.display = tabName === 'shops' ? 'block' : 'none';
-
     if(tabName === 'orders') loadAdminOrders();
     if(tabName === 'manageProducts') loadAdminProductsToManage();
     if(tabName === 'shops') loadAdminRegisteredShops();
@@ -1303,123 +1160,116 @@ function switchAdminTab(tabName) {
 async function addNewPromoBanner() {
     const title = document.getElementById("bannerTitle").value.trim();
     const desc = document.getElementById("bannerDesc").value.trim();
-    if(!title || !desc) { alert("Enter title and description!"); return; }
-
+    if(!title || !desc) { alert("Enter title!"); return; }
     const slider = document.getElementById("homeBannerSlider");
     const newCard = document.createElement("div");
     newCard.className = "promo-card alt";
     newCard.innerHTML = "<h3>" + title + "</h3><p>" + desc + "</p>";
     slider.appendChild(newCard);
-
     updateSliderPosition();
-    showNotification("Promo Banner Published to Home Slider!");
-    alert("✅ Banner live on website home page!");
-    document.getElementById("bannerTitle").value = "";
-    document.getElementById("bannerDesc").value = "";
+    alert("✅ Banner live!");
 }
 
 async function addNewProductWithImage() {
     const name = document.getElementById("newProdName").value.trim();
-    const quantity = document.getElementById("newProdQty").value.trim();
     const price = document.getElementById("newProdPrice").value.trim();
-    const mrp = document.getElementById("newProdMrp").value.trim();
-    const imageFile = document.getElementById("newProdImageFile").files[0];
-
-    if(!name || !price){ alert("Product Name and Price required!"); return; }
-
-    let imageUrl = null;
-    if (imageFile) {
-        showNotification("Uploading product photo...");
-        const fileExt = imageFile.name.split('.').pop();
-        const fileName = "prod_" + Date.now() + "." + fileExt;
-        const { data: uploadData, error: uploadError } = await supabaseClient.storage.from('products').upload(fileName, imageFile);
-        if (!uploadError) {
-            const { data: urlData } = supabaseClient.storage.from('products').getPublicUrl(fileName);
-            imageUrl = urlData.publicUrl;
-        }
-    }
-
-    let discountPercent = mrp && mrp > price ? Math.round(((mrp - price) / mrp) * 100) : 0;
-
-    await supabaseClient.from("products").insert([{ 
-        name, 
-        quantity: quantity || 'Standard Pack',
-        price: Number(price), 
-        mrp: mrp ? Number(mrp) : null, 
-        discount: discountPercent, 
-        image_url: imageUrl, 
-        created_at: new Date().toISOString() 
-    }]);
-
-    triggerBothNotifications("Product Live 🎉", name + " added successfully!");
-    alert("✅ Product Added Successfully!");
-    document.getElementById("newProdName").value = "";
-    document.getElementById("newProdQty").value = "";
-    document.getElementById("newProdPrice").value = "";
-    document.getElementById("newProdMrp").value = "";
-    document.getElementById("newProdImageFile").value = "";
+    if(!name || !price){ alert("Name and Price required!"); return; }
+    await supabaseClient.from("products").insert([{ name, price: Number(price), created_at: new Date().toISOString() }]);
+    alert("✅ Product Added!");
     loadDynamicProducts();
 }
 
+// ADMIN EDIT & MANAGE PRODUCTS
 async function loadAdminProductsToManage() {
     const list = document.getElementById("adminProductsManageList");
     const { data: products } = await supabaseClient.from("products").select("*").order("created_at", { ascending: false });
-    if(!products || products.length === 0){
-        list.innerHTML = "<p style='padding:10px;'>No custom DB products found (showing master catalogue on homepage).</p>";
-        return;
-    }
+    if(!products || products.length === 0){ list.innerHTML = "<p>No custom products found in database to edit.</p>"; return; }
     list.innerHTML = products.map(p => `
         <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid #e2e8f0;background:#fff;margin-top:6px;border-radius:8px;">
-            <div><b>${p.name}</b> (${p.quantity || 'Std'}) - ₹${p.price}</div>
-            <button onclick="deleteProductById('${p.id}')" style="background:#dc2626;color:white;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;">Delete</button>
+            <div><b>${p.name}</b> - ₹${p.price}</div>
+            <div>
+                <button onclick="openEditProductModal('${p.id}', '${p.name}', '${p.quantity || ''}', ${p.price}, ${p.mrp || 0})" style="background:#0284c7;color:white;border:none;padding:5px 10px;border-radius:6px;cursor:pointer;margin-right:5px;">Edit</button>
+                <button onclick="deleteProductById('${p.id}')" style="background:#dc2626;color:white;border:none;padding:5px 10px;border-radius:6px;cursor:pointer;">Delete</button>
+            </div>
         </div>
     `).join('');
+}
+
+function openEditProductModal(id, name, qty, price, mrp) {
+    document.getElementById("editProdId").value = id;
+    document.getElementById("editProdName").value = name;
+    document.getElementById("editProdQty").value = qty;
+    document.getElementById("editProdPrice").value = price;
+    document.getElementById("editProdMrp").value = mrp;
+    document.getElementById("editProductModal").style.display = "block";
+}
+
+async function saveEditedProduct() {
+    const id = document.getElementById("editProdId").value;
+    const name = document.getElementById("editProdName").value;
+    const quantity = document.getElementById("editProdQty").value;
+    const price = Number(document.getElementById("editProdPrice").value);
+    const mrp = Number(document.getElementById("editProdMrp").value);
+
+    await supabaseClient.from("products").update({ name, quantity, price, mrp }).eq("id", id);
+    alert("✅ Product updated successfully!");
+    closeModal('editProductModal');
+    loadAdminProductsToManage();
+    loadDynamicProducts();
 }
 
 async function deleteProductById(id) {
     if(confirm("Delete this product?")) {
         await supabaseClient.from("products").delete().eq("id", id);
-        showNotification("Product Deleted!");
         loadAdminProductsToManage();
         loadDynamicProducts();
     }
 }
 
+// ADMIN EDIT & MANAGE ORDERS
 async function loadAdminOrders(){
     const list = document.getElementById("adminOrdersList");
     const { data } = await supabaseClient.from("orders").select("*").order("order_date", { ascending: false });
-    if(!data || data.length === 0) {
-        list.innerHTML = "<p style='padding:15px;text-align:center;'>No orders received yet.</p>";
-        return;
-    }
-    list.innerHTML = data.map(o => {
-        let comm = o.commission || Math.round((o.subtotal || o.total) * 0.07);
-        let netPayout = o.shop_payout || (o.total - comm);
-        return `
-            <div style="border:1px solid #ccc;padding:10px;margin:5px 0;background:#fff;border-radius:8px;">
-                <b>#${o.order_id}</b> - ${o.customer_name} (Total Paid: ₹${o.total})<br>
-                <small>📍 ${o.address}</small><br>
-                <small style="color:#0369a1;font-weight:bold;">
-                    Jalvigo Admin Comm (7%): ₹${comm} | Net Shop Payout: ₹${netPayout} (T+1 Settlement)
-                </small>
-            </div>
-        `;
-    }).join('');
+    if(!data || data.length === 0) { list.innerHTML = "<p style='padding:15px;text-align:center;'>No orders received yet.</p>"; return; }
+    list.innerHTML = data.map(o => `
+        <div style="border:1px solid #ccc;padding:10px;margin:8px 0;background:#fff;border-radius:8px;">
+            <b>#${o.order_id}</b> - ${o.customer_name} (Total: ₹${o.total})<br>
+            <small>📍 ${o.address}</small><br>
+            <small style="color:#16a34a;font-weight:bold;">Status: ${o.status || 'Pending'}</small><br>
+            <button onclick="openEditOrderModal('${o.order_id}', '${o.customer_name}', '${o.mobile}', '${o.address.replace(/'/g, "")}', '${o.status || ''}')" style="background:#0284c7;color:white;border:none;padding:5px 12px;border-radius:6px;cursor:pointer;margin-top:6px;">✏️ Edit Order & Status</button>
+        </div>
+    `).join('');
+}
+
+function openEditOrderModal(orderId, name, mobile, address, status) {
+    document.getElementById("editOrderIdVal").value = orderId;
+    document.getElementById("editOrderCustName").value = name;
+    document.getElementById("editOrderMobile").value = mobile;
+    document.getElementById("editOrderAddress").value = address;
+    document.getElementById("editOrderStatus").value = status || 'Pending Delivery';
+    document.getElementById("editOrderModal").style.display = "block";
+}
+
+async function saveEditedOrder() {
+    const orderId = document.getElementById("editOrderIdVal").value;
+    const customer_name = document.getElementById("editOrderCustName").value;
+    const mobile = document.getElementById("editOrderMobile").value;
+    const address = document.getElementById("editOrderAddress").value;
+    const status = document.getElementById("editOrderStatus").value;
+
+    await supabaseClient.from("orders").update({ customer_name, mobile, address, status }).eq("order_id", orderId);
+    alert("✅ Order details updated successfully!");
+    closeModal('editOrderModal');
+    loadAdminOrders();
 }
 
 async function loadAdminRegisteredShops(){
     const list = document.getElementById("adminShopsList");
-    const { data, error } = await supabaseClient.from("business_profiles").select("*");
-    if(error || !data || data.length === 0) {
-        list.innerHTML = "<p style='padding:15px;text-align:center;color:#64748b;'>No registered shops found.</p>";
-        return;
-    }
+    const { data } = await supabaseClient.from("business_profiles").select("*");
+    if(!data || data.length === 0) { list.innerHTML = "<p style='padding:15px;text-align:center;'>No registered shops.</p>"; return; }
     list.innerHTML = data.map(s => `
         <div style="border:1px solid #059669;padding:10px;margin:5px 0;background:#f0fdf4;border-radius:8px;">
-            <b>🏪 ${s.business_name}</b> (${s.owner_name})<br>
-            <small>📍 ${s.address || 'Address N/A'} - Pincode: ${s.pincode || 'N/A'}</small><br>
-            <small>GST: ${s.gst_number || 'Optional / None'}</small><br>
-            <b>Mobile: ${s.mobile}</b>
+            <b>🏪 ${s.business_name}</b> (${s.owner_name})<br><small>Mobile: ${s.mobile}</small>
         </div>
     `).join('');
 }
@@ -1428,7 +1278,7 @@ function userLogout(){
     currentLoggedInUser = null;
     localStorage.removeItem("jalvigo_logged_user");
     closeModal('accountModal');
-    triggerBothNotifications("Logged Out", "You have been logged out.");
+    alert("Logged out.");
 }
 
 loadDynamicProducts();
