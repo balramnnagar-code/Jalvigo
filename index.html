@@ -49,8 +49,10 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
     flex-direction:column;
     justify-content:center;
     box-sizing:border-box;
+    background-size:cover;
+    background-position:center;
 }
-.promo-card.alt{background:linear-gradient(135deg,#eab308,#ca8a04);}
+.promo-card.alt{background:linear-gradient(135deg,#eab308,#ca8a04);background-size:cover;background-position:center;}
 .promo-card h3{font-size:17px;font-weight:800;line-height:1.2;}
 .promo-card p{font-size:12px;margin-top:6px;opacity:0.95;line-height:1.4;}
 
@@ -269,7 +271,7 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
   </div>
 </div>
 
-<!-- VENDOR PRODUCT MODAL (FOR SHOPKEEPERS & DEALERS) -->
+<!-- VENDOR PRODUCT MODAL -->
 <div class="modal" id="vendorProductModal">
   <div class="modal-box">
     <span class="close" onclick="closeModal('vendorProductModal')">×</span>
@@ -495,7 +497,7 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
   </div>
 </div>
 
-<!-- ADMIN DASHBOARD MODAL WITH STOCK INVENTORY TAB -->
+<!-- ADMIN DASHBOARD MODAL WITH STOCK & BANNER PHOTO SUPPORT -->
 <div class="modal" id="adminDashboardModal">
 <div class="modal-box" style="max-width:650px;">
 <span class="close" onclick="closeModal('adminDashboardModal')">×</span>
@@ -513,17 +515,19 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
     <div id="adminOrdersList"><p>Loading Orders...</p></div>
 </div>
 
-<!-- NEW STOCK & INVENTORY TAB FOR ADMIN -->
+<!-- STOCK & INVENTORY CONTROL TAB -->
 <div id="adminTabInventory" style="display:none;">
     <h3>📊 Stock & Inventory Quick Control</h3>
     <p style="font-size:12px;color:#64748b;margin-bottom:10px;">Yahan se aap kisi bhi product ka stock instant badha, ghata ya Out of Stock kar sakte hain.</p>
     <div id="adminInventoryList"><p>Loading Inventory...</p></div>
 </div>
 
+<!-- BANNERS TAB WITH GALLERY PHOTO UPLOAD -->
 <div id="adminTabBanners" style="display:none;background:#f8fafc;padding:12px;border-radius:12px;border:1px solid #e2e8f0;">
     <h3>📢 Add Promotional Banner / Ad</h3>
-    <div class="form-group"><label>Banner Title</label><input type="text" id="bannerTitle" placeholder="e.g. Special Cold Drink Offer"></div>
-    <div class="form-group"><label>Banner Description / Offer</label><input type="text" id="bannerDesc" placeholder="e.g. Get 20% off on bulk water orders!"></div>
+    <div class="form-group"><label>Banner Title (Optional)</label><input type="text" id="bannerTitle" placeholder="e.g. Special Cold Drink Offer"></div>
+    <div class="form-group"><label>Banner Description (Optional)</label><input type="text" id="bannerDesc" placeholder="e.g. Get 20% off on bulk water orders!"></div>
+    <div class="form-group"><label>Select Banner Photo from Gallery (Ideal Size: 1200x600 px)</label><input type="file" id="bannerImageFile" accept="image/*"></div>
     <button class="primary-btn" onclick="addNewPromoBanner()" style="background:#eab308;color:#000;margin-top:10px;">Publish Banner to Home Slider</button>
 </div>
 
@@ -1237,17 +1241,54 @@ function switchAdminTab(tabName) {
     if(tabName === 'shops') loadAdminRegisteredShops();
 }
 
+// ADD NEW PROMO BANNER (TEXT OR GALLERY PHOTO)
 async function addNewPromoBanner() {
     const title = document.getElementById("bannerTitle").value.trim();
     const desc = document.getElementById("bannerDesc").value.trim();
-    if(!title || !desc) { alert("Enter title!"); return; }
+    const imageFile = document.getElementById("bannerImageFile").files[0];
+
+    if(!title && !imageFile) { 
+        alert("Kripya Banner Title ya Photo select karein!"); 
+        return; 
+    }
+
+    let imageUrl = null;
+    if (imageFile) {
+        showNotification("Photo upload ho rahi hai...");
+        const fileExt = imageFile.name.split('.').pop();
+        const fileName = "banner_" + Date.now() + "." + fileExt;
+        
+        const { data: uploadData, error: uploadError } = await supabaseClient.storage.from('products').upload(fileName, imageFile);
+        
+        if (!uploadError) {
+            const { data: urlData } = supabaseClient.storage.from('products').getPublicUrl(fileName);
+            imageUrl = urlData.publicUrl;
+        }
+    }
+
     const slider = document.getElementById("homeBannerSlider");
     const newCard = document.createElement("div");
     newCard.className = "promo-card alt";
-    newCard.innerHTML = "<h3>" + title + "</h3><p>" + desc + "</p>";
+    
+    if (imageUrl) {
+        newCard.style.backgroundImage = `url('${imageUrl}')`;
+        newCard.style.backgroundSize = "cover";
+        newCard.style.backgroundPosition = "center";
+        newCard.innerHTML = `
+            ${title ? `<h3 style="background:rgba(0,0,0,0.6);padding:4px 8px;border-radius:6px;display:inline-block;width:fit-content;">${title}</h3>` : ''}
+            ${desc ? `<p style="background:rgba(0,0,0,0.6);padding:2px 6px;border-radius:4px;display:inline-block;margin-top:4px;width:fit-content;">${desc}</p>` : ''}
+        `;
+    } else {
+        newCard.innerHTML = "<h3>" + title + "</h3><p>" + desc + "</p>";
+    }
+
     slider.appendChild(newCard);
     updateSliderPosition();
-    alert("✅ Banner live!");
+    
+    alert("✅ Banner Photo live ho gayi hai!");
+    document.getElementById("bannerTitle").value = "";
+    document.getElementById("bannerDesc").value = "";
+    document.getElementById("bannerImageFile").value = "";
 }
 
 async function addNewProductWithImage() {
@@ -1270,7 +1311,7 @@ async function loadAdminInventoryList() {
 
     container.innerHTML = listToDisplay.map(p => {
         const currentStock = p.stock !== undefined ? p.stock : 50;
-        const isDbItem = p.id && typeof p.id === 'string' && p.id.length > 10; // Supabase UUID or DB ID check
+        const isDbItem = p.id && typeof p.id === 'string' && p.id.length > 10;
 
         return `
             <div style="border:1px solid #cbd5e1;padding:10px;margin:8px 0;background:#fff;border-radius:10px;display:flex;justify-content:space-between;align-items:center;">
