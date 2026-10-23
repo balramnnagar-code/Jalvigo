@@ -304,7 +304,7 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
         <div class="form-group"><label>Shop Pincode (For Delivery Limit Check)</label><input type="text" id="vShopPincode" placeholder="e.g. 110001"></div>
         <div class="form-group"><label>Actual Total MRP (₹)</label><input type="number" id="vProdMrp" placeholder="e.g. 20"></div>
         <div class="form-group"><label>Selling Wholesale/Retail Price (₹)</label><input type="number" id="vProdPrice" placeholder="e.g. 20"></div>
-        <div class="form-group"><label>Product Photo (Optional)</label><input type="file" id="vProdImageFile" accept="image/*"></div>
+        <div class="form-group"><label>Product Photo (Max 5MB, JPG/PNG)</label><input type="file" id="vProdImageFile" accept="image/*"></div>
         <button class="primary-btn" onclick="submitVendorProduct()" style="background:#16a34a;margin-top:10px;">Save & Publish Product</button>
     </div>
     <div style="margin-top:15px;">
@@ -497,7 +497,7 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
   </div>
 </div>
 
-<!-- ADMIN DASHBOARD MODAL WITH STOCK & BANNER PHOTO SUPPORT -->
+<!-- ADMIN DASHBOARD MODAL -->
 <div class="modal" id="adminDashboardModal">
 <div class="modal-box" style="max-width:650px;">
 <span class="close" onclick="closeModal('adminDashboardModal')">×</span>
@@ -515,19 +515,17 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
     <div id="adminOrdersList"><p>Loading Orders...</p></div>
 </div>
 
-<!-- STOCK & INVENTORY CONTROL TAB -->
 <div id="adminTabInventory" style="display:none;">
     <h3>📊 Stock & Inventory Quick Control</h3>
     <p style="font-size:12px;color:#64748b;margin-bottom:10px;">Yahan se aap kisi bhi product ka stock instant badha, ghata ya Out of Stock kar sakte hain.</p>
     <div id="adminInventoryList"><p>Loading Inventory...</p></div>
 </div>
 
-<!-- BANNERS TAB WITH GALLERY PHOTO UPLOAD -->
 <div id="adminTabBanners" style="display:none;background:#f8fafc;padding:12px;border-radius:12px;border:1px solid #e2e8f0;">
     <h3>📢 Add Promotional Banner / Ad</h3>
     <div class="form-group"><label>Banner Title (Optional)</label><input type="text" id="bannerTitle" placeholder="e.g. Special Cold Drink Offer"></div>
     <div class="form-group"><label>Banner Description (Optional)</label><input type="text" id="bannerDesc" placeholder="e.g. Get 20% off on bulk water orders!"></div>
-    <div class="form-group"><label>Select Banner Photo from Gallery (Ideal Size: 1200x600 px)</label><input type="file" id="bannerImageFile" accept="image/*"></div>
+    <div class="form-group"><label>Select Banner Photo from Gallery (Max 5MB)</label><input type="file" id="bannerImageFile" accept="image/*"></div>
     <button class="primary-btn" onclick="addNewPromoBanner()" style="background:#eab308;color:#000;margin-top:10px;">Publish Banner to Home Slider</button>
 </div>
 
@@ -538,7 +536,7 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
     <div class="form-group"><label>Selling Price (₹)</label><input type="number" id="newProdPrice" placeholder="60"></div>
     <div class="form-group"><label>Actual MRP / Old Price (₹)</label><input type="number" id="newProdMrp" placeholder="80"></div>
     <div class="form-group"><label>Initial Stock Quantity</label><input type="number" id="newProdStock" placeholder="50" value="50"></div>
-    <div class="form-group"><label>Product Photo</label><input type="file" id="newProdImageFile" accept="image/*"></div>
+    <div class="form-group"><label>Product Photo (Max 5MB)</label><input type="file" id="newProdImageFile" accept="image/*"></div>
     <button class="primary-btn" onclick="addNewProductWithImage()" style="background:#16a34a;margin-top:10px;">Save Product</button>
 </div>
 
@@ -558,7 +556,7 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 </div>
 </div>
 
-<!-- EDIT PRODUCT MODAL (ADMIN) -->
+<!-- EDIT PRODUCT MODAL (ADMIN WITH 5MB MAX PHOTO UPLOAD) -->
 <div class="modal" id="editProductModal">
   <div class="modal-box">
     <span class="close" onclick="closeModal('editProductModal')">×</span>
@@ -569,6 +567,10 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
     <div class="form-group"><label>Selling Price (₹)</label><input type="number" id="editProdPrice"></div>
     <div class="form-group"><label>MRP (₹)</label><input type="number" id="editProdMrp"></div>
     <div class="form-group"><label>Stock Available</label><input type="number" id="editProdStock"></div>
+    <div class="form-group">
+        <label>Update Product Photo (Max 5MB, JPG/PNG)</label>
+        <input type="file" id="editProdImageFile" accept="image/*">
+    </div>
     <button class="primary-btn" onclick="saveEditedProduct()" style="background:#16a34a;margin-top:10px;">Update Product</button>
   </div>
 </div>
@@ -850,7 +852,7 @@ async function handleAccountClick() {
     if(currentLoggedInUser){
         document.getElementById("authButtonsSection").style.display = "none";
         document.getElementById("loggedInSection").style.display = "block";
-        document.getElementById("userEmailText").innerText = "Account: " + currentLoggedInUser.username;
+        document.getElementById("userEmailText", "").innerText = "Account: " + currentLoggedInUser.username;
         if(currentLoggedInUser.username.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
             document.getElementById("adminDashboardBtn").style.display = "block";
             document.getElementById("vendorProductAddBtn").style.display = "block";
@@ -891,6 +893,11 @@ async function submitVendorProduct() {
     const price = document.getElementById("vProdPrice").value.trim();
     const imageFile = document.getElementById("vProdImageFile").files[0];
     if(!name || !price) { alert("Product Name and Selling Price are required!"); return; }
+
+    if(imageFile && imageFile.size > 5 * 1024 * 1024) {
+        alert("❌ File size 5 MB se kam honi chahiye!");
+        return;
+    }
 
     let imageUrl = null;
     if (imageFile) {
@@ -974,7 +981,6 @@ function activateVipSubscription(){
     updateCart();
 }
 
-// LOAD PRODUCTS
 async function loadDynamicProducts() {
     let dbProducts = [];
     try {
@@ -993,7 +999,6 @@ async function loadDynamicProducts() {
     showNotification("Products Refreshed Successfully!");
 }
 
-// SYNC DEFAULT MASTER CATALOG TO SUPABASE DB
 async function syncMasterCatalogToDb() {
     if(!confirm("Kya aap saare Master Catalog Products ko Database me sync karna chahte hain? Isse aap inko edit/delete kar paayenge.")) return;
     
@@ -1021,7 +1026,6 @@ async function syncMasterCatalogToDb() {
     }
 }
 
-// SORTING LOGIC FOR WHOLESALE & RETAIL
 function applySorting(type) {
     document.querySelectorAll('.sort-chip').forEach(c => c.classList.remove('active'));
     
@@ -1044,7 +1048,6 @@ function applySorting(type) {
     renderProducts(currentFilteredList);
 }
 
-// RENDER PRODUCTS WITH STOCK & DISTANCE CHECK
 function renderProducts(prods) {
     const container = document.getElementById("dynamicProductsList");
     if(!prods || prods.length === 0) {
@@ -1241,11 +1244,15 @@ function switchAdminTab(tabName) {
     if(tabName === 'shops') loadAdminRegisteredShops();
 }
 
-// ADD NEW PROMO BANNER (TEXT OR GALLERY PHOTO)
 async function addNewPromoBanner() {
     const title = document.getElementById("bannerTitle").value.trim();
     const desc = document.getElementById("bannerDesc").value.trim();
     const imageFile = document.getElementById("bannerImageFile").files[0];
+
+    if(imageFile && imageFile.size > 5 * 1024 * 1024) {
+        alert("❌ File size 5 MB se kam honi chahiye!");
+        return;
+    }
 
     if(!title && !imageFile) { 
         alert("Kripya Banner Title ya Photo select karein!"); 
@@ -1295,13 +1302,31 @@ async function addNewProductWithImage() {
     const name = document.getElementById("newProdName").value.trim();
     const price = document.getElementById("newProdPrice").value.trim();
     const stock = Number(document.getElementById("newProdStock").value) || 50;
+    const imageFile = document.getElementById("newProdImageFile").files[0];
+
     if(!name || !price){ alert("Name and Price required!"); return; }
-    await supabaseClient.from("products").insert([{ name, price: Number(price), stock, created_at: new Date().toISOString() }]);
+
+    if(imageFile && imageFile.size > 5 * 1024 * 1024) {
+        alert("❌ File size 5 MB se kam honi chahiye!");
+        return;
+    }
+
+    let imageUrl = null;
+    if (imageFile) {
+        const fileExt = imageFile.name.split('.').pop();
+        const fileName = "prod_" + Date.now() + "." + fileExt;
+        const { error: uploadError } = await supabaseClient.storage.from('products').upload(fileName, imageFile);
+        if (!uploadError) {
+            const { data: urlData } = supabaseClient.storage.from('products').getPublicUrl(fileName);
+            imageUrl = urlData.publicUrl;
+        }
+    }
+
+    await supabaseClient.from("products").insert([{ name, price: Number(price), stock, image_url: imageUrl, created_at: new Date().toISOString() }]);
     alert("✅ Product Added!");
     loadDynamicProducts();
 }
 
-// ADMIN STOCK INVENTORY MANAGEMENT TAB FUNCTION
 async function loadAdminInventoryList() {
     const container = document.getElementById("adminInventoryList");
     container.innerHTML = "<p style='padding:10px;'>Loading stock items...</p>";
@@ -1341,7 +1366,6 @@ async function quickUpdateStock(id, newStock) {
     loadDynamicProducts();
 }
 
-// ADMIN EDIT & MANAGE PRODUCTS
 async function loadAdminProductsToManage() {
     const list = document.getElementById("adminProductsManageList");
     const { data: products } = await supabaseClient.from("products").select("*").order("created_at", { ascending: false });
@@ -1351,7 +1375,10 @@ async function loadAdminProductsToManage() {
     }
     list.innerHTML = products.map(p => `
         <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid #e2e8f0;background:#fff;margin-top:6px;border-radius:8px;">
-            <div><b>${p.name}</b> (${p.quantity || 'Std'}) - ₹${p.price} | Stock: ${p.stock ?? 'N/A'}</div>
+            <div style="display:flex;align-items:center;gap:10px;">
+                ${p.image_url ? `<img src="${p.image_url}" style="width:40px;height:40px;object-fit:contain;border-radius:4px;">` : '🥤'}
+                <div><b>${p.name}</b> (${p.quantity || 'Std'}) - ₹${p.price} | Stock: ${p.stock ?? 'N/A'}</div>
+            </div>
             <div>
                 <button onclick="openEditProductModal('${p.id}', '${p.name}', '${p.quantity || ''}', ${p.price}, ${p.mrp || 0}, ${p.stock || 0})" style="background:#0284c7;color:white;border:none;padding:5px 10px;border-radius:6px;cursor:pointer;margin-right:5px;">Edit</button>
                 <button onclick="deleteProductById('${p.id}')" style="background:#dc2626;color:white;border:none;padding:5px 10px;border-radius:6px;cursor:pointer;">Delete</button>
@@ -1367,6 +1394,7 @@ function openEditProductModal(id, name, qty, price, mrp, stock) {
     document.getElementById("editProdPrice").value = price;
     document.getElementById("editProdMrp").value = mrp;
     document.getElementById("editProdStock").value = stock;
+    document.getElementById("editProdImageFile").value = "";
     document.getElementById("editProductModal").style.display = "block";
 }
 
@@ -1377,8 +1405,27 @@ async function saveEditedProduct() {
     const price = Number(document.getElementById("editProdPrice").value);
     const mrp = Number(document.getElementById("editProdMrp").value);
     const stock = Number(document.getElementById("editProdStock").value);
+    const imageFile = document.getElementById("editProdImageFile").files[0];
 
-    await supabaseClient.from("products").update({ name, quantity, price, mrp, stock }).eq("id", id);
+    if(imageFile && imageFile.size > 5 * 1024 * 1024) {
+        alert("❌ File size 5 MB se kam honi chahiye!");
+        return;
+    }
+
+    let updateData = { name, quantity, price, mrp, stock };
+
+    if (imageFile) {
+        showNotification("Photo upload ho rahi hai...");
+        const fileExt = imageFile.name.split('.').pop();
+        const fileName = "prod_" + Date.now() + "." + fileExt;
+        const { error: uploadError } = await supabaseClient.storage.from('products').upload(fileName, imageFile);
+        if (!uploadError) {
+            const { data: urlData } = supabaseClient.storage.from('products').getPublicUrl(fileName);
+            updateData.image_url = urlData.publicUrl;
+        }
+    }
+
+    await supabaseClient.from("products").update(updateData).eq("id", id);
     alert("✅ Product updated successfully!");
     closeModal('editProductModal');
     loadAdminProductsToManage();
@@ -1393,7 +1440,6 @@ async function deleteProductById(id) {
     }
 }
 
-// ADMIN EDIT & MANAGE ORDERS
 async function loadAdminOrders(){
     const list = document.getElementById("adminOrdersList");
     const { data } = await supabaseClient.from("orders").select("*").order("order_date", { ascending: false });
