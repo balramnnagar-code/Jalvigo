@@ -64,6 +64,7 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 .product-card{background:white;border-radius:16px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.04);display:flex;flex-direction:column;justify-content:space-between;align-items:center;position:relative;cursor:pointer;}
 .discount-badge{position:absolute;top:10px;left:10px;background:#ef4444;color:white;font-size:10px;padding:2px 6px;border-radius:6px;font-weight:bold;}
 .type-badge{position:absolute;top:10px;right:10px;background:#e0f2fe;color:#0284c7;font-size:9px;padding:2px 5px;border-radius:6px;font-weight:bold;}
+.out-stock-badge{position:absolute;top:10px;left:10px;background:#64748b;color:white;font-size:10px;padding:2px 6px;border-radius:6px;font-weight:bold;}
 .prod-img{width:90px;height:90px;object-fit:contain;margin:8px 0;border-radius:10px;}
 .prod-emoji{font-size:42px;margin:8px 0;}
 .prod-title{font-size:13px;font-weight:700;color:#1e293b;margin-bottom:2px;line-height:1.3;text-align:center;}
@@ -71,7 +72,13 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 .price-box{display:flex;gap:6px;align-items:center;justify-content:center;margin:6px 0;}
 .prod-price{font-size:15px;font-weight:800;color:#16a34a;}
 .prod-mrp{font-size:12px;color:#94a3b8;text-decoration:line-through;}
-.add-btn{background:#0284c7;color:white;border:none;padding:8px;border-radius:10px;font-weight:bold;font-size:13px;width:100%;cursor:pointer;}
+
+.btn-group{display:flex;gap:6px;width:100%;margin-top:6px;}
+.add-btn{background:#0284c7;color:white;border:none;padding:8px 4px;border-radius:10px;font-weight:bold;font-size:11px;flex:1;cursor:pointer;}
+.buy-btn{background:#16a34a;color:white;border:none;padding:8px 4px;border-radius:10px;font-weight:bold;font-size:11px;flex:1;cursor:pointer;}
+.disabled-btn{background:#cbd5e1!important;color:#64748b!important;cursor:not-allowed!important;}
+
+.not-avail-text{font-size:10px;color:#ef4444;font-weight:bold;margin-top:4px;}
 
 /* BOTTOM NAVIGATION BAR */
 .bottom-nav{
@@ -262,7 +269,7 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
   </div>
 </div>
 
-<!-- VENDOR PRODUCT MODAL -->
+<!-- VENDOR PRODUCT MODAL (FOR SHOPKEEPERS & DEALERS) -->
 <div class="modal" id="vendorProductModal">
   <div class="modal-box">
     <span class="close" onclick="closeModal('vendorProductModal')">×</span>
@@ -285,6 +292,14 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
                 <option value="Energy">Energy / Juice</option>
             </select>
         </div>
+        <div class="form-group"><label>Listing Type</label>
+            <select id="vProdType">
+                <option value="Retail">Retail (Small Shop / Single Units)</option>
+                <option value="Wholesale">Wholesale (Thok Dealer / Bulk Packs)</option>
+            </select>
+        </div>
+        <div class="form-group"><label>Stock Quantity Available</label><input type="number" id="vProdStock" placeholder="e.g. 50" value="50"></div>
+        <div class="form-group"><label>Shop Pincode (For Delivery Limit Check)</label><input type="text" id="vShopPincode" placeholder="e.g. 110001"></div>
         <div class="form-group"><label>Actual Total MRP (₹)</label><input type="number" id="vProdMrp" placeholder="e.g. 20"></div>
         <div class="form-group"><label>Selling Wholesale/Retail Price (₹)</label><input type="number" id="vProdPrice" placeholder="e.g. 20"></div>
         <div class="form-group"><label>Product Photo (Optional)</label><input type="file" id="vProdImageFile" accept="image/*"></div>
@@ -382,6 +397,7 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 <h2>📦 Delivery & Bill Details</h2>
 <div class="form-group"><label>Full Name</label><input type="text" id="customerName"></div>
 <div class="form-group"><label>Mobile</label><input type="tel" id="customerMobile"></div>
+<div class="form-group"><label>Delivery Pincode</label><input type="text" id="customerPincode" placeholder="e.g. 110001"></div>
 <div class="form-group">
     <label>Delivery Address</label>
     <input type="text" id="streetArea" placeholder="Full Address">
@@ -479,13 +495,14 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
   </div>
 </div>
 
-<!-- ADMIN DASHBOARD MODAL -->
+<!-- ADMIN DASHBOARD MODAL WITH STOCK INVENTORY TAB -->
 <div class="modal" id="adminDashboardModal">
-<div class="modal-box" style="max-width:600px;">
+<div class="modal-box" style="max-width:650px;">
 <span class="close" onclick="closeModal('adminDashboardModal')">×</span>
 <h2>🛠️ Admin Panel Dashboard</h2>
 <div style="margin:10px 0;display:flex;gap:5px;overflow-x:auto;">
     <button class="primary-btn" onclick="switchAdminTab('orders')">Orders & Revenue</button>
+    <button class="primary-btn" onclick="switchAdminTab('inventory')" style="background:#ca8a04;">📊 Stock Inventory</button>
     <button class="primary-btn" onclick="switchAdminTab('banners')" style="background:#eab308;color:#000;">📢 Banners</button>
     <button class="primary-btn" onclick="switchAdminTab('addProduct')" style="background:#16a34a;">➕ Add Product</button>
     <button class="primary-btn" onclick="switchAdminTab('manageProducts')" style="background:#0284c7;">📦 Manage & Edit</button>
@@ -496,6 +513,13 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
     <div id="adminOrdersList"><p>Loading Orders...</p></div>
 </div>
 
+<!-- NEW STOCK & INVENTORY TAB FOR ADMIN -->
+<div id="adminTabInventory" style="display:none;">
+    <h3>📊 Stock & Inventory Quick Control</h3>
+    <p style="font-size:12px;color:#64748b;margin-bottom:10px;">Yahan se aap kisi bhi product ka stock instant badha, ghata ya Out of Stock kar sakte hain.</p>
+    <div id="adminInventoryList"><p>Loading Inventory...</p></div>
+</div>
+
 <div id="adminTabBanners" style="display:none;background:#f8fafc;padding:12px;border-radius:12px;border:1px solid #e2e8f0;">
     <h3>📢 Add Promotional Banner / Ad</h3>
     <div class="form-group"><label>Banner Title</label><input type="text" id="bannerTitle" placeholder="e.g. Special Cold Drink Offer"></div>
@@ -504,11 +528,12 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 </div>
 
 <div id="adminTabAddProduct" style="display:none;background:#f8fafc;padding:12px;border-radius:12px;border:1px solid #e2e8f0;">
-    <h3>📸 Add Product with Photo</h3>
+    <h3>📸 Add Product with Photo & Stock</h3>
     <div class="form-group"><label>Product Name</label><input type="text" id="newProdName" placeholder="e.g. Bisleri 20L Water Jar"></div>
     <div class="form-group"><label>Quantity / Size</label><input type="text" id="newProdQty" placeholder="e.g. 20 Litre"></div>
     <div class="form-group"><label>Selling Price (₹)</label><input type="number" id="newProdPrice" placeholder="60"></div>
     <div class="form-group"><label>Actual MRP / Old Price (₹)</label><input type="number" id="newProdMrp" placeholder="80"></div>
+    <div class="form-group"><label>Initial Stock Quantity</label><input type="number" id="newProdStock" placeholder="50" value="50"></div>
     <div class="form-group"><label>Product Photo</label><input type="file" id="newProdImageFile" accept="image/*"></div>
     <button class="primary-btn" onclick="addNewProductWithImage()" style="background:#16a34a;margin-top:10px;">Save Product</button>
 </div>
@@ -539,6 +564,7 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
     <div class="form-group"><label>Quantity / Pack</label><input type="text" id="editProdQty"></div>
     <div class="form-group"><label>Selling Price (₹)</label><input type="number" id="editProdPrice"></div>
     <div class="form-group"><label>MRP (₹)</label><input type="number" id="editProdMrp"></div>
+    <div class="form-group"><label>Stock Available</label><input type="number" id="editProdStock"></div>
     <button class="primary-btn" onclick="saveEditedProduct()" style="background:#16a34a;margin-top:10px;">Update Product</button>
   </div>
 </div>
@@ -573,56 +599,20 @@ const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_QesFfLaf4IlgNcEJbm3WEw_tq5ISxz1
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
 const DEFAULT_PRODUCTS = [
-  { id: 301, name: "Coca-Cola 250ml", quantity: "1 Single Bottle", price: 20, mrp: 20, discount: 0, category: "Drinks", emoji: "🥤", type: "Retail" },
-  { id: 302, name: "Coca-Cola 750ml", quantity: "1 Single Bottle", price: 40, mrp: 40, discount: 0, category: "Drinks", emoji: "🍾", type: "Retail" },
-  { id: 303, name: "Coca-Cola 1 Liter", quantity: "1 Single Bottle", price: 50, mrp: 50, discount: 0, category: "Drinks", emoji: "🍾", type: "Retail" },
-  { id: 304, name: "Coca-Cola 2 Liter", quantity: "1 Single Bottle", price: 95, mrp: 95, discount: 0, category: "Drinks", emoji: "🍾", type: "Retail" },
-  { id: 305, name: "Pepsi 250ml", quantity: "1 Single Bottle", price: 20, mrp: 20, discount: 0, category: "Drinks", emoji: "🥤", type: "Retail" },
-  { id: 306, name: "Pepsi 750ml", quantity: "1 Single Bottle", price: 40, mrp: 40, discount: 0, category: "Drinks", emoji: "🍾", type: "Retail" },
-  { id: 307, name: "Pepsi 1 Liter", quantity: "1 Single Bottle", price: 50, mrp: 50, discount: 0, category: "Drinks", emoji: "🍾", type: "Retail" },
-  { id: 308, name: "Pepsi 2.25 Liter", quantity: "1 Single Bottle", price: 95, mrp: 95, discount: 0, category: "Drinks", emoji: "🍾", type: "Retail" },
-  { id: 309, name: "Thums Up 250ml", quantity: "1 Single Bottle", price: 20, mrp: 20, discount: 0, category: "Drinks", emoji: "🥤", type: "Retail" },
-  { id: 310, name: "Thums Up 750ml", quantity: "1 Single Bottle", price: 40, mrp: 40, discount: 0, category: "Drinks", emoji: "🍾", type: "Retail" },
-  { id: 311, name: "Thums Up 1 Liter", quantity: "1 Single Bottle", price: 50, mrp: 50, discount: 0, category: "Drinks", emoji: "🍾", type: "Retail" },
-  { id: 312, name: "Thums Up 2 Liter", quantity: "1 Single Bottle", price: 95, mrp: 95, discount: 0, category: "Drinks", emoji: "🍾", type: "Retail" },
-  { id: 313, name: "Sprite 250ml", quantity: "1 Single Bottle", price: 20, mrp: 20, discount: 0, category: "Drinks", emoji: "🥤", type: "Retail" },
-  { id: 314, name: "Sprite 750ml", quantity: "1 Single Bottle", price: 40, mrp: 40, discount: 0, category: "Drinks", emoji: "🍾", type: "Retail" },
-  { id: 315, name: "Sprite 1 Liter", quantity: "1 Single Bottle", price: 50, mrp: 50, discount: 0, category: "Drinks", emoji: "🍾", type: "Retail" },
-  { id: 316, name: "Fanta 250ml", quantity: "1 Single Bottle", price: 20, mrp: 20, discount: 0, category: "Drinks", emoji: "🥤", type: "Retail" },
-  { id: 317, name: "Fanta 750ml", quantity: "1 Single Bottle", price: 40, mrp: 40, discount: 0, category: "Drinks", emoji: "🍾", type: "Retail" },
-  { id: 318, name: "Sting Energy Drink", quantity: "250ml Single Bottle", price: 20, mrp: 20, discount: 0, category: "Energy", emoji: "⚡", type: "Retail" },
-  { id: 319, name: "Sting Energy Drink", quantity: "500ml Single Bottle", price: 40, mrp: 40, discount: 0, category: "Energy", emoji: "⚡", type: "Retail" },
-  { id: 320, name: "Red Bull Energy Drink", quantity: "250ml Single Can", price: 125, mrp: 125, discount: 0, category: "Energy", emoji: "🐂", type: "Retail" },
-  { id: 321, name: "Monster Energy Drink", quantity: "350ml Single Can", price: 125, mrp: 125, discount: 0, category: "Energy", emoji: "🔋", type: "Retail" },
-  { id: 322, name: "Maaza Mango Juice", quantity: "250ml Single Bottle", price: 20, mrp: 20, discount: 0, category: "Energy", emoji: "🥭", type: "Retail" },
-  { id: 323, name: "Frooti Mango Juice", quantity: "250ml Single Bottle", price: 20, mrp: 20, discount: 0, category: "Energy", emoji: "🧃", type: "Retail" },
-  { id: 324, name: "Water Bottle (Bisleri/Kinley)", quantity: "1 Liter Single Bottle", price: 20, mrp: 20, discount: 0, category: "Water", emoji: "💧", type: "Retail" },
-  { id: 325, name: "Water Bottle (Bisleri/Kinley)", quantity: "500ml Single Bottle", price: 10, mrp: 10, discount: 0, category: "Water", emoji: "💧", type: "Retail" },
-  { id: 326, name: "Water Jar", quantity: "20 Liter Jar", price: 40, mrp: 50, discount: 10, category: "Water", emoji: "🚰", type: "Retail" },
+  { id: 301, name: "Coca-Cola 250ml", quantity: "1 Single Bottle", price: 20, mrp: 20, discount: 0, category: "Drinks", emoji: "🥤", type: "Retail", stock: 100, shop_pincode: "110001" },
+  { id: 302, name: "Coca-Cola 750ml", quantity: "1 Single Bottle", price: 40, mrp: 40, discount: 0, category: "Drinks", emoji: "🍾", type: "Retail", stock: 50, shop_pincode: "110001" },
+  { id: 303, name: "Coca-Cola 1 Liter", quantity: "1 Single Bottle", price: 50, mrp: 50, discount: 0, category: "Drinks", emoji: "🍾", type: "Retail", stock: 30, shop_pincode: "110001" },
+  { id: 304, name: "Coca-Cola 2 Liter", quantity: "1 Single Bottle", price: 95, mrp: 95, discount: 0, category: "Drinks", emoji: "🍾", type: "Retail", stock: 20, shop_pincode: "110001" },
+  { id: 305, name: "Pepsi 250ml", quantity: "1 Single Bottle", price: 20, mrp: 20, discount: 0, category: "Drinks", emoji: "🥤", type: "Retail", stock: 80, shop_pincode: "110001" },
+  { id: 306, name: "Pepsi 750ml", quantity: "1 Single Bottle", price: 40, mrp: 40, discount: 0, category: "Drinks", emoji: "🍾", type: "Retail", stock: 40, shop_pincode: "110001" },
+  { id: 318, name: "Sting Energy Drink", quantity: "250ml Single Bottle", price: 20, mrp: 20, discount: 0, category: "Energy", emoji: "⚡", type: "Retail", stock: 100, shop_pincode: "110001" },
+  { id: 324, name: "Water Bottle (Bisleri/Kinley)", quantity: "1 Liter Single Bottle", price: 20, mrp: 20, discount: 0, category: "Water", emoji: "💧", type: "Retail", stock: 200, shop_pincode: "110001" },
+  { id: 326, name: "Water Jar", quantity: "20 Liter Jar", price: 40, mrp: 50, discount: 10, category: "Water", emoji: "🚰", type: "Retail", stock: 15, shop_pincode: "110001" },
   
-  { id: 101, name: "Coca-Cola Wholesale Pack", quantity: "250ml (Pack of 30)", price: 480, mrp: 600, discount: 20, category: "Drinks", emoji: "🥤", type: "Wholesale" },
-  { id: 102, name: "Coca-Cola Wholesale Pack", quantity: "750ml (Pack of 24)", price: 768, mrp: 960, discount: 20, category: "Drinks", emoji: "🍾", type: "Wholesale" },
-  { id: 103, name: "Coca-Cola Wholesale Pack", quantity: "1 Liter (Pack of 15)", price: 592.5, mrp: 750, discount: 21, category: "Drinks", emoji: "🍾", type: "Wholesale" },
-  { id: 104, name: "Coca-Cola Wholesale Pack", quantity: "2 Liter (Pack of 9)", price: 684, mrp: 855, discount: 20, category: "Drinks", emoji: "🍾", type: "Wholesale" },
-  { id: 105, name: "Pepsi Wholesale Pack", quantity: "250ml (Pack of 30)", price: 480, mrp: 600, discount: 20, category: "Drinks", emoji: "🥤", type: "Wholesale" },
-  { id: 106, name: "Pepsi Wholesale Pack", quantity: "750ml (Pack of 24)", price: 768, mrp: 960, discount: 20, category: "Drinks", emoji: "🍾", type: "Wholesale" },
-  { id: 107, name: "Pepsi Wholesale Pack", quantity: "1 Liter (Pack of 15)", price: 592.5, mrp: 750, discount: 21, category: "Drinks", emoji: "🍾", type: "Wholesale" },
-  { id: 108, name: "Pepsi Wholesale Pack", quantity: "2.25 Liter (Pack of 9)", price: 720, mrp: 900, discount: 20, category: "Drinks", emoji: "🍾", type: "Wholesale" },
-  { id: 109, name: "Thums Up Wholesale Pack", quantity: "250ml (Pack of 30)", price: 480, mrp: 600, discount: 20, category: "Drinks", emoji: "🥤", type: "Wholesale" },
-  { id: 110, name: "Thums Up Wholesale Pack", quantity: "750ml (Pack of 24)", price: 768, mrp: 960, discount: 20, category: "Drinks", emoji: "🍾", type: "Wholesale" },
-  { id: 111, name: "Thums Up Wholesale Pack", quantity: "1 Liter (Pack of 15)", price: 592.5, mrp: 750, discount: 21, category: "Drinks", emoji: "🍾", type: "Wholesale" },
-  { id: 112, name: "Thums Up Wholesale Pack", quantity: "2 Liter (Pack of 9)", price: 684, mrp: 855, discount: 20, category: "Drinks", emoji: "🍾", type: "Wholesale" },
-  { id: 113, name: "Sprite Wholesale Pack", quantity: "250ml (Pack of 30)", price: 486, mrp: 600, discount: 19, category: "Drinks", emoji: "🥤", type: "Wholesale" },
-  { id: 114, name: "Sprite Wholesale Pack", quantity: "750ml (Pack of 24)", price: 768, mrp: 960, discount: 20, category: "Drinks", emoji: "🍾", type: "Wholesale" },
-  { id: 115, name: "Sprite Wholesale Pack", quantity: "1 Liter (Pack of 15)", price: 607.5, mrp: 750, discount: 19, category: "Drinks", emoji: "🍾", type: "Wholesale" },
-  { id: 116, name: "Sting Energy Wholesale", quantity: "250ml (Pack of 30)", price: 480, mrp: 600, discount: 20, category: "Energy", emoji: "⚡", type: "Wholesale" },
-  { id: 117, name: "Sting Energy Wholesale", quantity: "500ml (Pack of 24)", price: 777.6, mrp: 960, discount: 19, category: "Energy", emoji: "⚡", type: "Wholesale" },
-  { id: 118, name: "Red Bull Wholesale Pack", quantity: "250ml (Pack of 24)", price: 2460, mrp: 3000, discount: 18, category: "Energy", emoji: "🐂", type: "Wholesale" },
-  { id: 119, name: "Maaza Mango Wholesale", quantity: "250ml (Pack of 30)", price: 480, mrp: 600, discount: 20, category: "Energy", emoji: "🥭", type: "Wholesale" },
-  { id: 120, name: "Frooti Mango Wholesale", quantity: "250ml (Pack of 30)", price: 480, mrp: 600, discount: 20, category: "Energy", emoji: "🧃", type: "Wholesale" },
-  { id: 121, name: "Aquafina / Bisleri Water", quantity: "1 Liter (Pack of 12)", price: 194.4, mrp: 240, discount: 19, category: "Water", emoji: "💧", type: "Wholesale" },
-  { id: 122, name: "Aquafina / Bisleri Water", quantity: "500ml (Pack of 24)", price: 230.4, mrp: 288, discount: 20, category: "Water", emoji: "💧", type: "Wholesale" },
-  { id: 123, name: "Aquafina / Bisleri Water", quantity: "250ml (Pack of 48)", price: 230.4, mrp: 288, discount: 20, category: "Water", emoji: "💧", type: "Wholesale" }
+  { id: 101, name: "Coca-Cola Wholesale Pack", quantity: "250ml (Pack of 30)", price: 480, mrp: 600, discount: 20, category: "Drinks", emoji: "🥤", type: "Wholesale", stock: 500 },
+  { id: 102, name: "Coca-Cola Wholesale Pack", quantity: "750ml (Pack of 24)", price: 768, mrp: 960, discount: 20, category: "Drinks", emoji: "🍾", type: "Wholesale", stock: 300 },
+  { id: 116, name: "Sting Energy Wholesale", quantity: "250ml (Pack of 30)", price: 480, mrp: 600, discount: 20, category: "Energy", emoji: "⚡", type: "Wholesale", stock: 200 },
+  { id: 121, name: "Aquafina / Bisleri Water", quantity: "1 Liter (Pack of 12)", price: 194.4, mrp: 240, discount: 19, category: "Water", emoji: "💧", type: "Wholesale", stock: 1000 }
 ];
 
 let cart = [];
@@ -633,6 +623,7 @@ let selectedVipAmount = 99;
 let selectedVipDuration = "1 Month";
 let userLat = null;
 let userLng = null;
+let userPincode = "";
 let calculatedDistanceKM = 1.2;
 
 const SHOP_LAT = 28.6139; 
@@ -707,6 +698,7 @@ function autoFillVendorProductDetails() {
         document.getElementById("vProdCategory").value = p.category;
         document.getElementById("vProdMrp").value = p.mrp;
         document.getElementById("vProdPrice").value = p.price;
+        document.getElementById("vProdType").value = p.type || 'Retail';
     }
 }
 
@@ -793,6 +785,7 @@ function getGPSLocation() {
                 mapContainer.style.display = "block";
             }
             autoDecideDeliverySlot(calculatedDistanceKM);
+            renderProducts(currentFilteredList);
         }, () => { autoDecideDeliverySlot(1.0); });
     }
 }
@@ -887,6 +880,9 @@ async function submitVendorProduct() {
     const name = document.getElementById("vProdName").value.trim();
     const quantity = document.getElementById("vProdQty").value.trim();
     const category = document.getElementById("vProdCategory").value;
+    const type = document.getElementById("vProdType").value;
+    const stock = Number(document.getElementById("vProdStock").value) || 0;
+    const shop_pincode = document.getElementById("vShopPincode").value.trim();
     const mrp = document.getElementById("vProdMrp").value.trim();
     const price = document.getElementById("vProdPrice").value.trim();
     const imageFile = document.getElementById("vProdImageFile").files[0];
@@ -905,7 +901,7 @@ async function submitVendorProduct() {
 
     let discountPercent = mrp && mrp > price ? Math.round(((mrp - price) / mrp) * 100) : 0;
     await supabaseClient.from("products").insert([{
-        name, quantity: quantity || 'Standard Pack', category, price: Number(price), mrp: mrp ? Number(mrp) : null, discount: discountPercent, image_url: imageUrl, user_id: currentLoggedInUser.username, created_at: new Date().toISOString()
+        name, quantity: quantity || 'Standard Pack', category, type, stock, shop_pincode, price: Number(price), mrp: mrp ? Number(mrp) : null, discount: discountPercent, image_url: imageUrl, user_id: currentLoggedInUser.username, created_at: new Date().toISOString()
     }]);
 
     alert("✅ Product published successfully!");
@@ -920,7 +916,7 @@ async function loadVendorMyProducts() {
     if(!data || data.length === 0) { list.innerHTML = "<p style='color:#64748b;'>No custom products added yet.</p>"; return; }
     list.innerHTML = data.map(p => `
         <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e2e8f0;padding:8px 0;">
-            <div><b>${p.name}</b> (${p.quantity || 'Std'}) - ₹${p.price}</div>
+            <div><b>${p.name}</b> (${p.quantity || 'Std'}) - ₹${p.price} | Stock: ${p.stock ?? 'N/A'}</div>
             <button onclick="deleteVendorProduct('${p.id}')" style="background:#dc2626;color:white;border:none;padding:4px 8px;border-radius:6px;cursor:pointer;">Delete</button>
         </div>
     `).join('');
@@ -982,7 +978,6 @@ async function loadDynamicProducts() {
         if (products && products.length > 0) dbProducts = products;
     } catch(err) { console.log("Catalog fallback"); }
 
-    // Avoid duplicate default products if they exist in DB
     if(dbProducts.length > 0) {
         allProductsList = [...dbProducts];
     } else {
@@ -1003,11 +998,11 @@ async function syncMasterCatalogToDb() {
     const formattedProducts = DEFAULT_PRODUCTS.map(p => ({
         name: p.name,
         quantity: p.quantity,
-        category: p.category,
         price: p.price,
         mrp: p.mrp,
         discount: p.discount,
-        user_id: 'admin',
+        stock: p.stock || 50,
+        type: p.type || 'Retail',
         created_at: new Date().toISOString()
     }));
 
@@ -1016,7 +1011,7 @@ async function syncMasterCatalogToDb() {
     if(error) {
         alert("Sync Error: " + error.message);
     } else {
-        alert("🎉 Saare Master Catalog Products Database me sync ho gaye hain! Ab aap inko Edit & Delete kar sakte hain.");
+        alert("🎉 Saare Master Catalog Products Database me sync ho gaye hain!");
         loadAdminProductsToManage();
         loadDynamicProducts();
     }
@@ -1045,16 +1040,36 @@ function applySorting(type) {
     renderProducts(currentFilteredList);
 }
 
+// RENDER PRODUCTS WITH STOCK & DISTANCE CHECK
 function renderProducts(prods) {
     const container = document.getElementById("dynamicProductsList");
     if(!prods || prods.length === 0) {
         container.innerHTML = "<p style='grid-column:1/-1;text-align:center;padding:20px;color:#64748b;'>No products found.</p>";
         return;
     }
-    container.innerHTML = prods.map(p => `
+
+    container.innerHTML = prods.map(p => {
+        const isOutOfStock = (p.stock !== undefined && p.stock <= 0) || p.is_available === false;
+        
+        let isRetailRestricted = false;
+        let restrictionReason = "";
+
+        if (p.type === 'Retail' || p.price < 100) {
+            if (calculatedDistanceKM > 5) {
+                isRetailRestricted = true;
+                restrictionReason = "Delivery Not Available (> 5 KM)";
+            } else if (userPincode && p.shop_pincode && userPincode !== p.shop_pincode) {
+                isRetailRestricted = true;
+                restrictionReason = "Not Available for your Pincode";
+            }
+        }
+
+        const isBtnDisabled = isOutOfStock || isRetailRestricted;
+
+        return `
         <div class="product-card">
-            ${p.discount && p.discount > 0 ? `<div class="discount-badge">${p.discount}% OFF</div>` : ''}
-            <div class="type-badge">${p.type || 'B2B'}</div>
+            ${isOutOfStock ? `<div class="out-stock-badge">OUT OF STOCK</div>` : (p.discount && p.discount > 0 ? `<div class="discount-badge">${p.discount}% OFF</div>` : '')}
+            <div class="type-badge">${p.type || 'Retail'}</div>
             <div onclick="openProductDetail('${p.id}')" style="width:100%;">
                 ${p.image_url ? `<img src="${p.image_url}" class="prod-img">` : `<div class="prod-emoji">${p.emoji || '🥤'}</div>`}
                 <div class="prod-title">${p.name}</div>
@@ -1063,23 +1078,45 @@ function renderProducts(prods) {
                     <span class="prod-price">₹${p.price}</span>
                     ${p.mrp && p.mrp > p.price ? `<span class="prod-mrp">₹${p.mrp}</span>` : ''}
                 </div>
+                ${isRetailRestricted ? `<div class="not-avail-text">🚫 ${restrictionReason}</div>` : ''}
             </div>
-            <button class="add-btn" onclick="addToCart('${p.name.replace(/'/g, "\\'")}', ${p.price})">ADD TO CART</button>
+            
+            <div class="btn-group">
+                ${isBtnDisabled ? `
+                    <button class="add-btn disabled-btn" disabled>${isOutOfStock ? 'OUT OF STOCK' : 'NOT AVAILABLE'}</button>
+                ` : `
+                    <button class="add-btn" onclick="addToCart('${p.name.replace(/'/g, "\\'")}', ${p.price})">ADD TO CART</button>
+                    <button class="buy-btn" onclick="directBuyNow('${p.name.replace(/'/g, "\\'")}', ${p.price})">⚡ BUY NOW</button>
+                `}
+            </div>
         </div>
-    `).join('');
+        `;
+    }).join('');
+}
+
+function directBuyNow(name, price) {
+    addToCart(name, price);
+    openCart();
 }
 
 function openProductDetail(id) {
     const p = allProductsList.find(item => item.id == id);
     if(!p) return;
+    const isOutOfStock = (p.stock !== undefined && p.stock <= 0) || p.is_available === false;
+    
     document.getElementById("productDetailContent").innerHTML = `
         <div style="font-size:50px;margin-bottom:10px;">${p.image_url ? `<img src="${p.image_url}" style="width:120px;height:120px;object-fit:contain;">` : (p.emoji || '🥤')}</div>
         <h2 style="font-size:18px;color:#0f172a;">${p.name}</h2>
         <div style="font-size:13px;color:#0284c7;font-weight:bold;margin:6px 0;">Pack/Size: ${p.quantity}</div>
         <div style="background:#f0f9ff;padding:10px;border-radius:10px;margin:12px 0;">
             <div style="font-size:20px;font-weight:800;color:#16a34a;">Selling Price: ₹${p.price}</div>
+            <div style="font-size:12px;color:#64748b;margin-top:4px;">Stock Available: ${p.stock ?? 'In Stock'}</div>
         </div>
-        <button class="primary-btn" onclick="addToCart('${p.name.replace(/'/g, "\\'")}', ${p.price});closeModal('productDetailModal');">🛒 Add to Cart Now</button>
+        ${isOutOfStock ? `
+            <button class="primary-btn disabled-btn" disabled style="background:#64748b;">OUT OF STOCK</button>
+        ` : `
+            <button class="primary-btn" onclick="directBuyNow('${p.name.replace(/'/g, "\\'")}', ${p.price});closeModal('productDetailModal');">⚡ Buy Now</button>
+        `}
     `;
     document.getElementById("productDetailModal").style.display = "block";
 }
@@ -1153,17 +1190,19 @@ async function sendOrder(){
     if(!currentLoggedInUser){ openCustomerAuth(); return; }
     const name = document.getElementById("customerName").value;
     const mobile = document.getElementById("customerMobile").value;
+    const pincode = document.getElementById("customerPincode").value.trim();
     const address = document.getElementById("streetArea").value;
     const paymentMethod = document.getElementById("paymentMethodSelect").value;
     if(!name || !mobile || !address){ alert("Fill all delivery details!"); return; }
 
+    userPincode = pincode;
     let subtotal = 0; cart.forEach(i => subtotal += i.price * i.qty);
     let deliveryFee = subtotal > 250 ? 7 : Math.round(calculatedDistanceKM * 5);
     let grandTotal = subtotal + deliveryFee;
     const orderId = "JAL" + Date.now();
 
     await supabaseClient.from("orders").insert([{
-        order_id: orderId, customer_name: name, mobile, address, items: JSON.stringify(cart), subtotal, total: grandTotal, order_date: new Date().toISOString(), status: 'Pending Delivery', user_id: currentLoggedInUser.username
+        order_id: orderId, customer_name: name, mobile, address: address + (pincode ? " | Pin: " + pincode : ""), items: JSON.stringify(cart), subtotal, total: grandTotal, order_date: new Date().toISOString(), status: 'Pending Delivery', user_id: currentLoggedInUser.username
     }]);
 
     alert("🎉 Order Placed Successfully! ID: #" + orderId);
@@ -1186,11 +1225,14 @@ async function registerB2BUser(){
 
 function switchAdminTab(tabName) {
     document.getElementById("adminTabOrders").style.display = tabName === 'orders' ? 'block' : 'none';
+    document.getElementById("adminTabInventory").style.display = tabName === 'inventory' ? 'block' : 'none';
     document.getElementById("adminTabBanners").style.display = tabName === 'banners' ? 'block' : 'none';
     document.getElementById("adminTabAddProduct").style.display = tabName === 'addProduct' ? 'block' : 'none';
     document.getElementById("adminTabManageProducts").style.display = tabName === 'manageProducts' ? 'block' : 'none';
     document.getElementById("adminTabShops").style.display = tabName === 'shops' ? 'block' : 'none';
+    
     if(tabName === 'orders') loadAdminOrders();
+    if(tabName === 'inventory') loadAdminInventoryList();
     if(tabName === 'manageProducts') loadAdminProductsToManage();
     if(tabName === 'shops') loadAdminRegisteredShops();
 }
@@ -1211,9 +1253,50 @@ async function addNewPromoBanner() {
 async function addNewProductWithImage() {
     const name = document.getElementById("newProdName").value.trim();
     const price = document.getElementById("newProdPrice").value.trim();
+    const stock = Number(document.getElementById("newProdStock").value) || 50;
     if(!name || !price){ alert("Name and Price required!"); return; }
-    await supabaseClient.from("products").insert([{ name, price: Number(price), created_at: new Date().toISOString() }]);
+    await supabaseClient.from("products").insert([{ name, price: Number(price), stock, created_at: new Date().toISOString() }]);
     alert("✅ Product Added!");
+    loadDynamicProducts();
+}
+
+// ADMIN STOCK INVENTORY MANAGEMENT TAB FUNCTION
+async function loadAdminInventoryList() {
+    const container = document.getElementById("adminInventoryList");
+    container.innerHTML = "<p style='padding:10px;'>Loading stock items...</p>";
+
+    const { data: products } = await supabaseClient.from("products").select("*").order("created_at", { ascending: false });
+    const listToDisplay = (products && products.length > 0) ? products : DEFAULT_PRODUCTS;
+
+    container.innerHTML = listToDisplay.map(p => {
+        const currentStock = p.stock !== undefined ? p.stock : 50;
+        const isDbItem = p.id && typeof p.id === 'string' && p.id.length > 10; // Supabase UUID or DB ID check
+
+        return `
+            <div style="border:1px solid #cbd5e1;padding:10px;margin:8px 0;background:#fff;border-radius:10px;display:flex;justify-content:space-between;align-items:center;">
+                <div>
+                    <b>${p.name}</b> (${p.quantity || 'Std'})<br>
+                    <span style="font-size:12px;color:#0284c7;font-weight:bold;">Current Stock: ${currentStock}</span>
+                </div>
+                <div style="display:flex;gap:4px;align-items:center;">
+                    ${isDbItem ? `
+                        <button onclick="quickUpdateStock('${p.id}', ${currentStock + 10})" style="background:#16a34a;color:white;border:none;padding:4px 8px;border-radius:6px;font-size:11px;cursor:pointer;">+10</button>
+                        <button onclick="quickUpdateStock('${p.id}', ${Math.max(0, currentStock - 10)})" style="background:#ca8a04;color:white;border:none;padding:4px 8px;border-radius:6px;font-size:11px;cursor:pointer;">-10</button>
+                        <button onclick="quickUpdateStock('${p.id}', 0)" style="background:#dc2626;color:white;border:none;padding:4px 8px;border-radius:6px;font-size:11px;cursor:pointer;">Set 0 (Out)</button>
+                    ` : `
+                        <span style="font-size:10px;color:#64748b;">(Sync to DB to Edit)</span>
+                    `}
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+async function quickUpdateStock(id, newStock) {
+    showNotification("Updating stock...");
+    await supabaseClient.from("products").update({ stock: newStock }).eq("id", id);
+    showNotification("Stock Updated to " + newStock + "!");
+    loadAdminInventoryList();
     loadDynamicProducts();
 }
 
@@ -1227,21 +1310,22 @@ async function loadAdminProductsToManage() {
     }
     list.innerHTML = products.map(p => `
         <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid #e2e8f0;background:#fff;margin-top:6px;border-radius:8px;">
-            <div><b>${p.name}</b> (${p.quantity || 'Std'}) - ₹${p.price}</div>
+            <div><b>${p.name}</b> (${p.quantity || 'Std'}) - ₹${p.price} | Stock: ${p.stock ?? 'N/A'}</div>
             <div>
-                <button onclick="openEditProductModal('${p.id}', '${p.name}', '${p.quantity || ''}', ${p.price}, ${p.mrp || 0})" style="background:#0284c7;color:white;border:none;padding:5px 10px;border-radius:6px;cursor:pointer;margin-right:5px;">Edit</button>
+                <button onclick="openEditProductModal('${p.id}', '${p.name}', '${p.quantity || ''}', ${p.price}, ${p.mrp || 0}, ${p.stock || 0})" style="background:#0284c7;color:white;border:none;padding:5px 10px;border-radius:6px;cursor:pointer;margin-right:5px;">Edit</button>
                 <button onclick="deleteProductById('${p.id}')" style="background:#dc2626;color:white;border:none;padding:5px 10px;border-radius:6px;cursor:pointer;">Delete</button>
             </div>
         </div>
     `).join('');
 }
 
-function openEditProductModal(id, name, qty, price, mrp) {
+function openEditProductModal(id, name, qty, price, mrp, stock) {
     document.getElementById("editProdId").value = id;
     document.getElementById("editProdName").value = name;
     document.getElementById("editProdQty").value = qty;
     document.getElementById("editProdPrice").value = price;
     document.getElementById("editProdMrp").value = mrp;
+    document.getElementById("editProdStock").value = stock;
     document.getElementById("editProductModal").style.display = "block";
 }
 
@@ -1251,8 +1335,9 @@ async function saveEditedProduct() {
     const quantity = document.getElementById("editProdQty").value;
     const price = Number(document.getElementById("editProdPrice").value);
     const mrp = Number(document.getElementById("editProdMrp").value);
+    const stock = Number(document.getElementById("editProdStock").value);
 
-    await supabaseClient.from("products").update({ name, quantity, price, mrp }).eq("id", id);
+    await supabaseClient.from("products").update({ name, quantity, price, mrp, stock }).eq("id", id);
     alert("✅ Product updated successfully!");
     closeModal('editProductModal');
     loadAdminProductsToManage();
