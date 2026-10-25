@@ -14,7 +14,8 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 .app-header{background:linear-gradient(135deg,#0284c7,#0369a1);color:white;padding:12px 15px;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,0.15);}
 .top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
 .logo{font-size:22px;font-weight:800;letter-spacing:0.5px;display:flex;align-items:center;gap:5px;}
-.location-btn{background:rgba(255,255,255,0.2);padding:6px 12px;border-radius:20px;font-size:12px;display:flex;align-items:center;gap:6px;cursor:pointer;backdrop-filter:blur(5px);}
+.header-actions{display:flex;gap:8px;align-items:center;}
+.location-btn, .share-app-btn{background:rgba(255,255,255,0.2);padding:6px 10px;border-radius:20px;font-size:11px;display:flex;align-items:center;gap:4px;cursor:pointer;backdrop-filter:blur(5px);color:white;border:none;font-weight:600;}
 
 /* SEARCH BAR */
 .search-bar{background:white;border-radius:12px;display:flex;align-items:center;padding:8px 14px;box-shadow:0 2px 8px rgba(0,0,0,0.08);}
@@ -127,8 +128,11 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 <header class="app-header">
     <div class="top-bar">
         <div class="logo">💧 Jalvigo</div>
-        <div class="location-btn" onclick="getGPSLocation()">
-            🎯 <span id="locText">Detect My Location</span>
+        <div class="header-actions">
+            <button class="share-app-btn" onclick="openShareAppModal()">📤 Share / Download</button>
+            <div class="location-btn" onclick="getGPSLocation()">
+                🎯 <span id="locText">Location</span>
+            </div>
         </div>
     </div>
     <div class="search-bar">
@@ -195,6 +199,28 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
         <span class="badge-count" id="cartCount">0</span>
     </button>
     <button class="nav-item" onclick="handleAccountClick()"><span class="nav-icon">👤</span> Account</button>
+</div>
+
+<!-- SHARE / DOWNLOAD MODAL -->
+<div class="modal" id="shareAppModal">
+  <div class="modal-box" style="text-align:center;">
+    <span class="close" onclick="closeModal('shareAppModal')">×</span>
+    <h2>📲 Share & Download Jalvigo App</h2>
+    <p style="font-size:12px;color:#64748b;margin:8px 0;">App download karein ya dosto aur shopkeepers ke sath link share karein!</p>
+    
+    <button class="primary-btn" onclick="triggerAppInstall()" style="background:#16a34a;margin-bottom:12px;font-size:15px;">📥 Download App (Install to Home Screen)</button>
+
+    <div class="form-group" style="text-align:left;">
+        <label>Website / App Link</label>
+        <input type="text" id="shareableLinkInput" readonly value="https://balramnnagar-code.github.io/Jalvigo/">
+    </div>
+
+    <button class="primary-btn" onclick="copyShareLink()" style="background:#0284c7;margin-bottom:8px;">📋 Copy Link</button>
+    <a id="whatsappShareBtn" href="#" target="_blank" style="display:block;background:#16a34a;color:white;text-decoration:none;padding:12px;border-radius:12px;font-weight:bold;font-size:14px;margin-bottom:8px;">
+        💬 Share on WhatsApp
+    </a>
+    <button class="primary-btn" onclick="triggerNativeShare()" style="background:#082f49;">🚀 Share via Other Apps</button>
+  </div>
 </div>
 
 <!-- PRODUCT DETAIL POPUP MODAL -->
@@ -556,7 +582,7 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 </div>
 </div>
 
-<!-- EDIT PRODUCT MODAL (ADMIN WITH 5MB MAX PHOTO UPLOAD) -->
+<!-- EDIT PRODUCT MODAL -->
 <div class="modal" id="editProductModal">
   <div class="modal-box">
     <span class="close" onclick="closeModal('editProductModal')">×</span>
@@ -575,7 +601,7 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
   </div>
 </div>
 
-<!-- EDIT ORDER MODAL (ADMIN) -->
+<!-- EDIT ORDER MODAL -->
 <div class="modal" id="editOrderModal">
   <div class="modal-box">
     <span class="close" onclick="closeModal('editOrderModal')">×</span>
@@ -641,6 +667,12 @@ let currentLoggedInUser = localStorage.getItem("jalvigo_logged_user") ? JSON.par
 
 let currentSlide = 0;
 let autoSlideInterval = null;
+let deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+});
 
 function updateSliderPosition() {
     const slider = document.getElementById("homeBannerSlider");
@@ -680,6 +712,47 @@ function togglePasswordVisibility(fieldId, btnElem) {
 function togglePaymentUi() {
     const method = document.getElementById("paymentMethodSelect").value;
     document.getElementById("upiPaymentBox").style.display = method === "UPI" ? "block" : "none";
+}
+
+function openShareAppModal() {
+    const appUrl = "https://balramnnagar-code.github.io/Jalvigo/";
+    document.getElementById("shareableLinkInput").value = appUrl;
+    document.getElementById("whatsappShareBtn").href = "https://api.whatsapp.com/send?text=" + encodeURIComponent("💧 Jalvigo Water & Beverages App par visit karein aur order karein: " + appUrl);
+    document.getElementById("shareAppModal").style.display = "block";
+}
+
+function copyShareLink() {
+    const copyText = document.getElementById("shareableLinkInput");
+    copyText.select();
+    navigator.clipboard.writeText(copyText.value);
+    alert("✅ Link Copied to Clipboard!");
+}
+
+function triggerNativeShare() {
+    const appUrl = "https://balramnnagar-code.github.io/Jalvigo/";
+    if (navigator.share) {
+        navigator.share({
+            title: 'Jalvigo App',
+            text: 'Jalvigo se Water & Beverages order karein:',
+            url: appUrl,
+        }).catch(() => {});
+    } else {
+        alert("Sharing not supported on this browser. Please copy link.");
+    }
+}
+
+function triggerAppInstall() {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+                console.log('User accepted the install prompt');
+            }
+            deferredPrompt = null;
+        });
+    } else {
+        alert("📲 App install karne ke liye apne browser menu (...) par click karein aur 'Install App' ya 'Add to Home Screen' select karein.");
+    }
 }
 
 function populatePreDefinedDropdown() {
@@ -852,7 +925,7 @@ async function handleAccountClick() {
     if(currentLoggedInUser){
         document.getElementById("authButtonsSection").style.display = "none";
         document.getElementById("loggedInSection").style.display = "block";
-        document.getElementById("userEmailText", "").innerText = "Account: " + currentLoggedInUser.username;
+        document.getElementById("userEmailText").innerText = "Account: " + currentLoggedInUser.username;
         if(currentLoggedInUser.username.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
             document.getElementById("adminDashboardBtn").style.display = "block";
             document.getElementById("vendorProductAddBtn").style.display = "block";
