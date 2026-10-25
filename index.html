@@ -4,7 +4,7 @@
 <meta name="google-site-verification" content="vVBDCMt4S3IQUGspcfm3Li4bAsDDq5In5xg_G_8j4tM" />
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Jalvigo - Water & Beverages Marketplace</title>
+<title id="pageTitle">Jalvigo - Water & Beverages Marketplace</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;}
@@ -14,8 +14,8 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 .app-header{background:linear-gradient(135deg,#0284c7,#0369a1);color:white;padding:12px 15px;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,0.15);}
 .top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
 .logo{font-size:22px;font-weight:800;letter-spacing:0.5px;display:flex;align-items:center;gap:5px;}
-.header-actions{display:flex;gap:8px;align-items:center;}
-.location-btn, .share-app-btn{background:rgba(255,255,255,0.2);padding:6px 10px;border-radius:20px;font-size:11px;display:flex;align-items:center;gap:4px;cursor:pointer;backdrop-filter:blur(5px);color:white;border:none;font-weight:600;}
+.header-actions{display:flex;gap:6px;align-items:center;}
+.location-btn, .share-app-btn, .lang-switch-btn{background:rgba(255,255,255,0.2);padding:6px 9px;border-radius:20px;font-size:11px;display:flex;align-items:center;gap:4px;cursor:pointer;backdrop-filter:blur(5px);color:white;border:none;font-weight:600;}
 
 /* SEARCH BAR */
 .search-bar{background:white;border-radius:12px;display:flex;align-items:center;padding:8px 14px;box-shadow:0 2px 8px rgba(0,0,0,0.08);}
@@ -106,6 +106,20 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 .plan-btn-card{flex:1;padding:12px 6px;border:2px solid #eab308;border-radius:12px;background:#fff;cursor:pointer;text-align:center;transition:all 0.2s;}
 .plan-btn-card.active{background:#fef08a;border-color:#854d0e;transform:scale(1.02);}
 
+/* POLICY BOX STYLING */
+.policy-card-box {
+    background: #f8fafc;
+    border-left: 4px solid #0284c7;
+    padding: 12px;
+    border-radius: 8px;
+    margin: 10px 0;
+    font-size: 12px;
+    color: #334155;
+    text-align: left;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.policy-card-box h4 { color: #0369a1; margin-bottom: 4px; font-size: 13px; }
+
 /* MODALS */
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:300;padding:15px;overflow:auto;}
 .modal-box{background:white;max-width:500px;margin:30px auto;padding:20px;border-radius:20px;box-shadow:0 10px 25px rgba(0,0,0,0.2);}
@@ -127,51 +141,52 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 <!-- TOP HEADER -->
 <header class="app-header">
     <div class="top-bar">
-        <div class="logo">💧 Jalvigo</div>
+        <div class="logo">💧 <span data-i18n="appName">Jalvigo</span></div>
         <div class="header-actions">
-            <button class="share-app-btn" onclick="openShareAppModal()">📤 Share / Download</button>
+            <button class="lang-switch-btn" onclick="toggleAppLanguage()" id="langBtnText">🌐 हिंदी</button>
+            <button class="share-app-btn" onclick="openShareAppModal()" data-i18n="shareBtn">📤 Share/App</button>
             <div class="location-btn" onclick="getGPSLocation()">
-                🎯 <span id="locText">Location</span>
+                🎯 <span id="locText" data-i18n="locationText">Location</span>
             </div>
         </div>
     </div>
     <div class="search-bar">
-        🔍 <input type="text" id="productSearchInput" placeholder="Search Water Jars, Cold Drinks, Beverages..." onkeyup="filterProducts()">
+        🔍 <input type="text" id="productSearchInput" placeholder="Search Water Jars, Cold Drinks, Beverages..." data-i18n-placeholder="searchPlaceholder" onkeyup="filterProducts()">
     </div>
 </header>
 
 <!-- CATEGORY NAV -->
 <div class="category-nav">
-    <div class="cat-item" onclick="filterProductsByCategory('All')"><div class="cat-icon">🛍️</div> For You</div>
-    <div class="cat-item" onclick="filterProductsByCategory('Water')"><div class="cat-icon">💧</div> Water Jars</div>
-    <div class="cat-item" onclick="filterProductsByCategory('Drinks')"><div class="cat-icon">🥤</div> Cold Drinks</div>
-    <div class="cat-item" onclick="filterProductsByCategory('Energy')"><div class="cat-icon">⚡</div> Energy/Juice</div>
-    <div class="cat-item" onclick="openB2BAuth()"><div class="cat-icon">🏪</div> Add Your Shop</div>
+    <div class="cat-item" onclick="filterProductsByCategory('All')"><div class="cat-icon">🛍️</div> <span data-i18n="catForYou">For You</span></div>
+    <div class="cat-item" onclick="filterProductsByCategory('Water')"><div class="cat-icon">💧</div> <span data-i18n="catWater">Water Jars</span></div>
+    <div class="cat-item" onclick="filterProductsByCategory('Drinks')"><div class="cat-icon">🥤</div> <span data-i18n="catDrinks">Cold Drinks</span></div>
+    <div class="cat-item" onclick="filterProductsByCategory('Energy')"><div class="cat-icon">⚡</div> <span data-i18n="catEnergy">Energy/Juice</span></div>
+    <div class="cat-item" onclick="openB2BAuth()"><div class="cat-icon">🏪</div> <span data-i18n="catAddShop">Add Shop</span></div>
 </div>
 
 <!-- SORT & FILTER BAR -->
 <div class="sort-filter-bar">
-    <div class="sort-chip active" id="sortAll" onclick="applySorting('all')">All / Default</div>
-    <div class="sort-chip" id="sortRetail" onclick="applySorting('retail')">🏷️ Retail Only</div>
-    <div class="sort-chip" id="sortWholesale" onclick="applySorting('wholesale')">📦 Wholesale Only</div>
-    <div class="sort-chip" id="sortLowHigh" onclick="applySorting('lowHigh')">📈 Price: Low to High</div>
-    <div class="sort-chip" id="sortHighLow" onclick="applySorting('highLow')">📉 Price: High to Low</div>
+    <div class="sort-chip active" id="sortAll" onclick="applySorting('all')" data-i18n="sortAll">All / Default</div>
+    <div class="sort-chip" id="sortRetail" onclick="applySorting('retail')" data-i18n="sortRetail">🏷️ Retail Only</div>
+    <div class="sort-chip" id="sortWholesale" onclick="applySorting('wholesale')" data-i18n="sortWholesale">📦 Wholesale Only</div>
+    <div class="sort-chip" id="sortLowHigh" onclick="applySorting('lowHigh')" data-i18n="sortLowHigh">📈 Price: Low to High</div>
+    <div class="sort-chip" id="sortHighLow" onclick="applySorting('highLow')" data-i18n="sortHighLow">📉 Price: High to Low</div>
 </div>
 
 <!-- BANNER CAROUSEL -->
 <div class="banner-container" id="bannerTouchContainer">
     <div class="slider-wrapper" id="homeBannerSlider">
         <div class="promo-card">
-            <h3>💧 Jalvigo B2B & Retail Marketplace</h3>
-            <p>India's Fastest Water & Beverage Delivery Network. Wholesale & Single Units available!</p>
+            <h3 data-i18n="banner1Title">💧 Jalvigo B2B & Retail Marketplace</h3>
+            <p data-i18n="banner1Desc">India's Fastest Water & Beverage Delivery Network. Wholesale & Single Units available!</p>
         </div>
         <div class="promo-card alt">
-            <h3>🥤 Direct Market Rates</h3>
-            <p>Get authentic wholesale prices and 1-piece retail options with instant doorstep delivery.</p>
+            <h3 data-i18n="banner2Title">🥤 Direct Market Rates</h3>
+            <p data-i18n="banner2Desc">Get authentic wholesale prices and 1-piece retail options with instant doorstep delivery.</p>
         </div>
         <div class="promo-card" style="background:linear-gradient(135deg,#059669,#047857);">
-            <h3>⚡ Direct Dealer Network</h3>
-            <p>List your shop on Jalvigo today and enjoy automatic platform commission tracking!</p>
+            <h3 data-i18n="banner3Title">⚡ Direct Dealer Network</h3>
+            <p data-i18n="banner3Desc">List your shop on Jalvigo today and enjoy automatic platform commission tracking!</p>
         </div>
     </div>
     <div class="slider-dots" id="sliderDotsContainer">
@@ -183,43 +198,43 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 
 <!-- PRODUCTS GRID -->
 <div class="section-title">
-    <span id="currentCategoryHeading">⚡ Wholesale & Retail Beverages</span>
-    <span style="font-size:12px;color:#0284c7;font-weight:600;cursor:pointer;" onclick="loadDynamicProducts()">🔄 Refresh</span>
+    <span id="currentCategoryHeading" data-i18n="sectionHeading">⚡ Wholesale & Retail Beverages</span>
+    <span style="font-size:12px;color:#0284c7;font-weight:600;cursor:pointer;" onclick="loadDynamicProducts()" data-i18n="refreshText">🔄 Refresh</span>
 </div>
 <div class="products-grid" id="dynamicProductsList">
-    <p style="grid-column:1/-1;text-align:center;padding:20px;color:#64748b;">Loading products...</p>
+    <p style="grid-column:1/-1;text-align:center;padding:20px;color:#64748b;" data-i18n="loadingText">Loading products...</p>
 </div>
 
 <!-- BOTTOM NAV BAR -->
 <div class="bottom-nav">
-    <button class="nav-item" onclick="scrollToTop()"><span class="nav-icon">🏠</span> Home</button>
-    <button class="nav-item" onclick="openNearbyModal()"><span class="nav-icon">📍</span> Stores</button>
+    <button class="nav-item" onclick="scrollToTop()"><span class="nav-icon">🏠</span> <span data-i18n="navHome">Home</span></button>
+    <button class="nav-item" onclick="openNearbyModal()"><span class="nav-icon">📍</span> <span data-i18n="navStores">Stores</span></button>
     <button class="nav-item" onclick="openCart()">
-        <span class="nav-icon">🛒</span> Cart
+        <span class="nav-icon">🛒</span> <span data-i18n="navCart">Cart</span>
         <span class="badge-count" id="cartCount">0</span>
     </button>
-    <button class="nav-item" onclick="handleAccountClick()"><span class="nav-icon">👤</span> Account</button>
+    <button class="nav-item" onclick="handleAccountClick()"><span class="nav-icon">👤</span> <span data-i18n="navAccount">Account</span></button>
 </div>
 
 <!-- SHARE / DOWNLOAD MODAL -->
 <div class="modal" id="shareAppModal">
   <div class="modal-box" style="text-align:center;">
     <span class="close" onclick="closeModal('shareAppModal')">×</span>
-    <h2>📲 Share & Download Jalvigo App</h2>
-    <p style="font-size:12px;color:#64748b;margin:8px 0;">App download karein ya dosto aur shopkeepers ke sath link share karein!</p>
+    <h2 data-i18n="shareModalTitle">📲 Share & Download Jalvigo App</h2>
+    <p style="font-size:12px;color:#64748b;margin:8px 0;" data-i18n="shareModalSub">App download karein ya dosto aur shopkeepers ke sath link share karein!</p>
     
-    <button class="primary-btn" onclick="triggerAppInstall()" style="background:#16a34a;margin-bottom:12px;font-size:15px;">📥 Download App (Install to Home Screen)</button>
+    <button class="primary-btn" onclick="triggerAppInstall()" style="background:#16a34a;margin-bottom:12px;font-size:15px;" data-i18n="downloadAppBtn">📥 Download App (Install to Home Screen)</button>
 
     <div class="form-group" style="text-align:left;">
-        <label>Website / App Link</label>
+        <label data-i18n="linkLabel">Website / App Link</label>
         <input type="text" id="shareableLinkInput" readonly value="https://balramnnagar-code.github.io/Jalvigo/">
     </div>
 
-    <button class="primary-btn" onclick="copyShareLink()" style="background:#0284c7;margin-bottom:8px;">📋 Copy Link</button>
-    <a id="whatsappShareBtn" href="#" target="_blank" style="display:block;background:#16a34a;color:white;text-decoration:none;padding:12px;border-radius:12px;font-weight:bold;font-size:14px;margin-bottom:8px;">
+    <button class="primary-btn" onclick="copyShareLink()" style="background:#0284c7;margin-bottom:8px;" data-i18n="copyLinkBtn">📋 Copy Link</button>
+    <a id="whatsappShareBtn" href="#" target="_blank" style="display:block;background:#16a34a;color:white;text-decoration:none;padding:12px;border-radius:12px;font-weight:bold;font-size:14px;margin-bottom:8px;" data-i18n="whatsappShareBtn">
         💬 Share on WhatsApp
     </a>
-    <button class="primary-btn" onclick="triggerNativeShare()" style="background:#082f49;">🚀 Share via Other Apps</button>
+    <button class="primary-btn" onclick="triggerNativeShare()" style="background:#082f49;" data-i18n="otherShareBtn">🚀 Share via Other Apps</button>
   </div>
 </div>
 
@@ -235,29 +250,35 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 <div class="modal" id="accountModal">
   <div class="modal-box">
     <span class="close" onclick="closeModal('accountModal')">×</span>
-    <h2>👤 Account & Dashboard</h2>
+    <h2 data-i18n="accountModalTitle">👤 Account & Dashboard</h2>
+    
+    <!-- Retailer / Customer Return Policy Notice Box -->
+    <div class="policy-card-box">
+        <h4 data-i18n="retailPolicyHead">🏷️ Retail & Customer Return Policy (1 Day)</h4>
+        <p data-i18n="retailPolicyDesc">Retail/Single orders can be returned within 1 day[span_7](start_span)[span_7](end_span). Return delivery charge applies at <b>₹5 per kilometer</b>[span_8](start_span)[span_8](end_span). Product must be unused and in original packaging.</p>
+    </div>
     
     <div id="authButtonsSection" style="margin-top:15px;">
-        <button class="primary-btn" onclick="openCustomerAuth()" style="margin-bottom:10px;">👤 Customer Login / Signup</button>
-        <button class="primary-btn" onclick="openB2BAuth()" style="margin-bottom:10px;background:#059669;">🏪 Register Shop / Dealer / Company</button>
-        <button class="primary-btn" onclick="openDeliveryModal()" style="margin-bottom:10px;background:#16a34a;">🚚 Delivery Partner Portal</button>
-        <button class="primary-btn" onclick="openAdminAuthModal()" style="background:#082f49;">🔐 Admin Login</button>
+        <button class="primary-btn" onclick="openCustomerAuth()" style="margin-bottom:10px;" data-i18n="custLoginBtn">👤 Customer Login / Signup</button>
+        <button class="primary-btn" onclick="openB2BAuth()" style="margin-bottom:10px;background:#059669;" data-i18n="b2bRegBtn">🏪 Register Shop / Dealer / Company</button>
+        <button class="primary-btn" onclick="openDeliveryModal()" style="margin-bottom:10px;background:#16a34a;" data-i18n="deliveryPortalBtn">🚚 Delivery Partner Portal</button>
+        <button class="primary-btn" onclick="openAdminAuthModal()" style="background:#082f49;" data-i18n="adminLoginBtn">🔐 Admin Login</button>
     </div>
 
     <div id="loggedInSection" style="display:none;margin-top:15px;">
         <p id="userEmailText" style="margin-bottom:12px;font-weight:bold;color:#0369a1;background:#e0f2fe;padding:8px;border-radius:8px;text-align:center;"></p>
         
-        <button id="vendorProductAddBtn" class="primary-btn" onclick="openVendorAddProductModal()" style="display:none;margin-bottom:10px;background:#16a34a;">➕ Add & Manage My Products</button>
-        <button id="adminDashboardBtn" class="primary-btn" onclick="openAdminDashboardModalDirect()" style="display:none;margin-bottom:10px;background:#082f49;">🛠️ Open Admin Dashboard</button>
-        <button id="myOrdersBtn" class="primary-btn" onclick="openMyOrders()" style="margin-bottom:10px;">📦 My Orders</button>
+        <button id="vendorProductAddBtn" class="primary-btn" onclick="openVendorAddProductModal()" style="display:none;margin-bottom:10px;background:#16a34a;" data-i18n="addManageProdBtn">➕ Add & Manage My Products</button>
+        <button id="adminDashboardBtn" class="primary-btn" onclick="openAdminDashboardModalDirect()" style="display:none;margin-bottom:10px;background:#082f49;" data-i18n="openAdminDashBtn">🛠️ Open Admin Dashboard</button>
+        <button id="myOrdersBtn" class="primary-btn" onclick="openMyOrders()" style="margin-bottom:10px;" data-i18n="myOrdersBtn">📦 My Orders</button>
         
         <div style="background:#fef08a;padding:12px;border-radius:12px;margin:12px 0;border:1px solid #eab308;text-align:center;">
-            <h4 style="color:#854d0e;font-size:15px;">👑 Jalvigo VIP Membership Pass</h4>
-            <p style="font-size:11px;color:#555;margin:4px 0;">Unlimited FREE Express Delivery & Priority Slots</p>
-            <button class="vip-btn" onclick="openSubModal()" style="margin-top:6px;background:#ca8a04;color:white;border:none;padding:6px 12px;border-radius:8px;cursor:pointer;">View VIP Plans</button>
+            <h4 style="color:#854d0e;font-size:15px;" data-i18n="vipTitle">👑 Jalvigo VIP Membership Pass</h4>
+            <p style="font-size:11px;color:#555;margin:4px 0;" data-i18n="vipSub">Unlimited FREE Express Delivery & Priority Slots</p>
+            <button class="vip-btn" onclick="openSubModal()" style="margin-top:6px;background:#ca8a04;color:white;border:none;padding:6px 12px;border-radius:8px;cursor:pointer;" data-i18n="viewVipBtn">View VIP Plans</button>
         </div>
 
-        <button class="primary-btn" onclick="userLogout()" style="background:#dc2626;">🚪 Logout</button>
+        <button class="primary-btn" onclick="userLogout()" style="background:#dc2626;" data-i18n="logoutBtn">🚪 Logout</button>
     </div>
   </div>
 </div>
@@ -266,8 +287,8 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 <div class="modal" id="subModal">
   <div class="modal-box" style="text-align:center;">
     <span class="close" onclick="closeModal('subModal')">×</span>
-    <h2 style="color:#854d0e;">👑 Choose Jalvigo VIP Pass Plan</h2>
-    <p style="font-size:12px;color:#555;margin:6px 0;">Select a plan below to view UPI QR code</p>
+    <h2 style="color:#854d0e;" data-i18n="vipModalHead">👑 Choose Jalvigo VIP Pass Plan</h2>
+    <p style="font-size:12px;color:#555;margin:6px 0;" data-i18n="vipModalSub">Select a plan below to view UPI QR code</p>
     
     <div style="display:flex;gap:8px;margin:15px 0;">
         <div class="plan-btn-card active" id="vipPlanCard1" onclick="selectVipPlan(99, '1 Month', 'vipPlanCard1')">
@@ -286,14 +307,14 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 
     <div style="background:#fef08a;padding:12px;border-radius:12px;margin-bottom:12px;border:1px solid #eab308;">
         <p style="font-size:13px;font-weight:bold;color:#854d0e;">
-            Selected Plan: <span id="selectedVipText">₹99 (1 Month Access)</span>
+            <span data-i18n="selectedPlanLabel">Selected Plan:</span> <span id="selectedVipText">₹99 (1 Month Access)</span>
         </p>
     </div>
 
     <img id="vipUpiQr" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=balramnnagar@okaxis%26pn=Jalvigo%20VIP%26am=99%26cu=INR" alt="UPI QR" style="width:140px;height:140px;border-radius:10px;border:2px solid #eab308;">
     <p style="font-size:12px;margin-top:4px;">UPI ID: <b>balramnnagar@okaxis</b></p>
     
-    <button class="primary-btn" onclick="activateVipSubscription()" style="margin-top:15px;background:#eab308;color:#000;">I Have Paid - Activate VIP Access</button>
+    <button class="primary-btn" onclick="activateVipSubscription()" style="margin-top:15px;background:#eab308;color:#000;" data-i18n="paidVipBtn">I Have Paid - Activate VIP Access</button>
   </div>
 </div>
 
@@ -301,41 +322,41 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 <div class="modal" id="vendorProductModal">
   <div class="modal-box">
     <span class="close" onclick="closeModal('vendorProductModal')">×</span>
-    <h2>📦 Add & Manage Shop Products</h2>
+    <h2 data-i18n="vendorModalHead">📦 Add & Manage Shop Products</h2>
     <div style="background:#f8fafc;padding:12px;border-radius:12px;border:1px solid #e2e8f0;margin-top:10px;">
         
         <div class="form-group">
-            <label>⚡ Quick Select from Master Catalog (Optional)</label>
+            <label data-i18n="masterCatalogLabel">⚡ Quick Select from Master Catalog (Optional)</label>
             <select id="vPreDefinedSelect" onchange="autoFillVendorProductDetails()">
-                <option value="">-- Choose from Master Catalog OR Add Custom --</option>
+                <option value="" data-i18n="chooseMasterOpt">-- Choose from Master Catalog OR Add Custom --</option>
             </select>
         </div>
 
-        <div class="form-group"><label>Product Name</label><input type="text" id="vProdName" placeholder="e.g. Bisleri 1L / Coca-Cola Pack"></div>
-        <div class="form-group"><label>Product Quantity / Pack Type</label><input type="text" id="vProdQty" placeholder="e.g. Single Unit or Pack of 24"></div>
-        <div class="form-group"><label>Category</label>
+        <div class="form-group"><label data-i18n="prodNameLabel">Product Name</label><input type="text" id="vProdName" placeholder="e.g. Bisleri 1L / Coca-Cola Pack"></div>
+        <div class="form-group"><label data-i18n="prodQtyLabel">Product Quantity / Pack Type</label><input type="text" id="vProdQty" placeholder="e.g. Single Unit or Pack of 24"></div>
+        <div class="form-group"><label data-i18n="catLabel">Category</label>
             <select id="vProdCategory">
-                <option value="Water">Water</option>
-                <option value="Drinks">Cold Drinks</option>
-                <option value="Energy">Energy / Juice</option>
+                <option value="Water" data-i18n="catWater">Water</option>
+                <option value="Drinks" data-i18n="catDrinks">Cold Drinks</option>
+                <option value="Energy" data-i18n="catEnergy">Energy / Juice</option>
             </select>
         </div>
-        <div class="form-group"><label>Listing Type</label>
+        <div class="form-group"><label data-i18n="listTypeLabel">Listing Type</label>
             <select id="vProdType">
-                <option value="Retail">Retail (Small Shop / Single Units)</option>
-                <option value="Wholesale">Wholesale (Thok Dealer / Bulk Packs)</option>
+                <option value="Retail" data-i18n="retailTypeOpt">Retail (Small Shop / Single Units)</option>
+                <option value="Wholesale" data-i18n="wholesaleTypeOpt">Wholesale (Thok Dealer / Bulk Packs)</option>
             </select>
         </div>
-        <div class="form-group"><label>Stock Quantity Available</label><input type="number" id="vProdStock" placeholder="e.g. 50" value="50"></div>
-        <div class="form-group"><label>Shop Pincode (For Delivery Limit Check)</label><input type="text" id="vShopPincode" placeholder="e.g. 110001"></div>
-        <div class="form-group"><label>Actual Total MRP (₹)</label><input type="number" id="vProdMrp" placeholder="e.g. 20"></div>
-        <div class="form-group"><label>Selling Wholesale/Retail Price (₹)</label><input type="number" id="vProdPrice" placeholder="e.g. 20"></div>
-        <div class="form-group"><label>Product Photo (Max 5MB, JPG/PNG)</label><input type="file" id="vProdImageFile" accept="image/*"></div>
-        <button class="primary-btn" onclick="submitVendorProduct()" style="background:#16a34a;margin-top:10px;">Save & Publish Product</button>
+        <div class="form-group"><label data-i18n="stockAvailLabel">Stock Quantity Available</label><input type="number" id="vProdStock" placeholder="e.g. 50" value="50"></div>
+        <div class="form-group"><label data-i18n="shopPinLabel">Shop Pincode (For Delivery Limit Check)</label><input type="text" id="vShopPincode" placeholder="e.g. 110001"></div>
+        <div class="form-group"><label data-i18n="actualMrpLabel">Actual Total MRP (₹)</label><input type="number" id="vProdMrp" placeholder="e.g. 20"></div>
+        <div class="form-group"><label data-i18n="sellingPriceLabel">Selling Wholesale/Retail Price (₹)</label><input type="number" id="vProdPrice" placeholder="e.g. 20"></div>
+        <div class="form-group"><label data-i18n="prodPhotoLabel">Product Photo (Max 5MB, JPG/PNG)</label><input type="file" id="vProdImageFile" accept="image/*"></div>
+        <button class="primary-btn" onclick="submitVendorProduct()" style="background:#16a34a;margin-top:10px;" data-i18n="savePubBtn">Save & Publish Product</button>
     </div>
     <div style="margin-top:15px;">
-        <h3>Your Listed Products</h3>
-        <div id="vendorMyProductsList" style="margin-top:8px;"><p>Loading products...</p></div>
+        <h3 data-i18n="yourListedHead">Your Listed Products</h3>
+        <div id="vendorMyProductsList" style="margin-top:8px;"><p data-i18n="loadingText">Loading products...</p></div>
     </div>
   </div>
 </div>
@@ -344,23 +365,23 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 <div class="modal" id="customerAuthModal">
   <div class="modal-box">
     <span class="close" onclick="closeModal('customerAuthModal')">×</span>
-    <h2>👤 Customer Login / Signup</h2>
+    <h2 data-i18n="custAuthHead">👤 Customer Login / Signup</h2>
     <div class="form-group">
-        <label>Mobile Number or Email</label>
+        <label data-i18n="mobileEmailLabel">Mobile Number or Email</label>
         <input type="text" id="customerAuthInput" placeholder="Enter 10-digit Mobile or Email" autocomplete="off">
     </div>
     <div class="form-group">
-        <label>Password</label>
+        <label data-i18n="passLabel">Password</label>
         <div class="password-box">
             <input type="password" id="customerPassword" placeholder="Enter password">
             <button type="button" class="eye-btn" onclick="togglePasswordVisibility('customerPassword', this)">👁️</button>
         </div>
     </div>
     <div style="text-align:right;margin-bottom:12px;">
-        <a href="javascript:void(0)" onclick="openForgotPasswordModal()" style="font-size:12px;color:#0284c7;font-weight:bold;text-decoration:none;">Forgot Password?</a>
+        <a href="javascript:void(0)" onclick="openForgotPasswordModal()" style="font-size:12px;color:#0284c7;font-weight:bold;text-decoration:none;" data-i18n="forgotPassLink">Forgot Password?</a>
     </div>
-    <button class="primary-btn" onclick="executeCustomerLogin()" style="background:#16a34a;margin-bottom:8px;">Login</button>
-    <button class="primary-btn" onclick="executeCustomerSignup()" style="background:#0284c7;">Create New Account</button>
+    <button class="primary-btn" onclick="executeCustomerLogin()" style="background:#16a34a;margin-bottom:8px;" data-i18n="loginBtn">Login</button>
+    <button class="primary-btn" onclick="executeCustomerSignup()" style="background:#0284c7;" data-i18n="createAccBtn">Create New Account</button>
   </div>
 </div>
 
@@ -368,16 +389,16 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 <div class="modal" id="forgotPasswordModal">
   <div class="modal-box">
     <span class="close" onclick="closeModal('forgotPasswordModal')">×</span>
-    <h2>🔑 Reset Password</h2>
-    <div class="form-group"><label>Mobile Number or Email</label><input type="text" id="forgotAuthInput" placeholder="Mobile or Email"></div>
+    <h2 data-i18n="resetPassHead">🔑 Reset Password</h2>
+    <div class="form-group"><label data-i18n="mobileEmailLabel">Mobile Number or Email</label><input type="text" id="forgotAuthInput" placeholder="Mobile or Email"></div>
     <div class="form-group">
-        <label>New Password</label>
+        <label data-i18n="newPassLabel">New Password</label>
         <div class="password-box">
             <input type="password" id="forgotNewPassword" placeholder="New Password">
             <button type="button" class="eye-btn" onclick="togglePasswordVisibility('forgotNewPassword', this)">👁️</button>
         </div>
     </div>
-    <button class="primary-btn" onclick="executePasswordReset()" style="background:#ca8a04;margin-top:10px;">Update Password</button>
+    <button class="primary-btn" onclick="executePasswordReset()" style="background:#ca8a04;margin-top:10px;" data-i18n="updatePassBtn">Update Password</button>
   </div>
 </div>
 
@@ -385,16 +406,16 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 <div class="modal" id="adminAuthModal">
   <div class="modal-box">
     <span class="close" onclick="closeModal('adminAuthModal')">×</span>
-    <h2>🔐 Admin Secure Login</h2>
-    <div class="form-group"><label>Admin Email</label><input type="email" id="adminEmailInput" placeholder="admin@jalvigo.com"></div>
+    <h2 data-i18n="adminLoginHead">🔐 Admin Secure Login</h2>
+    <div class="form-group"><label data-i18n="adminEmailLabel">Admin Email</label><input type="email" id="adminEmailInput" placeholder="admin@jalvigo.com"></div>
     <div class="form-group">
-        <label>Password</label>
+        <label data-i18n="passLabel">Password</label>
         <div class="password-box">
             <input type="password" id="adminPasswordInput" placeholder="Password">
             <button type="button" class="eye-btn" onclick="togglePasswordVisibility('adminPasswordInput', this)">👁️</button>
         </div>
     </div>
-    <button class="primary-btn" onclick="executeAdminLogin()" style="background:#082f49;margin-top:10px;">Login to Admin Panel</button>
+    <button class="primary-btn" onclick="executeAdminLogin()" style="background:#082f49;margin-top:10px;" data-i18n="adminLoginActionBtn">Login to Admin Panel</button>
   </div>
 </div>
 
@@ -402,8 +423,8 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 <div class="modal" id="myOrdersModal">
   <div class="modal-box">
     <span class="close" onclick="closeModal('myOrdersModal')">×</span>
-    <h2>📦 My Orders</h2>
-    <div id="myOrdersListContainer" style="margin-top:10px;"><p>Loading orders...</p></div>
+    <h2 data-i18n="myOrdersHead">📦 My Orders</h2>
+    <div id="myOrdersListContainer" style="margin-top:10px;"><p data-i18n="loadingText">Loading orders...</p></div>
   </div>
 </div>
 
@@ -411,9 +432,9 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 <div class="modal" id="deliveryModal">
   <div class="modal-box">
     <span class="close" onclick="closeModal('deliveryModal')">×</span>
-    <h2>🚚 Delivery Partner Portal</h2>
-    <div class="form-group"><label>Enter 4-Digit Security PIN (Default: 1234)</label><input type="password" id="deliveryPinInput" placeholder="PIN" maxlength="4"></div>
-    <button class="primary-btn" onclick="verifyDeliveryPin()" style="background:#16a34a;">Access Deliveries</button>
+    <h2 data-i18n="deliveryPortalHead">🚚 Delivery Partner Portal</h2>
+    <div class="form-group"><label data-i18n="pinLabel">Enter 4-Digit Security PIN (Default: 1234)</label><input type="password" id="deliveryPinInput" placeholder="PIN" maxlength="4"></div>
+    <button class="primary-btn" onclick="verifyDeliveryPin()" style="background:#16a34a;" data-i18n="accessDelivBtn">Access Deliveries</button>
     <div id="deliveryOrdersContainer" style="margin-top:15px;"></div>
   </div>
 </div>
@@ -422,14 +443,21 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 <div class="modal" id="orderModal">
 <div class="modal-box">
 <span class="close" onclick="closeModal('orderModal')">×</span>
-<h2>📦 Delivery & Bill Details</h2>
-<div class="form-group"><label>Full Name</label><input type="text" id="customerName"></div>
-<div class="form-group"><label>Mobile</label><input type="tel" id="customerMobile"></div>
-<div class="form-group"><label>Delivery Pincode</label><input type="text" id="customerPincode" placeholder="e.g. 110001"></div>
+<h2 data-i18n="checkoutHead">📦 Delivery & Bill Details</h2>
+
+<!-- Dynamic Return Policy Notice inside Checkout -->
+<div class="policy-card-box" id="checkoutPolicyBox">
+    <h4 data-i18n="checkoutPolicyTitle">🛡️ Jalvigo Return & Refund Protection</h4>
+    <p id="checkoutPolicyText" data-i18n="checkoutPolicyDescText">Retail orders returnable within 1 day[span_9](start_span)[span_9](end_span) (₹5/km return fee)[span_10](start_span)[span_10](end_span). Bulk/Wholesale returnable within 2 days[span_11](start_span)[span_11](end_span) (distance-based return fee)[span_12](start_span)[span_12](end_span).</p>
+</div>
+
+<div class="form-group"><label data-i18n="fullNameLabel">Full Name</label><input type="text" id="customerName"></div>
+<div class="form-group"><label data-i18n="mobileNumLabel">Mobile</label><input type="tel" id="customerMobile"></div>
+<div class="form-group"><label data-i18n="delivPinLabel">Delivery Pincode</label><input type="text" id="customerPincode" placeholder="e.g. 110001"></div>
 <div class="form-group">
-    <label>Delivery Address</label>
+    <label data-i18n="delivAddressLabel">Delivery Address</label>
     <input type="text" id="streetArea" placeholder="Full Address">
-    <button type="button" onclick="getGPSLocation()" style="margin-top:5px;background:#e0f2fe;color:#0284c7;border:1px solid #0284c7;padding:6px 12px;border-radius:8px;font-weight:bold;font-size:12px;cursor:pointer;">
+    <button type="button" onclick="getGPSLocation()" style="margin-top:5px;background:#e0f2fe;color:#0284c7;border:1px solid #0284c7;padding:6px 12px;border-radius:8px;font-weight:bold;font-size:12px;cursor:pointer;" data-i18n="gpsBtn">
         🎯 Auto-Fill Live GPS Location
     </button>
 </div>
@@ -439,23 +467,23 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 </div>
 
 <div style="background:#f0f9ff;padding:12px;border-radius:10px;font-size:13px;border:1px solid #0284c7;margin:10px 0;" id="feeBreakdownBox">
-    <div>📍 Store Distance: <span id="detectedDistanceText">Calculating...</span></div>
-    <div>📦 Items Subtotal: ₹<span id="checkoutSubtotal">0</span></div>
-    <div>🚚 Delivery Charge: ₹<span id="checkoutDeliveryFee">0</span></div>
-    <div style="font-weight:bold;font-size:16px;margin-top:6px;color:#0369a1;">Grand Total: ₹<span id="checkoutGrandTotal">0</span></div>
+    <div>📍 <span data-i18n="storeDistLabel">Store Distance:</span> <span id="detectedDistanceText">Calculating...</span></div>
+    <div>📦 <span data-i18n="subtotalLabel">Items Subtotal:</span> ₹<span id="checkoutSubtotal">0</span></div>
+    <div>🚚 <span data-i18n="delivFeeLabel">Delivery Charge:</span> ₹<span id="checkoutDeliveryFee">0</span></div>
+    <div style="font-weight:bold;font-size:16px;margin-top:6px;color:#0369a1;"><span data-i18n="grandTotalLabel">Grand Total:</span> ₹<span id="checkoutGrandTotal">0</span></div>
 </div>
 
 <div class="form-group">
-    <label>Choose Payment Method</label>
+    <label data-i18n="payMethodLabel">Choose Payment Method</label>
     <select id="paymentMethodSelect" onchange="togglePaymentUi()">
-        <option value="UPI">📱 Instant UPI / QR (GPay, PhonePe, Paytm)</option>
-        <option value="COD">💵 Cash on Delivery (COD)</option>
+        <option value="UPI" data-i18n="upiOpt">📱 Instant UPI / QR (GPay, PhonePe, Paytm)</option>
+        <option value="COD" data-i18n="codOpt">💵 Cash on Delivery (COD)</option>
     </select>
 </div>
 
 <div id="upiPaymentBox" style="background:#fffbe2;padding:15px;border-radius:12px;border:1px solid #facc15;text-align:center;margin:10px 0;">
-    <h4 style="color:#854d0e;">⚡ Scan & Pay via UPI App</h4>
-    <p style="font-size:11px;color:#666;margin:4px 0;">Scan QR Code using PhonePe, Paytm, Google Pay, or BHIM</p>
+    <h4 style="color:#854d0e;" data-i18n="scanPayHead">⚡ Scan & Pay via UPI App</h4>
+    <p style="font-size:11px;color:#666;margin:4px 0;" data-i18n="scanPaySub">Scan QR Code using PhonePe, Paytm, Google Pay, or BHIM</p>
     
     <img id="orderCheckoutUpiQr" src="" alt="UPI QR" style="width:150px;height:150px;border-radius:10px;border:2px solid #eab308;margin:8px 0;">
     
@@ -463,17 +491,17 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
         UPI ID: <span style="color:#0284c7;">balramnnagar@okaxis</span>
     </div>
 
-    <a id="directUpiLinkBtn" href="#" style="display:inline-block;background:#16a34a;color:white;text-decoration:none;padding:10px 16px;border-radius:10px;font-weight:bold;font-size:13px;width:100%;margin-bottom:8px;">
+    <a id="directUpiLinkBtn" href="#" style="display:inline-block;background:#16a34a;color:white;text-decoration:none;padding:10px 16px;border-radius:10px;font-weight:bold;font-size:13px;width:100%;margin-bottom:8px;" data-i18n="openUpiBtn">
         🚀 Open UPI App Directly
     </a>
 
     <div class="form-group" style="text-align:left;margin-top:8px;">
-        <label>Enter UTR / Transaction ID (Optional)</label>
+        <label data-i18n="utrLabel">Enter UTR / Transaction ID (Optional)</label>
         <input type="text" id="paymentUtrInput" placeholder="12 Digit UTR / Ref Number">
     </div>
 </div>
 
-<button class="primary-btn" onclick="sendOrder()">Confirm & Place Order</button>
+<button class="primary-btn" onclick="sendOrder()" data-i18n="confirmOrderBtn">Confirm & Place Order</button>
 </div>
 </div>
 
@@ -481,7 +509,7 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 <div class="modal" id="nearbyModal">
   <div class="modal-box">
     <span class="close" onclick="closeModal('nearbyModal')">×</span>
-    <h2>📍 Nearby Verified Stores & Dealers</h2>
+    <h2 data-i18n="nearbyHead">📍 Nearby Verified Stores & Dealers</h2>
     <div id="storesList"></div>
   </div>
 </div>
@@ -490,13 +518,13 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 <div class="modal" id="cartModal">
 <div class="modal-box">
 <span class="close" onclick="closeModal('cartModal')">×</span>
-<h2>🛒 Cart Items</h2>
+<h2 data-i18n="cartHead">🛒 Cart Items</h2>
 <div id="cartItems"></div>
 <div style="font-size:15px;margin-top:12px;">
-    <div>Subtotal: ₹<span id="cartSubtotal">0</span></div>
+    <div><span data-i18n="subtotalLabel">Subtotal:</span> ₹<span id="cartSubtotal">0</span></div>
 </div>
-<div style="font-size:18px;font-weight:bold;margin:10px 0;">Total: ₹<span id="cartTotal">0</span></div>
-<button class="primary-btn" onclick="openOrderForm()">Proceed to Checkout</button>
+<div style="font-size:18px;font-weight:bold;margin:10px 0;"><span data-i18n="totalLabel">Total:</span> ₹<span id="cartTotal">0</span></div>
+<button class="primary-btn" onclick="openOrderForm()" data-i18n="proceedCheckoutBtn">Proceed to Checkout</button>
 </div>
 </div>
 
@@ -504,22 +532,29 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 <div class="modal" id="b2bAuthModal">
   <div class="modal-box">
     <span class="close" onclick="closeModal('b2bAuthModal')">×</span>
-    <h2>🏪 Register Shop, Dealer or Company</h2>
-    <div class="form-group"><label>Business / Company Name</label><input type="text" id="b2bBizName" placeholder="e.g. Laxmi Beverages"></div>
-    <div class="form-group"><label>Owner Name</label><input type="text" id="b2bOwnerName" placeholder="Owner Name"></div>
-    <div class="form-group"><label>Mobile Number (For Login)</label><input type="tel" id="b2bMobile" placeholder="10 Digit Mobile"></div>
-    <div class="form-group"><label>Full Address & Area</label><input type="text" id="b2bAddress" placeholder="Street, City"></div>
-    <div class="form-group"><label>Pincode</label><input type="text" id="b2bPincode" placeholder="6-digit Pincode"></div>
-    <div class="form-group"><label>GST Number (Optional)</label><input type="text" id="b2bGst" placeholder="Optional GSTIN"></div>
+    <h2 data-i18n="regShopHead">🏪 Register Shop, Dealer or Company</h2>
+    
+    <!-- Bulk / Wholesale Return Policy Notice for Dealers/Shopkeepers -->
+    <div class="policy-card-box">
+        <h4 data-i18n="bulkPolicyHead">📦 Bulk & Wholesale Return Policy (2 Days)</h4>
+        <p data-i18n="bulkPolicyDesc">Wholesale/Bulk orders are returnable within 2 days[span_13](start_span)[span_13](end_span). Return delivery charge is calculated dynamically based on distance[span_14](start_span)[span_14](end_span) and truck load parameters for complete transparency.</p>
+    </div>
+
+    <div class="form-group"><label data-i18n="bizNameLabel">Business / Company Name</label><input type="text" id="b2bBizName" placeholder="e.g. Laxmi Beverages"></div>
+    <div class="form-group"><label data-i18n="ownerNameLabel">Owner Name</label><input type="text" id="b2bOwnerName" placeholder="Owner Name"></div>
+    <div class="form-group"><label data-i18n="mobileLoginLabel">Mobile Number (For Login)</label><input type="tel" id="b2bMobile" placeholder="10 Digit Mobile"></div>
+    <div class="form-group"><label data-i18n="addressLabel">Full Address & Area</label><input type="text" id="b2bAddress" placeholder="Street, City"></div>
+    <div class="form-group"><label data-i18n="pincodeLabel">Pincode</label><input type="text" id="b2bPincode" placeholder="6-digit Pincode"></div>
+    <div class="form-group"><label data-i18n="gstLabel">GST Number (Optional)</label><input type="text" id="b2bGst" placeholder="Optional GSTIN"></div>
     <div class="form-group">
-        <label>Password</label>
+        <label data-i18n="passLabel">Password</label>
         <div class="password-box">
             <input type="password" id="b2bPassword" placeholder="Secret Password">
             <button type="button" class="eye-btn" onclick="togglePasswordVisibility('b2bPassword', this)">👁️</button>
         </div>
     </div>
-    <div class="form-group"><label>Email (Optional)</label><input type="email" id="b2bEmail" placeholder="Email"></div>
-    <button class="primary-btn" onclick="registerB2BUser()" style="background:#059669;margin-top:10px;">Register Business Now</button>
+    <div class="form-group"><label data-i18n="emailLabel">Email (Optional)</label><input type="email" id="b2bEmail" placeholder="Email"></div>
+    <button class="primary-btn" onclick="registerB2BUser()" style="background:#059669;margin-top:10px;" data-i18n="regBizBtn">Register Business Now</button>
   </div>
 </div>
 
@@ -527,56 +562,56 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 <div class="modal" id="adminDashboardModal">
 <div class="modal-box" style="max-width:650px;">
 <span class="close" onclick="closeModal('adminDashboardModal')">×</span>
-<h2>🛠️ Admin Panel Dashboard</h2>
+<h2 data-i18n="adminDashHead">🛠️ Admin Panel Dashboard</h2>
 <div style="margin:10px 0;display:flex;gap:5px;overflow-x:auto;">
-    <button class="primary-btn" onclick="switchAdminTab('orders')">Orders & Revenue</button>
-    <button class="primary-btn" onclick="switchAdminTab('inventory')" style="background:#ca8a04;">📊 Stock Inventory</button>
-    <button class="primary-btn" onclick="switchAdminTab('banners')" style="background:#eab308;color:#000;">📢 Banners</button>
-    <button class="primary-btn" onclick="switchAdminTab('addProduct')" style="background:#16a34a;">➕ Add Product</button>
-    <button class="primary-btn" onclick="switchAdminTab('manageProducts')" style="background:#0284c7;">📦 Manage & Edit</button>
-    <button class="primary-btn" onclick="switchAdminTab('shops')" style="background:#059669;">Shops</button>
+    <button class="primary-btn" onclick="switchAdminTab('orders')" data-i18n="adminTabOrders">Orders & Revenue</button>
+    <button class="primary-btn" onclick="switchAdminTab('inventory')" style="background:#ca8a04;" data-i18n="adminTabInv">📊 Stock Inventory</button>
+    <button class="primary-btn" onclick="switchAdminTab('banners')" style="background:#eab308;color:#000;" data-i18n="adminTabBanners">📢 Banners</button>
+    <button class="primary-btn" onclick="switchAdminTab('addProduct')" style="background:#16a34a;" data-i18n="adminTabAdd">➕ Add Product</button>
+    <button class="primary-btn" onclick="switchAdminTab('manageProducts')" style="background:#0284c7;" data-i18n="adminTabManage">📦 Manage & Edit</button>
+    <button class="primary-btn" onclick="switchAdminTab('shops')" style="background:#059669;" data-i18n="adminTabShops">Shops</button>
 </div>
 
 <div id="adminTabOrders">
-    <div id="adminOrdersList"><p>Loading Orders...</p></div>
+    <div id="adminOrdersList"><p data-i18n="loadingText">Loading Orders...</p></div>
 </div>
 
 <div id="adminTabInventory" style="display:none;">
-    <h3>📊 Stock & Inventory Quick Control</h3>
-    <p style="font-size:12px;color:#64748b;margin-bottom:10px;">Yahan se aap kisi bhi product ka stock instant badha, ghata ya Out of Stock kar sakte hain.</p>
-    <div id="adminInventoryList"><p>Loading Inventory...</p></div>
+    <h3 data-i18n="invControlHead">📊 Stock & Inventory Quick Control</h3>
+    <p style="font-size:12px;color:#64748b;margin-bottom:10px;" data-i18n="invControlSub">Yahan se aap kisi bhi product ka stock instant badha, ghata ya Out of Stock kar sakte hain.</p>
+    <div id="adminInventoryList"><p data-i18n="loadingText">Loading Inventory...</p></div>
 </div>
 
 <div id="adminTabBanners" style="display:none;background:#f8fafc;padding:12px;border-radius:12px;border:1px solid #e2e8f0;">
-    <h3>📢 Add Promotional Banner / Ad</h3>
-    <div class="form-group"><label>Banner Title (Optional)</label><input type="text" id="bannerTitle" placeholder="e.g. Special Cold Drink Offer"></div>
-    <div class="form-group"><label>Banner Description (Optional)</label><input type="text" id="bannerDesc" placeholder="e.g. Get 20% off on bulk water orders!"></div>
-    <div class="form-group"><label>Select Banner Photo from Gallery (Max 5MB)</label><input type="file" id="bannerImageFile" accept="image/*"></div>
-    <button class="primary-btn" onclick="addNewPromoBanner()" style="background:#eab308;color:#000;margin-top:10px;">Publish Banner to Home Slider</button>
+    <h3 data-i18n="bannerAddHead">📢 Add Promotional Banner / Ad</h3>
+    <div class="form-group"><label data-i18n="bannerTitleLabel">Banner Title (Optional)</label><input type="text" id="bannerTitle" placeholder="e.g. Special Cold Drink Offer"></div>
+    <div class="form-group"><label data-i18n="bannerDescLabel">Banner Description (Optional)</label><input type="text" id="bannerDesc" placeholder="e.g. Get 20% off on bulk water orders!"></div>
+    <div class="form-group"><label data-i18n="bannerPhotoLabel">Select Banner Photo from Gallery (Max 5MB)</label><input type="file" id="bannerImageFile" accept="image/*"></div>
+    <button class="primary-btn" onclick="addNewPromoBanner()" style="background:#eab308;color:#000;margin-top:10px;" data-i18n="publishBannerBtn">Publish Banner to Home Slider</button>
 </div>
 
 <div id="adminTabAddProduct" style="display:none;background:#f8fafc;padding:12px;border-radius:12px;border:1px solid #e2e8f0;">
-    <h3>📸 Add Product with Photo & Stock</h3>
-    <div class="form-group"><label>Product Name</label><input type="text" id="newProdName" placeholder="e.g. Bisleri 20L Water Jar"></div>
-    <div class="form-group"><label>Quantity / Size</label><input type="text" id="newProdQty" placeholder="e.g. 20 Litre"></div>
-    <div class="form-group"><label>Selling Price (₹)</label><input type="number" id="newProdPrice" placeholder="60"></div>
-    <div class="form-group"><label>Actual MRP / Old Price (₹)</label><input type="number" id="newProdMrp" placeholder="80"></div>
-    <div class="form-group"><label>Initial Stock Quantity</label><input type="number" id="newProdStock" placeholder="50" value="50"></div>
-    <div class="form-group"><label>Product Photo (Max 5MB)</label><input type="file" id="newProdImageFile" accept="image/*"></div>
-    <button class="primary-btn" onclick="addNewProductWithImage()" style="background:#16a34a;margin-top:10px;">Save Product</button>
+    <h3 data-i18n="prodAddHead">📸 Add Product with Photo & Stock</h3>
+    <div class="form-group"><label data-i18n="prodNameLabel">Product Name</label><input type="text" id="newProdName" placeholder="e.g. Bisleri 20L Water Jar"></div>
+    <div class="form-group"><label data-i18n="prodQtyLabel">Quantity / Size</label><input type="text" id="newProdQty" placeholder="e.g. 20 Litre"></div>
+    <div class="form-group"><label data-i18n="sellingPriceLabel">Selling Price (₹)</label><input type="number" id="newProdPrice" placeholder="60"></div>
+    <div class="form-group"><label data-i18n="actualMrpLabel">Actual MRP / Old Price (₹)</label><input type="number" id="newProdMrp" placeholder="80"></div>
+    <div class="form-group"><label data-i18n="initStockLabel">Initial Stock Quantity</label><input type="number" id="newProdStock" placeholder="50" value="50"></div>
+    <div class="form-group"><label data-i18n="prodPhotoLabel">Product Photo (Max 5MB)</label><input type="file" id="newProdImageFile" accept="image/*"></div>
+    <button class="primary-btn" onclick="addNewProductWithImage()" style="background:#16a34a;margin-top:10px;" data-i18n="saveProdBtn">Save Product</button>
 </div>
 
 <div id="adminTabManageProducts" style="display:none;">
     <div style="background:#e0f2fe;padding:10px;border-radius:10px;margin-bottom:12px;border:1px solid #0284c7;">
-        <b>⚡ First Time Setup:</b> Code me written master products ko Database me upload karein taaki wo Admin se edit/delete ho sakein.
-        <button class="primary-btn" onclick="syncMasterCatalogToDb()" style="background:#0284c7;margin-top:8px;">⚡ Sync Master Catalog to Database</button>
+        <b data-i18n="syncSetupHead">⚡ First Time Setup:</b> <span data-i18n="syncSetupSub">Code me written master products ko Database me upload karein taaki wo Admin se edit/delete ho sakein.</span>
+        <button class="primary-btn" onclick="syncMasterCatalogToDb()" style="background:#0284c7;margin-top:8px;" data-i18n="syncDbBtn">⚡ Sync Master Catalog to Database</button>
     </div>
-    <h3>📦 Manage, Edit & Delete Database Products</h3>
-    <div id="adminProductsManageList" style="margin-top:10px;"><p>Loading...</p></div>
+    <h3 data-i18n="manageProdHead">📦 Manage, Edit & Delete Database Products</h3>
+    <div id="adminProductsManageList" style="margin-top:10px;"><p data-i18n="loadingText">Loading...</p></div>
 </div>
 
 <div id="adminTabShops" style="display:none;">
-    <div id="adminShopsList"><p>Loading shops...</p></div>
+    <div id="adminShopsList"><p data-i18n="loadingText">Loading shops...</p></div>
 </div>
 
 </div>
@@ -586,18 +621,18 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 <div class="modal" id="editProductModal">
   <div class="modal-box">
     <span class="close" onclick="closeModal('editProductModal')">×</span>
-    <h2>✏️ Edit Product Details</h2>
+    <h2 data-i18n="editProdHead">✏️ Edit Product Details</h2>
     <input type="hidden" id="editProdId">
-    <div class="form-group"><label>Product Name</label><input type="text" id="editProdName"></div>
-    <div class="form-group"><label>Quantity / Pack</label><input type="text" id="editProdQty"></div>
-    <div class="form-group"><label>Selling Price (₹)</label><input type="number" id="editProdPrice"></div>
-    <div class="form-group"><label>MRP (₹)</label><input type="number" id="editProdMrp"></div>
-    <div class="form-group"><label>Stock Available</label><input type="number" id="editProdStock"></div>
+    <div class="form-group"><label data-i18n="prodNameLabel">Product Name</label><input type="text" id="editProdName"></div>
+    <div class="form-group"><label data-i18n="prodQtyLabel">Quantity / Pack</label><input type="text" id="editProdQty"></div>
+    <div class="form-group"><label data-i18n="sellingPriceLabel">Selling Price (₹)</label><input type="number" id="editProdPrice"></div>
+    <div class="form-group"><label data-i18n="actualMrpLabel">MRP (₹)</label><input type="number" id="editProdMrp"></div>
+    <div class="form-group"><label data-i18n="stockAvailLabel">Stock Available</label><input type="number" id="editProdStock"></div>
     <div class="form-group">
-        <label>Update Product Photo (Max 5MB, JPG/PNG)</label>
+        <label data-i18n="updatePhotoLabel">Update Product Photo (Max 5MB, JPG/PNG)</label>
         <input type="file" id="editProdImageFile" accept="image/*">
     </div>
-    <button class="primary-btn" onclick="saveEditedProduct()" style="background:#16a34a;margin-top:10px;">Update Product</button>
+    <button class="primary-btn" onclick="saveEditedProduct()" style="background:#16a34a;margin-top:10px;" data-i18n="updateProdBtn">Update Product</button>
   </div>
 </div>
 
@@ -605,21 +640,21 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 <div class="modal" id="editOrderModal">
   <div class="modal-box">
     <span class="close" onclick="closeModal('editOrderModal')">×</span>
-    <h2>✏️ Edit Order & Status</h2>
+    <h2 data-i18n="editOrderHead">✏️ Edit Order & Status</h2>
     <input type="hidden" id="editOrderIdVal">
-    <div class="form-group"><label>Customer Name</label><input type="text" id="editOrderCustName"></div>
-    <div class="form-group"><label>Mobile</label><input type="text" id="editOrderMobile"></div>
-    <div class="form-group"><label>Delivery Address / Status Info</label><textarea id="editOrderAddress" rows="3"></textarea></div>
-    <div class="form-group"><label>Order Status</label>
+    <div class="form-group"><label data-i18n="fullNameLabel">Customer Name</label><input type="text" id="editOrderCustName"></div>
+    <div class="form-group"><label data-i18n="mobileNumLabel">Mobile</label><input type="text" id="editOrderMobile"></div>
+    <div class="form-group"><label data-i18n="delivAddressLabel">Delivery Address / Status Info</label><textarea id="editOrderAddress" rows="3"></textarea></div>
+    <div class="form-group"><label data-i18n="orderStatusLabel">Order Status</label>
         <select id="editOrderStatus">
-            <option value="Paid via UPI - Delivery Pending">Paid via UPI - Delivery Pending</option>
-            <option value="COD - Pending Delivery">COD - Pending Delivery</option>
-            <option value="Out for Delivery">Out for Delivery</option>
-            <option value="Delivered Successfully">Delivered Successfully</option>
-            <option value="Cancelled">Cancelled</option>
+            <option value="Paid via UPI - Delivery Pending" data-i18n="status1">Paid via UPI - Delivery Pending</option>
+            <option value="COD - Pending Delivery" data-i18n="status2">COD - Pending Delivery</option>
+            <option value="Out for Delivery" data-i18n="status3">Out for Delivery</option>
+            <option value="Delivered Successfully" data-i18n="status4">Delivered Successfully</option>
+            <option value="Cancelled" data-i18n="status5">Cancelled</option>
         </select>
     </div>
-    <button class="primary-btn" onclick="saveEditedOrder()" style="background:#0284c7;margin-top:10px;">Update Order</button>
+    <button class="primary-btn" onclick="saveEditedOrder()" style="background:#0284c7;margin-top:10px;" data-i18n="updateOrderBtn">Update Order</button>
   </div>
 </div>
 
@@ -629,6 +664,338 @@ body{background:#f1f5f9;color:#0f172a;padding-bottom:80px;}
 const SUPABASE_URL = "https://zqirmlnbqftzurjzbluv.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_QesFfLaf4IlgNcEJbm3WEw_tq5ISxz1"; 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+// Multi-Language Dictionary Setup
+let currentLang = localStorage.getItem("jalvigo_lang") || "hi";
+
+const translations = {
+  hi: {
+    appName: "Jalvigo",
+    shareBtn: "📤 शेयर ऐप",
+    locationText: "लोकेशन",
+    searchPlaceholder: "वॉटर जार, कोल्ड ड्रिंक्स, बेवरेज खोजें...",
+    catForYou: "आपके लिए",
+    catWater: "वॉटर जार",
+    catDrinks: "कोल्ड ड्रिंक्स",
+    catEnergy: "एनर्जी/जूस",
+    catAddShop: "दुकान जोड़ें",
+    sortAll: "सभी / डिफ़ॉल्ट",
+    sortRetail: "🏷️ रिटेल (छोटा)",
+    sortWholesale: "📦 थोक (बल्क)",
+    sortLowHigh: "📈 कीमत: कम से ज्यादा",
+    sortHighLow: "📉 कीमत: ज्यादा से कम",
+    banner1Title: "💧 जलविगो B2B और रिटेल मार्केटप्लेस",
+    banner1Desc: "भारत का सबसे तेज वाटर और बेवरेज डिलीवरी नेटवर्क। थोक और सिंगल यूनिट दोनों उपलब्ध!",
+    banner2Title: "🥤 डायरेक्ट मार्केट रेट्स",
+    banner2Desc: "असली होलसेल कीमत और 1-पीस रिटेल विकल्प तुरंत होम डिलीवरी के साथ पाएं।",
+    banner3Title: "⚡ डायरेक्ट डीलर नेटवर्क",
+    banner3Desc: "आज ही जलविगो पर अपनी दुकान लिस्ट करें और ऑटोमैटिकक कमिशन ट्रैक करें!",
+    sectionHeading: "⚡ होलसेल और रिटेल बेवरेजेस",
+    refreshText: "🔄 रिफ्रेश",
+    loadingText: "प्रोडक्ट लोड हो रहे हैं...",
+    navHome: "होम",
+    navStores: "स्टोर्स",
+    navCart: "कार्ट",
+    navAccount: "अकाउंट",
+    shareModalTitle: "📲 जलविगो ऐप शेयर और डाउनलोड करें",
+    shareModalSub: "ऐप डाउनलोड करें या दोस्तों और दुकानदारों के साथ लिंक शेयर करें!",
+    downloadAppBtn: "📥 ऐप डाउनलोड करें (होम स्क्रीन पर जोड़ें)",
+    linkLabel: "वेबसाइट / ऐप लिंक",
+    copyLinkBtn: "📋 लिंक कॉपी करें",
+    whatsappShareBtn: "💬 व्हाट्सएप पर शेयर करें",
+    otherShareBtn: "🚀 अन्य ऐप्स से शेयर करें",
+    accountModalTitle: "👤 अकाउंट और डैशबोर्ड",
+    retailPolicyHead: "🏷️ रिटेल और कस्टमर रिटर्न पॉलिसी (1 दिन)",
+    retailPolicyDesc: "रिटेल/सिंगल ऑर्डर 1 दिन के भीतर रिटर्न हो सकते हैं[span_15](start_span)[span_15](end_span)। रिटर्न डिलीवरी चार्ज <b>₹5 प्रति किलोमीटर</b> के हिसाब से लगेगा[span_16](start_span)[span_16](end_span)। प्रोडक्ट इस्तेमाल न किया हुआ होना चाहिए।",
+    custLoginBtn: "👤 कस्टमर लॉगिन / साइनअप",
+    b2bRegBtn: "🏪 दुकान / डीलर / कंपनी रजिस्टर करें",
+    deliveryPortalBtn: "🚚 डिलीवरी पार्टनर पोर्टल",
+    adminLoginBtn: "🔐 एडमिन लॉगिन",
+    addManageProdBtn: "➕ मेरे प्रोडक्ट जोड़ें व मैनेज करें",
+    openAdminDashBtn: "🛠️ एडमिन डैशबोर्ड खोलें",
+    myOrdersBtn: "📦 मेरे ऑर्डर्स",
+    vipTitle: "👑 जलविगो VIP मेंबरशिप पास",
+    vipSub: "असीमित मुफ्त एक्सप्रेस डिलीवरी और प्रायोरिटी स्लॉट्स",
+    viewVipBtn: "VIP प्लान देखें",
+    logoutBtn: "🚪 लॉगआउट",
+    vipModalHead: "👑 जलविगो VIP पास प्लान चुनें",
+    vipModalSub: "UPI QR कोड देखने के लिए नीचे एक प्लान चुनें",
+    selectedPlanLabel: "चुना गया प्लान:",
+    paidVipBtn: "मैंने भुगतान कर दिया है - VIP एक्टिवेट करें",
+    vendorModalHead: "📦 दुकान के प्रोडक्ट्स जोड़ें व मैनेज करें",
+    masterCatalogLabel: "⚡ मास्टर catálogo से तुरंत चुनें (वैकल्पिक)",
+    chooseMasterOpt: "-- मास्टर catálogo से चुनें या कस्टम जोड़ें --",
+    prodNameLabel: "प्रोडक्ट का नाम",
+    prodQtyLabel: "मात्रा / पैक प्रकार",
+    catLabel: "कैटेगरी",
+    retailTypeOpt: "रिटेल (छोटी दुकान / सिंगल यूनिट)",
+    wholesaleTypeOpt: "होलसेल (थोक डीलर / बल्क पैक)",
+    stockAvailLabel: "स्टॉक की मात्रा उपलब्ध",
+    shopPinLabel: "दुकान का पिनकोड (डिलीवरी जांच हेतु)",
+    actualMrpLabel: "वास्तविक कुल MRP (₹)",
+    sellingPriceLabel: "बिक्री होलसेल/रिटेल मूल्य (₹)",
+    prodPhotoLabel: "प्रोडक्ट फोटो (अधिकतम 5MB, JPG/PNG)",
+    savePubBtn: "सेव और पब्लिश करें",
+    yourListedHead: "आपके द्वारा लिस्टेड प्रोडक्ट्स",
+    custAuthHead: "👤 कस्टमर लॉगिन / साइनअप",
+    mobileEmailLabel: "मोबाइल नंबर या ईमेल",
+    passLabel: "पासवर्ड",
+    forgotPassLink: "पासवर्ड भूल गए?",
+    loginBtn: "लॉगिन",
+    createAccBtn: "नया अकाउंट बनाएं",
+    resetPassHead: "🔑 पासवर्ड रीसेट करें",
+    newPassLabel: "नया पासवर्ड",
+    updatePassBtn: "पासवर्ड अपडेट करें",
+    adminLoginHead: "🔐 एडमिन सुरक्षित लॉगिन",
+    adminEmailLabel: "एडमिन ईमेल",
+    adminLoginActionBtn: "एडमिन पैनल में लॉगिन करें",
+    myOrdersHead: "📦 मेरे ऑर्डर्स",
+    deliveryPortalHead: "🚚 डिलीवरी पार्टनर पोर्टल",
+    pinLabel: "4-अंकों का सुरक्षा पिन दर्ज करें (डिफ़ॉल्ट: 1234)",
+    accessDelivBtn: "डिलीवरी एक्सेस करें",
+    checkoutHead: "📦 डिलीवरी और बिल विवरण",
+    checkoutPolicyTitle: "🛡️ जलविगो रिटर्न और रिफंड सुरक्षा",
+    checkoutPolicyDescText: "रिटेल ऑर्डर 1 दिन में रिटर्न योग्य[span_17](start_span)[span_17](end_span) (₹5/किमी रिटर्न शुल्क)[span_18](start_span)[span_18](end_span)। थोक/बल्क ऑर्डर 2 दिन में रिटर्न योग्य[span_19](start_span)[span_19](end_span) (दूरी-आधारित रिटर्न शुल्क)[span_20](start_span)[span_20](end_span)।",
+    fullNameLabel: "पूरा नाम",
+    mobileNumLabel: "मोबाइल",
+    delivPinLabel: "डिलीवरी पिनकोड",
+    delivAddressLabel: "डिलीवरी का पता",
+    gpsBtn: "🎯 लाइव GPS लोकेशन ऑटो-फिल करें",
+    storeDistLabel: "स्टोर दूरी:",
+    subtotalLabel: "आइटम सबटोटल:",
+    delivFeeLabel: "डिलीवरी चार्ज:",
+    grandTotalLabel: "कुल योग (Grand Total):",
+    payMethodLabel: "भुगतान का तरीका चुनें",
+    upiOpt: "📱 इंस्टेंट UPI / QR (GPay, PhonePe, Paytm)",
+    codOpt: "💵 कैश ऑन डिलीवरी (COD)",
+    scanPayHead: "⚡ UPI ऐप से स्कैन और भुगतान करें",
+    scanPaySub: "PhonePe, Paytm, GooglePay या BHIM का उपयोग करें",
+    openUpiBtn: "🚀 सीधे UPI ऐप खोलें",
+    utrLabel: "UTR / ट्रांजैक्शन आईडी दर्ज करें (वैकल्पिक)",
+    confirmOrderBtn: "कन्फर्म करें और आर्डर दें",
+    nearbyHead: "📍 पास के वेरिफाइड स्टोर्स और डीलर्स",
+    cartHead: "🛒 कार्ट आइटम्स",
+    totalLabel: "कुल:",
+    proceedCheckoutBtn: "चेकआउट के लिए आगे बढ़ें",
+    regShopHead: "🏪 दुकान, डीलर या कंपनी रजिस्टर करें",
+    bulkPolicyHead: "📦 थोक और बल्क रिटर्न पॉलिसी (2 दिन)",
+    bulkPolicyDesc: "थोक/बल्क ऑर्डर 2 दिन के भीतर रिटर्न हो सकते हैं[span_21](start_span)[span_21](end_span)। रिटर्न डिलीवरी चार्ज दूरी और ट्रक लोड के आधार पर पारदर्शिता के साथ तय होता है[span_22](start_span)[span_22](end_span)।",
+    bizNameLabel: "व्यापार / कंपनी का नाम",
+    ownerNameLabel: "मालिक का नाम",
+    mobileLoginLabel: "मोबाइल नंबर (लॉगिन हेतु)",
+    addressLabel: "पूरा पता और क्षेत्र",
+    pincodeLabel: "पिनकोड",
+    gstLabel: "जीएसटी नंबर (वैकल्पिक)",
+    emailLabel: "ईमेल (वैकल्पिक)",
+    regBizBtn: "व्यापार अब रजिस्टर करें",
+    adminDashHead: "🛠️ एडमिन पैनल डैशबोर्ड",
+    adminTabOrders: "ऑर्डर्स और रेवेन्यू",
+    adminTabInv: "📊 स्टॉक इन्वेंट्री",
+    adminTabBanners: "📢 बैनर्स",
+    adminTabAdd: "➕ प्रोडक्ट जोड़ें",
+    adminTabManage: "📦 मैनेज और एडिट",
+    adminTabShops: "स्टोर्स",
+    invControlHead: "📊 स्टॉक और इन्वेंट्री त्वरित नियंत्रण",
+    invControlSub: "यहाँ से आप किसी भी प्रोडक्ट का स्टॉक बढ़ा, घटा या आउट ऑफ स्टॉक कर सकते हैं।",
+    bannerAddHead: "📢 प्रमोशनल बैनर / विज्ञापन जोड़ें",
+    bannerTitleLabel: "बैनर शीर्षक (वैकल्पिक)",
+    bannerDescLabel: "बैनर विवरण (वैकल्पिक)",
+    bannerPhotoLabel: "गैलरी से बैनर फोटो चुनें (अधिकतम 5MB)",
+    publishBannerBtn: "होम स्लाइडर पर बैनर पब्लिश करें",
+    prodAddHead: "📸 फोटो और स्टॉक के साथ प्रोडक्ट जोड़ें",
+    initStockLabel: "प्रारंभिक स्टॉक मात्रा",
+    saveProdBtn: "प्रोडक्ट सेव करें",
+    syncSetupHead: "⚡ पहली बार सेटअप:",
+    syncSetupSub: "कोड में लिखे मास्टर प्रोडक्ट्स को डेटाबेस में अपलोड करें ताकि वे एडमिन से एडिट/डिलीट हो सकें।",
+    syncDbBtn: "⚡ मास्टर catálogo डेटाबेस में सिंक करें",
+    manageProdHead: "📦 डेटाबेस प्रोडक्ट्स मैनेज, एडिट और डिलीट करें",
+    editProdHead: "✏️ प्रोडक्ट विवरण एडिट करें",
+    updatePhotoLabel: "प्रोडक्ट फोटो अपडेट करें (अधिकतम 5MB, JPG/PNG)",
+    updateProdBtn: "प्रोडक्ट अपडेट करें",
+    editOrderHead: "✏️ आर्डर और स्टेटस एडिट करें",
+    orderStatusLabel: "आर्डर स्टेटस",
+    status1: "UPI द्वारा भुगतान - डिलीवरी लंबित",
+    status2: "COD - डिलीवरी लंबित",
+    status3: "डिलीवरी के लिए निकला",
+    status4: "सफलतापूर्वक डिलीवर हुआ",
+    status5: "रद्द किया गया",
+    updateOrderBtn: "आर्डर अपडेट करें"
+  },
+  en: {
+    appName: "Jalvigo",
+    shareBtn: "📤 Share App",
+    locationText: "Location",
+    searchPlaceholder: "Search Water Jars, Cold Drinks, Beverages...",
+    catForYou: "For You",
+    catWater: "Water Jars",
+    catDrinks: "Cold Drinks",
+    catEnergy: "Energy/Juice",
+    catAddShop: "Add Shop",
+    sortAll: "All / Default",
+    sortRetail: "🏷️ Retail Only",
+    sortWholesale: "📦 Wholesale Only",
+    sortLowHigh: "📈 Price: Low to High",
+    sortHighLow: "📉 Price: High to Low",
+    banner1Title: "💧 Jalvigo B2B & Retail Marketplace",
+    banner1Desc: "India's Fastest Water & Beverage Delivery Network. Wholesale & Single Units available!",
+    banner2Title: "🥤 Direct Market Rates",
+    banner2Desc: "Get authentic wholesale prices and 1-piece retail options with instant doorstep delivery.",
+    banner3Title: "⚡ Direct Dealer Network",
+    banner3Desc: "List your shop on Jalvigo today and enjoy automatic platform commission tracking!",
+    sectionHeading: "⚡ Wholesale & Retail Beverages",
+    refreshText: "🔄 Refresh",
+    loadingText: "Loading products...",
+    navHome: "Home",
+    navStores: "Stores",
+    navCart: "Cart",
+    navAccount: "Account",
+    shareModalTitle: "📲 Share & Download Jalvigo App",
+    shareModalSub: "Download app or share link with friends and shopkeepers!",
+    downloadAppBtn: "📥 Download App (Install to Home Screen)",
+    linkLabel: "Website / App Link",
+    copyLinkBtn: "📋 Copy Link",
+    whatsappShareBtn: "💬 Share on WhatsApp",
+    otherShareBtn: "🚀 Share via Other Apps",
+    accountModalTitle: "👤 Account & Dashboard",
+    retailPolicyHead: "🏷️ Retail & Customer Return Policy (1 Day)",
+    retailPolicyDesc: "Retail/Single orders can be returned within 1 day[span_23](start_span)[span_23](end_span). Return delivery charge applies at <b>₹5 per kilometer</b>[span_24](start_span)[span_24](end_span). Product must be unused and in original packaging.",
+    custLoginBtn: "👤 Customer Login / Signup",
+    b2bRegBtn: "🏪 Register Shop / Dealer / Company",
+    deliveryPortalBtn: "🚚 Delivery Partner Portal",
+    adminLoginBtn: "🔐 Admin Login",
+    addManageProdBtn: "➕ Add & Manage My Products",
+    openAdminDashBtn: "🛠️ Open Admin Dashboard",
+    myOrdersBtn: "📦 My Orders",
+    vipTitle: "👑 Jalvigo VIP Membership Pass",
+    vipSub: "Unlimited FREE Express Delivery & Priority Slots",
+    viewVipBtn: "View VIP Plans",
+    logoutBtn: "🚪 Logout",
+    vipModalHead: "👑 Choose Jalvigo VIP Pass Plan",
+    vipModalSub: "Select a plan below to view UPI QR code",
+    selectedPlanLabel: "Selected Plan:",
+    paidVipBtn: "I Have Paid - Activate VIP Access",
+    vendorModalHead: "📦 Add & Manage Shop Products",
+    masterCatalogLabel: "⚡ Quick Select from Master Catalog (Optional)",
+    chooseMasterOpt: "-- Choose from Master Catalog OR Add Custom --",
+    prodNameLabel: "Product Name",
+    prodQtyLabel: "Product Quantity / Pack Type",
+    catLabel: "Category",
+    retailTypeOpt: "Retail (Small Shop / Single Units)",
+    wholesaleTypeOpt: "Wholesale (Thok Dealer / Bulk Packs)",
+    stockAvailLabel: "Stock Quantity Available",
+    shopPinLabel: "Shop Pincode (For Delivery Limit Check)",
+    actualMrpLabel: "Actual Total MRP (₹)",
+    sellingPriceLabel: "Selling Wholesale/Retail Price (₹)",
+    prodPhotoLabel: "Product Photo (Max 5MB, JPG/PNG)",
+    savePubBtn: "Save & Publish Product",
+    yourListedHead: "Your Listed Products",
+    custAuthHead: "👤 Customer Login / Signup",
+    mobileEmailLabel: "Mobile Number or Email",
+    passLabel: "Password",
+    forgotPassLink: "Forgot Password?",
+    loginBtn: "Login",
+    createAccBtn: "Create New Account",
+    resetPassHead: "🔑 Reset Password",
+    newPassLabel: "New Password",
+    updatePassBtn: "Update Password",
+    adminLoginHead: "🔐 Admin Secure Login",
+    adminEmailLabel: "Admin Email",
+    adminLoginActionBtn: "Login to Admin Panel",
+    myOrdersHead: "📦 My Orders",
+    deliveryPortalHead: "🚚 Delivery Partner Portal",
+    pinLabel: "Enter 4-Digit Security PIN (Default: 1234)",
+    accessDelivBtn: "Access Deliveries",
+    checkoutHead: "📦 Delivery & Bill Details",
+    checkoutPolicyTitle: "🛡️ Jalvigo Return & Refund Protection",
+    checkoutPolicyDescText: "Retail orders returnable within 1 day[span_25](start_span)[span_25](end_span) (₹5/km return fee)[span_26](start_span)[span_26](end_span). Bulk/Wholesale returnable within 2 days[span_27](start_span)[span_27](end_span) (distance-based return fee)[span_28](start_span)[span_28](end_span).",
+    fullNameLabel: "Full Name",
+    mobileNumLabel: "Mobile",
+    delivPinLabel: "Delivery Pincode",
+    delivAddressLabel: "Delivery Address",
+    gpsBtn: "🎯 Auto-Fill Live GPS Location",
+    storeDistLabel: "Store Distance:",
+    subtotalLabel: "Items Subtotal:",
+    delivFeeLabel: "Delivery Charge:",
+    grandTotalLabel: "Grand Total:",
+    payMethodLabel: "Choose Payment Method",
+    upiOpt: "📱 Instant UPI / QR (GPay, PhonePe, Paytm)",
+    codOpt: "💵 Cash on Delivery (COD)",
+    scanPayHead: "⚡ Scan & Pay via UPI App",
+    scanPaySub: "Scan QR Code using PhonePe, Paytm, Google Pay, or BHIM",
+    openUpiBtn: "🚀 Open UPI App Directly",
+    utrLabel: "Enter UTR / Transaction ID (Optional)",
+    confirmOrderBtn: "Confirm & Place Order",
+    nearbyHead: "📍 Nearby Verified Stores & Dealers",
+    cartHead: "🛒 Cart Items",
+    totalLabel: "Total:",
+    proceedCheckoutBtn: "Proceed to Checkout",
+    regShopHead: "🏪 Register Shop, Dealer or Company",
+    bulkPolicyHead: "📦 Bulk & Wholesale Return Policy (2 Days)",
+    bulkPolicyDesc: "Wholesale/Bulk orders are returnable within 2 days[span_29](start_span)[span_29](end_span). Return delivery charge is calculated dynamically based on distance[span_30](start_span)[span_30](end_span) and truck load parameters for complete transparency.",
+    bizNameLabel: "Business / Company Name",
+    ownerNameLabel: "Owner Name",
+    mobileLoginLabel: "Mobile Number (For Login)",
+    addressLabel: "Full Address & Area",
+    pincodeLabel: "Pincode",
+    gstLabel: "GST Number (Optional)",
+    emailLabel: "Email (Optional)",
+    regBizBtn: "Register Business Now",
+    adminDashHead: "🛠️ Admin Panel Dashboard",
+    adminTabOrders: "Orders & Revenue",
+    adminTabInv: "📊 Stock Inventory",
+    adminTabBanners: "📢 Banners",
+    adminTabAdd: "➕ Add Product",
+    adminTabManage: "📦 Manage & Edit",
+    adminTabShops: "Shops",
+    invControlHead: "📊 Stock & Inventory Quick Control",
+    invControlSub: "Yahan se aap kisi bhi product ka stock instant badha, ghata ya Out of Stock kar sakte hain.",
+    bannerAddHead: "📢 Add Promotional Banner / Ad",
+    bannerTitleLabel: "Banner Title (Optional)",
+    bannerDescLabel: "Banner Description (Optional)",
+    bannerPhotoLabel: "Select Banner Photo from Gallery (Max 5MB)",
+    publishBannerBtn: "Publish Banner to Home Slider",
+    prodAddHead: "📸 Add Product with Photo & Stock",
+    initStockLabel: "Initial Stock Quantity",
+    saveProdBtn: "Save Product",
+    syncSetupHead: "⚡ First Time Setup:",
+    syncSetupSub: "Code me written master products ko Database me upload karein taaki wo Admin se edit/delete ho sakein.",
+    syncDbBtn: "⚡ Sync Master Catalog to Database",
+    manageProdHead: "📦 Manage, Edit & Delete Database Products",
+    editProdHead: "✏️ Edit Product Details",
+    updatePhotoLabel: "Update Product Photo (Max 5MB, JPG/PNG)",
+    updateProdBtn: "Update Product",
+    editOrderHead: "✏️ Edit Order & Status",
+    orderStatusLabel: "Order Status",
+    status1: "Paid via UPI - Delivery Pending",
+    status2: "COD - Pending Delivery",
+    status3: "Out for Delivery",
+    status4: "Delivered Successfully",
+    status5: "Cancelled",
+    updateOrderBtn: "Update Order"
+  }
+};
+
+function applyTranslations() {
+    const dict = translations[currentLang];
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if(dict[key]) el.innerHTML = dict[key];
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if(dict[key]) el.placeholder = dict[key];
+    });
+    const langBtn = document.getElementById("langBtnText");
+    if(langBtn) {
+        langBtn.innerText = currentLang === 'hi' ? "🌐 English" : "🌐 हिंदी";
+    }
+}
+
+function toggleAppLanguage() {
+    currentLang = currentLang === 'hi' ? 'en' : 'hi';
+    localStorage.setItem("jalvigo_lang", currentLang);
+    applyTranslations();
+}
 
 const DEFAULT_PRODUCTS = [
   { id: 301, name: "Coca-Cola 250ml", quantity: "1 Single Bottle", price: 20, mrp: 20, discount: 0, category: "Drinks", emoji: "🥤", type: "Retail", stock: 100, shop_pincode: "110001" },
@@ -725,7 +1092,7 @@ function copyShareLink() {
     const copyText = document.getElementById("shareableLinkInput");
     copyText.select();
     navigator.clipboard.writeText(copyText.value);
-    alert("✅ Link Copied to Clipboard!");
+    alert(currentLang === 'hi' ? "✅ लिंक क्लिपबोर्ड पर कॉपी हो गया!" : "✅ Link Copied to Clipboard!");
 }
 
 function triggerNativeShare() {
@@ -751,7 +1118,7 @@ function triggerAppInstall() {
             deferredPrompt = null;
         });
     } else {
-        alert("📲 App install karne ke liye apne browser menu (...) par click karein aur 'Install App' ya 'Add to Home Screen' select karein.");
+        alert(currentLang === 'hi' ? "📲 ऐप इंस्टॉल करने के लिए ब्राउज़र मेनू (...) पर क्लिक करें और 'Install App' चुनें।" : "📲 To install app, click browser menu (...) and select 'Install App' or 'Add to Home Screen'.");
     }
 }
 
@@ -1568,6 +1935,7 @@ function userLogout(){
 }
 
 loadDynamicProducts();
+applyTranslations();
 </script>
 </body>
 </html>
